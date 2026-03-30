@@ -25,7 +25,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"brand" | "creator">("brand");
 
   return (
-    <div className="min-h-screen bg-[#0f172a] relative">
+    <div className="min-h-screen relative">
       <ArtisticBackground />
       <ScrollProgressIndicator />
       {/* Navigation */}

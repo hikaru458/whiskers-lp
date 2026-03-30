@@ -20,6 +20,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://whiskers-lp.vercel.app"),
   title: "Whiskers - 企業とクリエイターをつなぐコンテスト型UGCプラットフォーム",
   description: "Whiskersは、企業・クリエイター・可能性をつなげるコンテスト型UGCプラットフォームです。確実に優秀な作品が手に入ります。",
   openGraph: {
