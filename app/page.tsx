@@ -65,7 +65,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section - Empty for 3D spiral background */}
-      <section className="relative min-h-screen" />
+      <section className="relative h-[600vh]" />
 
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-[#0f172a] border-t border-[#1e293b]">
