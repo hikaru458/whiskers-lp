@@ -125,22 +125,26 @@ export default function Home() {
             創造をつなぐ
           </motion.p>
           
-          {/* Animated Description */}
+          {/* Animated Description - Improved Readability */}
           <motion.p 
-            className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg text-[#94a3b8] mb-8 max-w-xl mx-auto leading-[1.7] tracking-wide"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
           >
             {activeTab === "brand" ? (
               <>
-                ブランドとクリエイターを「コンテスト形式」でつなぐUGCプラットフォーム。
+                ブランドとクリエイターを「コンテスト形式」でつなぐ
+                <span className="hidden sm:inline"> </span>
+                UGCプラットフォーム。
                 <br className="hidden sm:block" />
                 確実に優秀な動画が手に入る。
               </>
             ) : (
               <>
-                フォロワー数不問、作品の質だけで勝負できるUGCコンテスト。
+                フォロワー数不問、作品の質だけで勝負できる
+                <span className="hidden sm:inline"> </span>
+                UGCコンテスト。
                 <br className="hidden sm:block" />
                 あなたの創造力で賞金を獲得しよう。
               </>
@@ -170,36 +174,36 @@ export default function Home() {
             </MagneticButton>
           </motion.div>
 
-          {/* Price Highlight with Animation */}
+          {/* Price Highlight with Animation - Responsive */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.6 }}
-            className="mt-12 inline-flex items-center gap-2 bg-[#f5f5f5] px-6 py-3 rounded-full"
+            className="mt-8 sm:mt-12 inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 bg-[#1e293b] px-4 sm:px-6 py-3 rounded-full"
           >
             {activeTab === "brand" ? (
               <>
-                <span className="text-gray-600">月額</span>
+                <span className="text-[#94a3b8] text-sm sm:text-base">月額</span>
                 <motion.span 
-                  className="text-2xl font-bold text-[#ff6b35]"
+                  className="text-xl sm:text-2xl font-bold text-[#ff6b35]"
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                 >
                   ¥99,000
                 </motion.span>
-                <span className="text-gray-600">で確実に作品が手に入る</span>
+                <span className="text-[#94a3b8] text-sm sm:text-base">で確実に作品が手に入る</span>
               </>
             ) : (
               <>
-                <span className="text-gray-600">勝利賞金</span>
+                <span className="text-[#94a3b8] text-sm sm:text-base">勝利賞金</span>
                 <motion.span 
-                  className="text-2xl font-bold text-[#4ecdc4]"
+                  className="text-xl sm:text-2xl font-bold text-[#4ecdc4]"
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                 >
                   ¥30,000
                 </motion.span>
-                <span className="text-gray-600">〜 + 追加報酬も</span>
+                <span className="text-[#94a3b8] text-sm sm:text-base">〜 + 追加報酬も</span>
               </>
             )}
           </motion.div>
@@ -211,10 +215,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <ParallaxContainer speed={0.3}>
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#f1f5f9] mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f1f5f9] mb-4 leading-tight">
                 三つの力で、一つの傑作を
               </h2>
-              <p className="text-[#94a3b8] max-w-2xl mx-auto">
+              <p className="text-[#94a3b8] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
                 Whiskersは、ブランド・クリエイター・可能性をつなげる
                 コンテスト型UGCプラットフォームです。
               </p>
@@ -224,34 +228,34 @@ export default function Home() {
           <StaggeredGrid staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
             {activeTab === "brand" ? (
               <>
-                <GlowCard glowColor="#ff6b35" className="bg-[#0f172a] p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#ff6b35" className="bg-[#0f172a] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center mb-4">
                     <Film className="w-6 h-6 text-[#ff6b35]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#f1f5f9] mb-2">確実に作品が手に入る</h3>
-                  <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#f1f5f9] mb-3">確実に作品が手に入る</h3>
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7]">
                     採用制だから、使える作品だけに報酬を支払い。
                     コンテストで複数の案から選べます。
                   </p>
                 </GlowCard>
 
-                <GlowCard glowColor="#4ecdc4" className="bg-[#0f172a] p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#4ecdc4" className="bg-[#0f172a] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center mb-4">
                     <Users className="w-6 h-6 text-[#4ecdc4]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#f1f5f9] mb-2">フォロワー不問</h3>
-                  <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#f1f5f9] mb-3">フォロワー不問</h3>
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7]">
                     0フォロワーでも勝てる。作品の質だけで勝負。
                     幅広いクリエイターが参加できます。
                   </p>
                 </GlowCard>
 
-                <GlowCard glowColor="#3b82f6" className="bg-[#0f172a] p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#3b82f6" className="bg-[#0f172a] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="w-12 h-12 bg-[#3b82f6]/10 rounded-xl flex items-center justify-center mb-4">
                     <Award className="w-6 h-6 text-[#3b82f6]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#f1f5f9] mb-2">完全所有権</h3>
-                  <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#f1f5f9] mb-3">完全所有権</h3>
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7]">
                     採用作品は永続的に使用可能。
                     広告、SNS、ECサイトで自由に活用できます。
                   </p>
@@ -259,34 +263,34 @@ export default function Home() {
               </>
             ) : (
               <>
-                <GlowCard glowColor="#4ecdc4" className="bg-[#0f172a] p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#4ecdc4" className="bg-[#0f172a] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center mb-4">
                     <Gift className="w-6 h-6 text-[#4ecdc4]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#f1f5f9] mb-2">商品を無料で使える</h3>
-                  <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#f1f5f9] mb-3">商品を無料で使える</h3>
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7]">
                     ブランドの商品を無料で体験。
                     新商品の先行モニターも可能です。
                   </p>
                 </GlowCard>
 
-                <GlowCard glowColor="#ff6b35" className="bg-[#0f172a] p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#ff6b35" className="bg-[#0f172a] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center mb-4">
                     <Star className="w-6 h-6 text-[#ff6b35]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#f1f5f9] mb-2">作品だけで勝負</h3>
-                  <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#f1f5f9] mb-3">作品だけで勝負</h3>
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7]">
                     フォロワー数は関係なし。
                     あなたの創造力だけで評価されます。
                   </p>
                 </GlowCard>
 
-                <GlowCard glowColor="#3b82f6" className="bg-[#0f172a] p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#3b82f6" className="bg-[#0f172a] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="w-12 h-12 bg-[#3b82f6]/10 rounded-xl flex items-center justify-center mb-4">
                     <TrendingUp className="w-6 h-6 text-[#3b82f6]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#f1f5f9] mb-2">ポートフォリオ構築</h3>
-                  <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#f1f5f9] mb-3">ポートフォリオ構築</h3>
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7]">
                     実績がそのままポートフォリオに。
                     ブランドとの継続的な関係も作れます。
                   </p>
@@ -301,10 +305,10 @@ export default function Home() {
       <section id="comparison" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#f1f5f9] mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f1f5f9] mb-4 leading-tight">
               なぜ Whiskers を選ぶのか
             </h2>
-            <p className="text-[#94a3b8]">
+            <p className="text-[#94a3b8] text-base sm:text-lg max-w-2xl mx-auto">
               従来のUGCサービスとの違い
             </p>
           </div>
@@ -396,7 +400,7 @@ export default function Home() {
           </div>
 
           {/* Bottom message */}
-          <p className="text-center text-[#94a3b8] mt-8 text-sm">
+          <p className="text-center text-[#94a3b8] mt-8 text-sm sm:text-base leading-relaxed">
             Whiskersは「<span className="text-[#ff6b35] font-medium">作品の質</span>」で選べる、新しいUGCのカタチです
           </p>
         </div>
@@ -406,10 +410,10 @@ export default function Home() {
       <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#f1f5f9] mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f1f5f9] mb-4 leading-tight">
               {activeTab === "brand" ? "シンプルな料金体系" : "報酬体系"}
             </h2>
-            <p className="text-[#94a3b8]">
+            <p className="text-[#94a3b8] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
               {activeTab === "brand" 
                 ? "月額定額で、確実に優秀な作品が手に入ります" 
                 : "あなたの作品が評価され、公平に報酬が支払われます"}
@@ -553,10 +557,10 @@ export default function Home() {
       <section id="flow" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1e293b]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#f1f5f9] mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f1f5f9] mb-4 leading-tight">
               コンテストの流れ
             </h2>
-            <p className="text-[#94a3b8]">
+            <p className="text-[#94a3b8] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
               {activeTab === "brand" 
                 ? "ブランドは商品情報と作品の方向性を指定するだけ。あとはWhiskersにお任せ" 
                 : "商品を無料で体験して、あなたの作品で賞金を獲得"}
@@ -606,10 +610,10 @@ export default function Home() {
       <section id="cases" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#0f172a]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#f1f5f9] mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f1f5f9] mb-4 leading-tight">
               {activeTab === "brand" ? "導入事例" : "成功事例"}
             </h2>
-            <p className="text-[#94a3b8]">
+            <p className="text-[#94a3b8] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
               {activeTab === "brand" 
                 ? "Whiskersを活用して成果を上げたブランド様" 
                 : "Whiskersで活躍中のクリエイター"}
@@ -620,21 +624,21 @@ export default function Home() {
             {activeTab === "brand" ? (
               <>
                 {/* Brand Case 1 */}
-                <GlowCard glowColor="#ff6b35" className="bg-[#1e293b] p-8 rounded-2xl shadow-sm border border-[#334155]">
+                <GlowCard glowColor="#ff6b35" className="bg-[#1e293b] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">💄</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#f1f5f9]">BeautyLab様</h3>
+                      <h3 className="font-bold text-[#f1f5f9] text-lg sm:text-xl">BeautyLab様</h3>
                       <p className="text-sm text-[#94a3b8]">スキンケアブランド</p>
                     </div>
                   </div>
-                  <p className="text-[#94a3b8] text-sm mb-4">
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7] mb-4">
                     「自社でUGC制作に時間を取られていましたが、Whiskersのおかげで工数を大幅削減。
                     採用した動画を広告で使用したところ、CPAが30%改善しました。」
                   </p>
-                  <div className="flex gap-4 text-sm">
+                  <div className="flex flex-wrap gap-2 text-sm">
                     <div className="bg-[#0f172a] px-3 py-1 rounded-full">
                       <span className="text-[#ff6b35] font-bold">CPA 30%↓</span>
                     </div>
@@ -645,21 +649,21 @@ export default function Home() {
                 </GlowCard>
 
                 {/* Brand Case 2 */}
-                <GlowCard glowColor="#4ecdc4" className="bg-[#1e293b] p-8 rounded-2xl shadow-sm border border-[#334155]">
+                <GlowCard glowColor="#4ecdc4" className="bg-[#1e293b] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">🥤</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#f1f5f9]">HealthyDrink様</h3>
+                      <h3 className="font-bold text-[#f1f5f9] text-lg sm:text-xl">HealthyDrink様</h3>
                       <p className="text-sm text-[#94a3b8]">健康飲料メーカー</p>
                     </div>
                   </div>
-                  <p className="text-[#94a3b8] text-sm mb-4">
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7] mb-4">
                     "新商品の認知拡大に悩んでいましたが、Whiskersのコンテストで10本のUGCを獲得。
                     その動画をSNSで展開したところ、フォロワーが2倍になりました。"
                   </p>
-                  <div className="flex gap-4 text-sm">
+                  <div className="flex flex-wrap gap-2 text-sm">
                     <div className="bg-[#0f172a] px-3 py-1 rounded-full">
                       <span className="text-[#ff6b35] font-bold">UGC 10本獲得</span>
                     </div>
@@ -672,21 +676,21 @@ export default function Home() {
             ) : (
               <>
                 {/* Creator Case 1 */}
-                <GlowCard glowColor="#4ecdc4" className="bg-[#1e293b] p-8 rounded-2xl shadow-sm border border-[#334155]">
+                <GlowCard glowColor="#4ecdc4" className="bg-[#1e293b] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">🎥</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#f1f5f9]">Sさん</h3>
+                      <h3 className="font-bold text-[#f1f5f9] text-lg sm:text-xl">Sさん</h3>
                       <p className="text-sm text-[#94a3b8]">動画編集初心者</p>
                     </div>
                   </div>
-                  <p className="text-[#94a3b8] text-sm mb-4">
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7] mb-4">
                     「フォロワー0から始めましたが、作品の質だけで評価してもらえて初めてのコンテストで採用されました。
                     賞金30,000円獲得。今では継続的に案件をいただいています。」
                   </p>
-                  <div className="flex gap-4 text-sm">
+                  <div className="flex flex-wrap gap-2 text-sm">
                     <div className="bg-[#0f172a] px-3 py-1 rounded-full">
                       <span className="text-[#ff6b35] font-bold">初参加で採用</span>
                     </div>
@@ -697,21 +701,21 @@ export default function Home() {
                 </GlowCard>
 
                 {/* Creator Case 2 */}
-                <GlowCard glowColor="#ff6b35" className="bg-[#1e293b] p-8 rounded-2xl shadow-sm border border-[#334155]">
+                <GlowCard glowColor="#ff6b35" className="bg-[#1e293b] p-6 sm:p-8 rounded-2xl shadow-sm border border-[#334155]">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">📱</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#f1f5f9]">Kさん</h3>
+                      <h3 className="font-bold text-[#f1f5f9] text-lg sm:text-xl">Kさん</h3>
                       <p className="text-sm text-[#94a3b8]">SNSマーケター</p>
                     </div>
                   </div>
-                  <p className="text-[#94a3b8] text-sm mb-4">
+                  <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7] mb-4">
                     "副業として始めました。3ヶ月で5本の動画が採用され、合計15万円の報酬。
                     本業のスキルも活かせて、ポートフォリオも充実しました。"
                   </p>
-                  <div className="flex gap-4 text-sm">
+                  <div className="flex flex-wrap gap-2 text-sm">
                     <div className="bg-[#0f172a] px-3 py-1 rounded-full">
                       <span className="text-[#ff6b35] font-bold">3ヶ月で5本採用</span>
                     </div>
@@ -783,10 +787,10 @@ export default function Home() {
       <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1e293b]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#f1f5f9] mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f1f5f9] mb-4 leading-tight">
               よくある質問
             </h2>
-            <p className="text-[#94a3b8]">
+            <p className="text-[#94a3b8] text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
               {activeTab === "brand" 
                 ? "ブランド様からいただくご質問" 
                 : "クリエイターさんからいただくご質問"}
@@ -829,12 +833,12 @@ export default function Home() {
                 a: "いいえ、商品はお使いいただいて構いません。体験していただいたという意味で、ノベルティとしてお持ちください。"
               }
             ]).map((faq, index) => (
-              <div key={index} className="bg-[#0f172a] p-6 rounded-2xl shadow-sm border border-[#334155]">
-                <h3 className="font-bold text-[#f1f5f9] mb-2 flex items-start gap-2">
+              <div key={index} className="bg-[#0f172a] p-5 sm:p-6 rounded-2xl shadow-sm border border-[#334155]">
+                <h3 className="font-bold text-[#f1f5f9] text-base sm:text-lg mb-2 flex items-start gap-2 leading-snug">
                   <span className={activeTab === "brand" ? "text-[#3b82f6]" : "text-[#06b6d4]"}>Q.</span>
                   {faq.q}
                 </h3>
-                <p className="text-[#94a3b8] text-sm pl-6">
+                <p className="text-[#94a3b8] text-sm sm:text-base leading-[1.7] pl-6">
                   A. {faq.a}
                 </p>
               </div>
