@@ -5,17 +5,39 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Play, CheckCircle, ArrowRight, Zap, Users, Award, Film, Gift, Star, TrendingUp, Palette } from "lucide-react";
 import { BrandStoryTypewriter } from "@/components/TextAnimations";
+import { 
+  PerspectiveCard, 
+  GradientMeshBackground, 
+  TextReveal, 
+  MagneticButton,
+  ParallaxContainer,
+  FloatingElement,
+  GlowCard,
+  LiquidButton,
+  ScrollProgressIndicator,
+  SkewReveal,
+  ParticleBackground,
+  StaggeredGrid
+} from "@/components/PremiumAnimations";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"brand" | "creator">("brand");
 
   return (
     <div className="min-h-screen bg-white">
+      <ScrollProgressIndicator />
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
+              <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="#1a1a2e" strokeWidth="2"/>
+                <circle cx="12" cy="14" r="2" fill="#1a1a2e"/>
+                <circle cx="20" cy="14" r="2" fill="#1a1a2e"/>
+                <path d="M10 20 Q16 24 22 20" stroke="#1a1a2e" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                <path d="M6 10 L10 6 M26 10 L22 6" stroke="#1a1a2e" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
               <span className="text-2xl font-bold text-[#1a1a2e]">Whiskers</span>
             </div>
             
@@ -60,25 +82,61 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* BCP Concept */}
-          <div className="flex items-center justify-center gap-2 mb-8 text-sm font-medium tracking-wide">
-            <span className="text-[#1a1a2e]">Brand</span>
-            <span className="text-[#ff6b35] text-lg">≡</span>
-            <span className="text-[#1a1a2e]">Creator</span>
-            <span className="text-[#ff6b35] text-lg">≡</span>
-            <span className="text-[#1a1a2e]">Potential</span>
-          </div>
+      {/* Hero Section with Artistic Animations */}
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <GradientMeshBackground />
+        <ParticleBackground />
+        <div className="relative max-w-4xl mx-auto text-center z-10">
+          {/* BCP Concept with Floating Animation */}
+          <FloatingElement duration={8} distance={10}>
+            <motion.div 
+              className="flex items-center justify-center gap-2 mb-8 text-sm font-medium tracking-wide"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <span className="text-[#1a1a2e]">Brand</span>
+              <motion.span 
+                className="text-[#ff6b35] text-lg"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, repeatDelay: 2 }}
+              >
+                ≡
+              </motion.span>
+              <span className="text-[#1a1a2e]">Creator</span>
+              <motion.span 
+                className="text-[#ff6b35] text-lg"
+                animate={{ rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, repeatDelay: 2, delay: 0.5 }}
+              >
+                ≡
+              </motion.span>
+              <span className="text-[#1a1a2e]">Potential</span>
+            </motion.div>
+          </FloatingElement>
           
+          {/* Animated Title with Text Reveal */}
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#1a1a2e] mb-6 leading-tight">
-            Whiskers
+            <TextReveal text="Whiskers" delay={0.5} />
           </h1>
-          <p className="text-xl sm:text-2xl text-[#ff6b35] font-medium mb-4">
+          
+          {/* Animated Subtitle */}
+          <motion.p 
+            className="text-xl sm:text-2xl bg-gradient-to-r from-[#ff6b35] to-[#4ecdc4] bg-clip-text text-transparent font-medium mb-4"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 1 }}
+          >
             創造をつなぐ
-          </p>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+          </motion.p>
+          
+          {/* Animated Description */}
+          <motion.p 
+            className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+          >
             {activeTab === "brand" ? (
               <>
                 ブランドとクリエイターを「コンテスト形式」でつなぐUGCプラットフォーム。
@@ -92,64 +150,86 @@ export default function Home() {
                 あなたの創造力で賞金を獲得しよう。
               </>
             )}
-          </p>
+          </motion.p>
           
-          <div className="inline-flex items-center gap-4">
-            <Link 
-              href="https://docs.google.com/forms/d/e/1FAIpQLSf_sample_form_link"
+          {/* Magnetic CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.4 }}
+          >
+            <MagneticButton
               className={`inline-flex items-center gap-2 text-white px-8 py-4 rounded-full font-medium transition-all ${
                 activeTab === "brand" 
-                  ? "bg-[#ff6b35] hover:bg-[#e55a2b]" 
-                  : "bg-[#4ecdc4] hover:bg-[#3dbdb5]"
+                  ? "bg-gradient-to-r from-[#ff6b35] to-[#e55a2b] hover:shadow-lg hover:shadow-[#ff6b35]/25" 
+                  : "bg-gradient-to-r from-[#4ecdc4] to-[#3dbdb5] hover:shadow-lg hover:shadow-[#4ecdc4]/25"
               }`}
             >
               {activeTab === "brand" ? "無料で相談する" : "参加を申し込む"}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a 
-              href="#about" 
-              className="inline-flex items-center gap-2 text-[#1a1a2e] px-8 py-4 rounded-full font-medium border-2 border-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-white transition-all"
-            >
-              詳しく見る
-            </a>
-          </div>
+              <motion.span
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ArrowRight className="w-5 h-5" />
+              </motion.span>
+            </MagneticButton>
+          </motion.div>
 
-          {/* Price Highlight */}
-          <div className="mt-12 inline-flex items-center gap-2 bg-[#f5f5f5] px-6 py-3 rounded-full">
+          {/* Price Highlight with Animation */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.6 }}
+            className="mt-12 inline-flex items-center gap-2 bg-[#f5f5f5] px-6 py-3 rounded-full"
+          >
             {activeTab === "brand" ? (
               <>
                 <span className="text-gray-600">月額</span>
-                <span className="text-2xl font-bold text-[#ff6b35]">¥99,000</span>
+                <motion.span 
+                  className="text-2xl font-bold text-[#ff6b35]"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                >
+                  ¥99,000
+                </motion.span>
                 <span className="text-gray-600">で確実に作品が手に入る</span>
               </>
             ) : (
               <>
                 <span className="text-gray-600">勝利賞金</span>
-                <span className="text-2xl font-bold text-[#4ecdc4]">¥30,000</span>
+                <motion.span 
+                  className="text-2xl font-bold text-[#4ecdc4]"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                >
+                  ¥30,000
+                </motion.span>
                 <span className="text-gray-600">〜 + 追加報酬も</span>
               </>
             )}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* About Section */}
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#f5f5f5]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e] mb-4">
-              三つの力で、一つの傑作を
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Whiskersは、ブランド・クリエイター・可能性をつなげる
-              コンテスト型UGCプラットフォームです。
-            </p>
-          </div>
+          <ParallaxContainer speed={0.3}>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e] mb-4">
+                三つの力で、一つの傑作を
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Whiskersは、ブランド・クリエイター・可能性をつなげる
+                コンテスト型UGCプラットフォームです。
+              </p>
+            </div>
+          </ParallaxContainer>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <StaggeredGrid staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
             {activeTab === "brand" ? (
               <>
-                <div className="bg-white p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#ff6b35" className="bg-white p-8 rounded-2xl shadow-sm">
                   <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center mb-4">
                     <Film className="w-6 h-6 text-[#ff6b35]" />
                   </div>
@@ -158,9 +238,9 @@ export default function Home() {
                     採用制だから、使える作品だけに報酬を支払い。
                     コンテストで複数の案から選べます。
                   </p>
-                </div>
+                </GlowCard>
 
-                <div className="bg-white p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#4ecdc4" className="bg-white p-8 rounded-2xl shadow-sm">
                   <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center mb-4">
                     <Users className="w-6 h-6 text-[#4ecdc4]" />
                   </div>
@@ -169,9 +249,9 @@ export default function Home() {
                     0フォロワーでも勝てる。作品の質だけで勝負。
                     幅広いクリエイターが参加できます。
                   </p>
-                </div>
+                </GlowCard>
 
-                <div className="bg-white p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#1a1a2e" className="bg-white p-8 rounded-2xl shadow-sm">
                   <div className="w-12 h-12 bg-[#1a1a2e]/10 rounded-xl flex items-center justify-center mb-4">
                     <Award className="w-6 h-6 text-[#1a1a2e]" />
                   </div>
@@ -180,11 +260,11 @@ export default function Home() {
                     採用作品は永続的に使用可能。
                     広告、SNS、ECサイトで自由に活用できます。
                   </p>
-                </div>
+                </GlowCard>
               </>
             ) : (
               <>
-                <div className="bg-white p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#4ecdc4" className="bg-white p-8 rounded-2xl shadow-sm">
                   <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center mb-4">
                     <Gift className="w-6 h-6 text-[#4ecdc4]" />
                   </div>
@@ -193,9 +273,9 @@ export default function Home() {
                     ブランドの商品を無料で体験。
                     新商品の先行モニターも可能です。
                   </p>
-                </div>
+                </GlowCard>
 
-                <div className="bg-white p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#ff6b35" className="bg-white p-8 rounded-2xl shadow-sm">
                   <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center mb-4">
                     <Star className="w-6 h-6 text-[#ff6b35]" />
                   </div>
@@ -204,9 +284,9 @@ export default function Home() {
                     フォロワー数は関係なし。
                     あなたの創造力だけで評価されます。
                   </p>
-                </div>
+                </GlowCard>
 
-                <div className="bg-white p-8 rounded-2xl shadow-sm">
+                <GlowCard glowColor="#1a1a2e" className="bg-white p-8 rounded-2xl shadow-sm">
                   <div className="w-12 h-12 bg-[#1a1a2e]/10 rounded-xl flex items-center justify-center mb-4">
                     <TrendingUp className="w-6 h-6 text-[#1a1a2e]" />
                   </div>
@@ -215,10 +295,10 @@ export default function Home() {
                     実績がそのままポートフォリオに。
                     ブランドとの継続的な関係も作れます。
                   </p>
-                </div>
+                </GlowCard>
               </>
             )}
-          </div>
+          </StaggeredGrid>
         </div>
       </section>
 
@@ -234,10 +314,10 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Simple Comparison Cards */}
+          {/* Simple Comparison Cards with 3D Effect */}
           <div className="grid md:grid-cols-3 gap-6">
             {/* Traditional Agencies */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <PerspectiveCard className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-2xl">🏢</span>
                 <h3 className="font-bold text-gray-700">従来の制作会社</h3>
@@ -260,10 +340,10 @@ export default function Home() {
                   <span>単発の依頼のみ</span>
                 </li>
               </ul>
-            </div>
+            </PerspectiveCard>
 
             {/* Influencer Marketing */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <PerspectiveCard className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-2xl">📱</span>
                 <h3 className="font-bold text-gray-700">インフルエンサー活用</h3>
@@ -286,10 +366,10 @@ export default function Home() {
                   <span>スケジュール調整が困難</span>
                 </li>
               </ul>
-            </div>
+            </PerspectiveCard>
 
             {/* Whiskers - Highlighted */}
-            <div className="bg-[#1a1a2e] p-6 rounded-2xl shadow-lg border-2 border-[#ff6b35] relative">
+            <GlowCard glowColor="#ff6b35" className="bg-[#1a1a2e] p-6 rounded-2xl shadow-lg border-2 border-[#ff6b35] relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <span className="bg-[#ff6b35] text-white text-xs px-3 py-1 rounded-full font-medium">
                   おすすめ
@@ -317,7 +397,7 @@ export default function Home() {
                   <span className="text-[#ff6b35] font-medium">継続的な関係構築が可能</span>
                 </li>
               </ul>
-            </div>
+            </GlowCard>
           </div>
 
           {/* Bottom message */}
@@ -489,7 +569,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggeredGrid staggerDelay={0.1} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {(activeTab === "brand" ? [
               { step: "1", title: "コンテスト開催", desc: "商品サンプルとブリーフを準備", icon: Play },
               { step: "2", title: "クリエイター応募", desc: "作品制作・応募", icon: Users },
@@ -500,13 +580,21 @@ export default function Home() {
               { step: "2", title: "商品を受け取る", desc: "無料で商品サンプルを体験", icon: Gift },
               { step: "3", title: "作品を制作", desc: "あなたの創造力で制作・応募", icon: Palette },
               { step: "4", title: "賞金獲得", desc: "採用されれば報酬GET", icon: Award },
-            ]).map((item) => (
-              <div key={item.step} className="bg-white p-6 rounded-2xl shadow-sm relative">
-                <div className={`absolute -top-3 -left-3 w-8 h-8 text-white rounded-full flex items-center justify-center font-bold text-sm ${
-                  activeTab === "brand" ? "bg-[#ff6b35]" : "bg-[#4ecdc4]"
-                }`}>
+            ]).map((item, index) => (
+              <motion.div 
+                key={item.step} 
+                className="bg-white p-6 rounded-2xl shadow-sm relative hover:shadow-lg transition-shadow"
+                whileHover={{ y: -5 }}
+              >
+                <motion.div 
+                  className={`absolute -top-3 -left-3 w-8 h-8 text-white rounded-full flex items-center justify-center font-bold text-sm ${
+                    activeTab === "brand" ? "bg-[#ff6b35]" : "bg-[#4ecdc4]"
+                  }`}
+                  whileHover={{ scale: 1.2, rotate: 360 }}
+                  transition={{ duration: 0.5 }}
+                >
                   {item.step}
-                </div>
+                </motion.div>
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 mt-2 ${
                   activeTab === "brand" ? "bg-[#ff6b35]/10" : "bg-[#4ecdc4]/10"
                 }`}>
@@ -514,9 +602,9 @@ export default function Home() {
                 </div>
                 <h3 className="font-bold text-[#1a1a2e] mb-1">{item.title}</h3>
                 <p className="text-sm text-gray-600">{item.desc}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </StaggeredGrid>
         </div>
       </section>
 
@@ -538,7 +626,7 @@ export default function Home() {
             {activeTab === "brand" ? (
               <>
                 {/* Brand Case 1 */}
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <GlowCard glowColor="#ff6b35" className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">💄</span>
@@ -560,10 +648,10 @@ export default function Home() {
                       <span className="text-[#4ecdc4] font-bold">工数大幅削減</span>
                     </div>
                   </div>
-                </div>
+                </GlowCard>
 
                 {/* Brand Case 2 */}
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <GlowCard glowColor="#4ecdc4" className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">🥤</span>
@@ -585,12 +673,12 @@ export default function Home() {
                       <span className="text-[#4ecdc4] font-bold">フォロワー2倍</span>
                     </div>
                   </div>
-                </div>
+                </GlowCard>
               </>
             ) : (
               <>
                 {/* Creator Case 1 */}
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <GlowCard glowColor="#4ecdc4" className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#4ecdc4]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">🎥</span>
@@ -612,10 +700,10 @@ export default function Home() {
                       <span className="text-[#4ecdc4] font-bold">継続的に案件獲得</span>
                     </div>
                   </div>
-                </div>
+                </GlowCard>
 
                 {/* Creator Case 2 */}
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <GlowCard glowColor="#ff6b35" className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-[#ff6b35]/10 rounded-xl flex items-center justify-center">
                       <span className="text-2xl">📱</span>
@@ -637,7 +725,7 @@ export default function Home() {
                       <span className="text-[#4ecdc4] font-bold">副収入15万円</span>
                     </div>
                   </div>
-                </div>
+                </GlowCard>
               </>
             )}
           </div>
@@ -806,6 +894,16 @@ export default function Home() {
               <span>© 2024 Whiskers</span>
               <span className="hidden sm:inline">|</span>
               <span>Brand ≡ Creator ≡ Potential</span>
+              <a 
+                href="https://x.com/whiskers_lp" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-[#1a1a2e] transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
             </div>
           </div>
         </div>
