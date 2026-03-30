@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef, useMemo, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   RoundedBox,
   Environment,
+  Text,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { damp, dampE } from "maath/easing";
@@ -27,7 +28,7 @@ function createLabelTexture(text: string, color: string): THREE.CanvasTexture {
   const ctx = canvas.getContext("2d")!;
 
   // 深いアッシュグレーの背景
-  ctx.fillStyle = "#1a1a2e";
+  ctx.fillStyle = "#0a0a14";
   ctx.fillRect(0, 0, 512, 256);
 
   // グラデーションボーダー
@@ -35,7 +36,7 @@ function createLabelTexture(text: string, color: string): THREE.CanvasTexture {
   gradient.addColorStop(0, color);
   gradient.addColorStop(1, "#ffffff");
   ctx.strokeStyle = gradient;
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 8;
   ctx.strokeRect(8, 8, 496, 240);
 
   // メインテキスト
@@ -44,7 +45,7 @@ function createLabelTexture(text: string, color: string): THREE.CanvasTexture {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.shadowColor = color;
-  ctx.shadowBlur = 20;
+  ctx.shadowBlur = 30;
   ctx.fillText(text, 256, 100);
   ctx.shadowBlur = 0;
 
@@ -89,100 +90,187 @@ function useBrowserScroll() {
   return { scrollY, scrollRef };
 }
 
-// 中央の螺旋コアコンポーネント（TorusKnotで螺旋表現）
-function SpiralCore({
+// 神々しい中央の螺旋コアコンポーネント
+function DivineSpiralCore({
   scrollProgress,
 }: {
   scrollProgress: React.MutableRefObject<number>;
 }) {
   const coreRef = useRef<THREE.Group>(null);
-  const knot1Ref = useRef<THREE.Mesh>(null);
-  const knot2Ref = useRef<THREE.Mesh>(null);
+  const outerKnotRef = useRef<THREE.Mesh>(null);
+  const innerKnotRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
 
   useFrame((state, delta) => {
-    if (!coreRef.current || !knot1Ref.current || !knot2Ref.current) return;
+    if (!coreRef.current || !outerKnotRef.current || !innerKnotRef.current || !glowRef.current) return;
 
     const scrollOffset = scrollProgress.current;
+    const time = state.clock.elapsedTime;
     
     // スクロールに応じた逆方向回転（視差効果）
-    // モニターとは逆方向に、よりゆっくり回転
-    const rotationY = scrollOffset * Math.PI * 2; // 1周分
-    const rotationX = scrollOffset * Math.PI * 0.5;
+    const rotationY = scrollOffset * Math.PI * 3; 
+    const rotationX = Math.sin(time * 0.2) * 0.2 + scrollOffset * Math.PI * 0.5;
     
-    dampE(coreRef.current.rotation, new THREE.Euler(rotationX, -rotationY, 0), 0.04, delta);
+    dampE(coreRef.current.rotation, new THREE.Euler(rotationX, -rotationY, 0), 0.03, delta);
     
     // 個別の回転アニメーション
-    knot1Ref.current.rotation.z += delta * 0.1;
-    knot2Ref.current.rotation.x += delta * 0.15;
+    outerKnotRef.current.rotation.z += delta * 0.15;
+    outerKnotRef.current.rotation.y += delta * 0.05;
+    innerKnotRef.current.rotation.x += delta * 0.2;
+    innerKnotRef.current.rotation.z -= delta * 0.1;
+    
+    // コアの脈動
+    const pulse = 1 + Math.sin(time * 1.5) * 0.05;
+    glowRef.current.scale.setScalar(pulse);
   });
 
   return (
     <group ref={coreRef}>
-      {/* メインのトーラスノット - 外側の大きな螺旋 */}
-      <mesh ref={knot1Ref}>
-        <torusKnotGeometry args={[1.2, 0.3, 128, 16, 3, 5]} />
+      {/* 外側の黄金のトーラスノット - 神々しいオーラ */}
+      <mesh ref={outerKnotRef}>
+        <torusKnotGeometry args={[1.5, 0.4, 200, 32, 4, 7]} />
         <meshPhysicalMaterial
-          color="#4f46e5"
-          emissive="#6366f1"
+          color="#ffd700"
+          emissive="#ffaa00"
+          emissiveIntensity={0.8}
+          metalness={1.0}
+          roughness={0.1}
+          transmission={0.2}
+          thickness={1}
+          transparent
+          opacity={0.95}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          envMapIntensity={2}
+        />
+      </mesh>
+      
+      {/* 中間層のガラス質トーラスノット */}
+      <mesh rotation={[Math.PI / 4, 0, 0]}>
+        <torusKnotGeometry args={[1.1, 0.25, 150, 24, 3, 5]} />
+        <meshPhysicalMaterial
+          color="#60a5fa"
+          emissive="#3b82f6"
           emissiveIntensity={0.5}
-          metalness={0.8}
-          roughness={0.2}
+          metalness={0.3}
+          roughness={0.05}
+          transmission={0.8}
+          thickness={2}
+          transparent
+          opacity={0.7}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          ior={1.5}
+        />
+      </mesh>
+      
+      {/* 内側の小さなトーラスノット - 反対方向に回転 */}
+      <mesh ref={innerKnotRef} rotation={[Math.PI / 2, 0, 0]}>
+        <torusKnotGeometry args={[0.7, 0.15, 100, 16, 2, 3]} />
+        <meshPhysicalMaterial
+          color="#06b6d4"
+          emissive="#22d3ee"
+          emissiveIntensity={1.2}
+          metalness={0.9}
+          roughness={0.1}
           transmission={0.3}
           thickness={0.5}
           transparent
           opacity={0.9}
           clearcoat={1}
-          clearcoatRoughness={0.1}
+        />
+      </mesh>
+
+      {/* 中央の発光コア球体 - 神聖な光 */}
+      <mesh>
+        <sphereGeometry args={[0.35, 64, 64]} />
+        <meshPhysicalMaterial
+          color="#ffffff"
+          emissive="#ffffff"
+          emissiveIntensity={2}
+          metalness={0}
+          roughness={0}
+          transmission={0}
+          clearcoat={0}
         />
       </mesh>
       
-      {/* 内側の小さなトーラスノット - 反対方向に回転 */}
-      <mesh ref={knot2Ref} rotation={[Math.PI / 2, 0, 0]}>
-        <torusKnotGeometry args={[0.7, 0.2, 64, 8, 2, 3]} />
-        <meshPhysicalMaterial
-          color="#06b6d4"
-          emissive="#22d3ee"
-          emissiveIntensity={0.6}
-          metalness={0.9}
-          roughness={0.15}
-          transmission={0.4}
-          thickness={0.3}
+      {/* コアのグロー効果 */}
+      <mesh ref={glowRef}>
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshBasicMaterial
+          color="#ffffff"
           transparent
-          opacity={0.85}
-          clearcoat={1}
-          clearcoatRoughness={0.05}
+          opacity={0.3}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* 中央のコア球体 */}
-      <mesh>
-        <sphereGeometry args={[0.4, 32, 32]} />
-        <meshPhysicalMaterial
-          color="#fbbf24"
-          emissive="#f59e0b"
-          emissiveIntensity={1}
-          metalness={1}
-          roughness={0}
-          clearcoat={1}
-        />
-      </mesh>
-
-      {/* 強力な中央ライティング */}
-      <pointLight color="#6366f1" intensity={10} distance={8} decay={1.5} position={[0, 0, 0]} />
-      <pointLight color="#22d3ee" intensity={5} distance={5} decay={1} position={[2, 2, 2]} />
-      <pointLight color="#f59e0b" intensity={3} distance={4} decay={1} position={[-2, -2, 2]} />
+      {/* 強力な中央ライティング - 神々しい輝き */}
+      <pointLight color="#ffd700" intensity={15} distance={15} decay={1} position={[0, 0, 0]} />
+      <pointLight color="#3b82f6" intensity={10} distance={12} decay={1.5} position={[3, 3, 3]} />
+      <pointLight color="#06b6d4" intensity={8} distance={10} decay={1.5} position={[-3, -3, 3]} />
+      <pointLight color="#ffaa00" intensity={5} distance={8} decay={1} position={[0, -4, 2]} />
       
       {/* スポットライト - モニター方向へ */}
       <spotLight
         color="#ffffff"
-        intensity={3}
-        distance={15}
-        angle={Math.PI / 3}
-        penumbra={0.5}
+        intensity={5}
+        distance={20}
+        angle={Math.PI / 2}
+        penumbra={0.8}
         decay={1}
-        position={[0, 5, 5]}
+        position={[0, 8, 8]}
         target-position={[0, 0, 0]}
       />
+    </group>
+  );
+}
+
+// 浮遊する3Dテキストラベル
+function FloatingLabel({
+  text,
+  position,
+  color,
+  scrollProgress,
+}: {
+  text: string;
+  position: [number, number, number];
+  color: string;
+  scrollProgress: React.MutableRefObject<number>;
+}) {
+  const textRef = useRef<THREE.Group>(null);
+
+  useFrame((state, delta) => {
+    if (!textRef.current) return;
+    
+    const scrollOffset = scrollProgress.current;
+    const time = state.clock.elapsedTime;
+    
+    // 浮遊アニメーション
+    const floatY = Math.sin(time * 0.8 + position[0]) * 0.1;
+    const floatZ = Math.cos(time * 0.6 + position[1]) * 0.05;
+    
+    // スクロールに応じた回転
+    const rotY = scrollOffset * Math.PI * 0.5;
+    
+    dampE(textRef.current.rotation, new THREE.Euler(0, rotY, 0), 0.05, delta);
+    textRef.current.position.y = position[1] + floatY;
+    textRef.current.position.z = position[2] + floatZ;
+  });
+
+  return (
+    <group ref={textRef} position={position}>
+      <Text
+        fontSize={0.25}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+        font="/fonts/inter-bold.woff"
+      >
+        {text}
+        <meshBasicMaterial color={color} transparent opacity={0.8} />
+      </Text>
     </group>
   );
 }
@@ -252,25 +340,34 @@ function HelixMonitor({
 
   return (
     <group ref={meshRef}>
-      {/* モニターフレーム - RoundedBoxで薄い板 - 透明化 */}
+      {/* モニターフレーム - RoundedBoxで薄い板 - 透明化とdepth設定 */}
       <RoundedBox args={[2.2, 1.3, 0.08]} radius={0.04} smoothness={8}>
         <meshPhysicalMaterial
-          color="#0f0f1a"
+          color="#0a0a14"
           metalness={0.9}
           roughness={0.15}
           envMapIntensity={1}
           transparent
-          opacity={0.7}
-          transmission={0.2}
-          thickness={0.05}
-          clearcoat={0.8}
+          opacity={0.6}
+          transmission={0.4}
+          thickness={0.08}
+          clearcoat={0.9}
+          depthTest={true}
+          depthWrite={true}
         />
       </RoundedBox>
 
-      {/* スクリーン表面 */}
+      {/* スクリーン表面 - より透明に */}
       <mesh position={[0, 0, 0.045]}>
         <planeGeometry args={[2, 1.1]} />
-        <meshBasicMaterial map={texture} toneMapped={false} transparent opacity={0.95} />
+        <meshBasicMaterial 
+          map={texture} 
+          toneMapped={false} 
+          transparent 
+          opacity={0.9}
+          depthTest={true}
+          depthWrite={false}
+        />
       </mesh>
 
       {/* エミッシブ効果 - 色の発光 */}
@@ -279,18 +376,20 @@ function HelixMonitor({
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.1}
+          opacity={0.15}
           blending={THREE.AdditiveBlending}
+          depthTest={false}
+          depthWrite={false}
         />
       </mesh>
 
       {/* 背面の発光 - 遠くまで届く */}
-      <pointLight color={color} intensity={3} distance={5} decay={2} position={[0, 0, -0.3]} />
+      <pointLight color={color} intensity={4} distance={6} decay={2} position={[0, 0, -0.3]} />
       
       {/* 縁の発光 */}
       <mesh position={[0, 0, -0.02]}>
         <ringGeometry args={[1.0, 1.15, 32]} />
-        <meshBasicMaterial color={color} transparent opacity={0.4} />
+        <meshBasicMaterial color={color} transparent opacity={0.5} depthTest={true} />
       </mesh>
     </group>
   );
@@ -302,8 +401,8 @@ function HelixScene() {
   const { scrollRef } = useBrowserScroll();
   const smoothScroll = useRef(0);
   
-  const radius = 5;
-  const heightStep = 3;
+  const radius = 5.5;
+  const heightStep = 3.5;
 
   useFrame((state, delta) => {
     // スクロール値を重厚な慣性で追従
@@ -313,22 +412,26 @@ function HelixScene() {
   return (
     <>
       {/* 背景色 - 深いアッシュグレー */}
-      <color attach="background" args={["#1a1a2e"]} />
+      <color attach="background" args={["#0a0a14"]} />
       
       {/* FogExp2 - 遠くのモニターが暗闇に消える */}
-      <fogExp2 attach="fog" args={["#1a1a2e", 0.025]} />
+      <fogExp2 attach="fog" args={["#0a0a14", 0.02]} />
 
       {/* 環境照明 - Active Theory風の劇的なライティング */}
-      <ambientLight intensity={0.1} color="#4a5568" />
-      <directionalLight position={[10, 20, 10]} intensity={0.5} color="#e2e8f0" />
-      <directionalLight position={[-10, -10, -5]} intensity={0.3} color="#3b82f6" />
+      <ambientLight intensity={0.08} color="#4a5568" />
+      <directionalLight position={[10, 20, 10]} intensity={0.4} color="#e2e8f0" />
+      <directionalLight position={[-10, -10, -5]} intensity={0.2} color="#3b82f6" />
       
       {/* 追加の雰囲気ライト */}
-      <pointLight color="#8b5cf6" intensity={2} distance={20} position={[10, 10, -10]} />
-      <pointLight color="#ec4899" intensity={2} distance={20} position={[-10, -10, -10]} />
+      <pointLight color="#8b5cf6" intensity={1.5} distance={25} position={[15, 10, -10]} />
+      <pointLight color="#ec4899" intensity={1.5} distance={25} position={[-15, -10, -10]} />
 
-      {/* 中央の螺旋コア - モニターより先に描画 */}
-      <SpiralCore scrollProgress={smoothScroll} />
+      {/* 神々しい中央の螺旋コア - モニターより先に描画 */}
+      <DivineSpiralCore scrollProgress={smoothScroll} />
+
+      {/* 浮遊する3Dナビゲーションラベル */}
+      <FloatingLabel text="Gallery" position={[0, 8, 0]} color="#3b82f6" scrollProgress={smoothScroll} />
+      <FloatingLabel text="Creator" position={[0, -8, 0]} color="#06b6d4" scrollProgress={smoothScroll} />
 
       {/* 螺旋グループ */}
       <group ref={groupRef}>
@@ -357,7 +460,7 @@ export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0">
       <Canvas
-        camera={{ position: [0, 0, 10], fov: 50, near: 0.1, far: 100 }}
+        camera={{ position: [0, 0, 12], fov: 45, near: 0.1, far: 100 }}
         gl={{
           antialias: true,
           alpha: true,
