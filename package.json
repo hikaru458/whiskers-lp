@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gp": "git add -A && git commit -m 'update' && git push",
+    "gs": "git status",
+    "gc": "git add -A && git commit -m"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
