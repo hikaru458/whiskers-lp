@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 import { Play, CheckCircle, ArrowRight, Zap, Users, Award, Film, Gift, Star, TrendingUp, Palette } from "lucide-react";
 import { BrandStoryTypewriter } from "@/components/TextAnimations";
 import { CatLogo } from "@/components/CatLogo";
+import { ArtisticBackground } from "@/components/ArtisticBackground";
 import { 
   PerspectiveCard, 
-  GradientMeshBackground, 
   TextReveal, 
   MagneticButton,
   ParallaxContainer,
@@ -25,7 +25,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"brand" | "creator">("brand");
 
   return (
-    <div className="min-h-screen bg-[#0f172a]">
+    <div className="min-h-screen bg-[#0f172a] relative">
+      <ArtisticBackground />
       <ScrollProgressIndicator />
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0f172a]/80 backdrop-blur-md border-b border-[#1e293b]">
@@ -78,8 +79,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section with Artistic Animations */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#0f172a]">
-        <GradientMeshBackground />
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#0f172a]/50">
         <ParticleBackground />
         <div className="relative max-w-4xl mx-auto text-center z-10">
           {/* BCP Concept with Floating Animation */}
