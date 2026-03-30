@@ -89,6 +89,104 @@ function useBrowserScroll() {
   return { scrollY, scrollRef };
 }
 
+// 中央の螺旋コアコンポーネント（TorusKnotで螺旋表現）
+function SpiralCore({
+  scrollProgress,
+}: {
+  scrollProgress: React.MutableRefObject<number>;
+}) {
+  const coreRef = useRef<THREE.Group>(null);
+  const knot1Ref = useRef<THREE.Mesh>(null);
+  const knot2Ref = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (!coreRef.current || !knot1Ref.current || !knot2Ref.current) return;
+
+    const scrollOffset = scrollProgress.current;
+    
+    // スクロールに応じた逆方向回転（視差効果）
+    // モニターとは逆方向に、よりゆっくり回転
+    const rotationY = scrollOffset * Math.PI * 2; // 1周分
+    const rotationX = scrollOffset * Math.PI * 0.5;
+    
+    dampE(coreRef.current.rotation, new THREE.Euler(rotationX, -rotationY, 0), 0.04, delta);
+    
+    // 個別の回転アニメーション
+    knot1Ref.current.rotation.z += delta * 0.1;
+    knot2Ref.current.rotation.x += delta * 0.15;
+  });
+
+  return (
+    <group ref={coreRef}>
+      {/* メインのトーラスノット - 外側の大きな螺旋 */}
+      <mesh ref={knot1Ref}>
+        <torusKnotGeometry args={[1.2, 0.3, 128, 16, 3, 5]} />
+        <meshPhysicalMaterial
+          color="#4f46e5"
+          emissive="#6366f1"
+          emissiveIntensity={0.5}
+          metalness={0.8}
+          roughness={0.2}
+          transmission={0.3}
+          thickness={0.5}
+          transparent
+          opacity={0.9}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+        />
+      </mesh>
+      
+      {/* 内側の小さなトーラスノット - 反対方向に回転 */}
+      <mesh ref={knot2Ref} rotation={[Math.PI / 2, 0, 0]}>
+        <torusKnotGeometry args={[0.7, 0.2, 64, 8, 2, 3]} />
+        <meshPhysicalMaterial
+          color="#06b6d4"
+          emissive="#22d3ee"
+          emissiveIntensity={0.6}
+          metalness={0.9}
+          roughness={0.15}
+          transmission={0.4}
+          thickness={0.3}
+          transparent
+          opacity={0.85}
+          clearcoat={1}
+          clearcoatRoughness={0.05}
+        />
+      </mesh>
+
+      {/* 中央のコア球体 */}
+      <mesh>
+        <sphereGeometry args={[0.4, 32, 32]} />
+        <meshPhysicalMaterial
+          color="#fbbf24"
+          emissive="#f59e0b"
+          emissiveIntensity={1}
+          metalness={1}
+          roughness={0}
+          clearcoat={1}
+        />
+      </mesh>
+
+      {/* 強力な中央ライティング */}
+      <pointLight color="#6366f1" intensity={10} distance={8} decay={1.5} position={[0, 0, 0]} />
+      <pointLight color="#22d3ee" intensity={5} distance={5} decay={1} position={[2, 2, 2]} />
+      <pointLight color="#f59e0b" intensity={3} distance={4} decay={1} position={[-2, -2, 2]} />
+      
+      {/* スポットライト - モニター方向へ */}
+      <spotLight
+        color="#ffffff"
+        intensity={3}
+        distance={15}
+        angle={Math.PI / 3}
+        penumbra={0.5}
+        decay={1}
+        position={[0, 5, 5]}
+        target-position={[0, 0, 0]}
+      />
+    </group>
+  );
+}
+
 // 個別のモニターコンポーネント
 function HelixMonitor({
   index,
@@ -154,20 +252,25 @@ function HelixMonitor({
 
   return (
     <group ref={meshRef}>
-      {/* モニターフレーム - RoundedBoxで薄い板 */}
+      {/* モニターフレーム - RoundedBoxで薄い板 - 透明化 */}
       <RoundedBox args={[2.2, 1.3, 0.08]} radius={0.04} smoothness={8}>
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color="#0f0f1a"
           metalness={0.9}
           roughness={0.15}
           envMapIntensity={1}
+          transparent
+          opacity={0.7}
+          transmission={0.2}
+          thickness={0.05}
+          clearcoat={0.8}
         />
       </RoundedBox>
 
       {/* スクリーン表面 */}
       <mesh position={[0, 0, 0.045]}>
         <planeGeometry args={[2, 1.1]} />
-        <meshBasicMaterial map={texture} toneMapped={false} />
+        <meshBasicMaterial map={texture} toneMapped={false} transparent opacity={0.95} />
       </mesh>
 
       {/* エミッシブ効果 - 色の発光 */}
@@ -176,7 +279,7 @@ function HelixMonitor({
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.08}
+          opacity={0.1}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -187,7 +290,7 @@ function HelixMonitor({
       {/* 縁の発光 */}
       <mesh position={[0, 0, -0.02]}>
         <ringGeometry args={[1.0, 1.15, 32]} />
-        <meshBasicMaterial color={color} transparent opacity={0.3} />
+        <meshBasicMaterial color={color} transparent opacity={0.4} />
       </mesh>
     </group>
   );
@@ -215,10 +318,17 @@ function HelixScene() {
       {/* FogExp2 - 遠くのモニターが暗闇に消える */}
       <fogExp2 attach="fog" args={["#1a1a2e", 0.025]} />
 
-      {/* 環境照明 */}
-      <ambientLight intensity={0.2} color="#4a5568" />
-      <directionalLight position={[10, 20, 10]} intensity={0.8} color="#e2e8f0" />
+      {/* 環境照明 - Active Theory風の劇的なライティング */}
+      <ambientLight intensity={0.1} color="#4a5568" />
+      <directionalLight position={[10, 20, 10]} intensity={0.5} color="#e2e8f0" />
       <directionalLight position={[-10, -10, -5]} intensity={0.3} color="#3b82f6" />
+      
+      {/* 追加の雰囲気ライト */}
+      <pointLight color="#8b5cf6" intensity={2} distance={20} position={[10, 10, -10]} />
+      <pointLight color="#ec4899" intensity={2} distance={20} position={[-10, -10, -10]} />
+
+      {/* 中央の螺旋コア - モニターより先に描画 */}
+      <SpiralCore scrollProgress={smoothScroll} />
 
       {/* 螺旋グループ */}
       <group ref={groupRef}>
