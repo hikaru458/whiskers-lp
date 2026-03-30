@@ -1,15 +1,13 @@
 "use client";
 
-import { useRef, useMemo } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useRef, useMemo, useEffect, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
-  ScrollControls,
-  useScroll,
   RoundedBox,
   Environment,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { damp, dampE, dampC } from "maath/easing";
+import { damp, dampE } from "maath/easing";
 
 // 6つのセクション定義
 const SECTIONS = [
@@ -69,6 +67,28 @@ function createLabelTexture(text: string, color: string): THREE.CanvasTexture {
   return texture;
 }
 
+// ブラウザスクロール位置を取得するフック
+function useBrowserScroll() {
+  const [scrollY, setScrollY] = useState(0);
+  const scrollRef = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+      setScrollY(progress);
+      scrollRef.current = progress;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // 初期値
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return { scrollY, scrollRef };
+}
+
 // 個別のモニターコンポーネント
 function HelixMonitor({
   index,
@@ -88,7 +108,6 @@ function HelixMonitor({
   scrollProgress: React.MutableRefObject<number>;
 }) {
   const meshRef = useRef<THREE.Group>(null);
-  const rotationRef = useRef(new THREE.Euler(0, 0, 0));
   
   // 螺旋上の基準角度（360°をtotal等分）
   const baseAngle = useMemo(() => (index / total) * Math.PI * 2, [index, total]);
@@ -177,15 +196,15 @@ function HelixMonitor({
 // 螺旋シーン
 function HelixScene() {
   const groupRef = useRef<THREE.Group>(null);
-  const scroll = useScroll();
-  const scrollProgress = useRef(0);
+  const { scrollRef } = useBrowserScroll();
+  const smoothScroll = useRef(0);
   
   const radius = 5;
   const heightStep = 3;
 
   useFrame((state, delta) => {
     // スクロール値を重厚な慣性で追従
-    damp(scrollProgress, "current", scroll.offset, 0.05, delta);
+    damp(smoothScroll, "current", scrollRef.current, 0.05, delta);
   });
 
   return (
@@ -212,16 +231,13 @@ function HelixScene() {
             color={section.color}
             radius={radius}
             heightStep={heightStep}
-            scrollProgress={scrollProgress}
+            scrollProgress={smoothScroll}
           />
         ))}
       </group>
 
       {/* 環境マップ - リアルな反射 */}
       <Environment preset="city" />
-      
-      {/* グリッドヘルパー（デバッグ用、非表示可） */}
-      {/* <gridHelper args={[50, 50, "#334155", "#1e293b"]} position={[0, -10, 0]} /> */}
     </>
   );
 }
@@ -239,10 +255,7 @@ export function SpiralBackground() {
         }}
         dpr={[1, 2]}
       >
-        {/* ScrollControls - pages=6で6セクション分のスクロール */}
-        <ScrollControls pages={6} damping={0.1}>
-          <HelixScene />
-        </ScrollControls>
+        <HelixScene />
       </Canvas>
     </div>
   );
