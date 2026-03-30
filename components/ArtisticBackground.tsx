@@ -25,28 +25,28 @@ function CentralMonolith() {
     () => ({
       color: new THREE.Color("#60a5fa"),
       attenuationColor: new THREE.Color("#1e40af"),
-      transmission: 0.95,
+      transmission: 0.9,
       opacity: 1,
-      roughness: 0.01,
-      thickness: 3,
-      ior: 2.5,
-      chromaticAberration: 0.8,
-      anisotropy: 0.5,
-      distortion: 0.5,
-      distortionScale: 0.8,
-      temporalDistortion: 0.3,
-      attenuationDistance: 2,
+      roughness: 0.02,
+      thickness: 2,
+      ior: 1.5,
+      chromaticAberration: 0.3,
+      anisotropy: 0.2,
+      distortion: 0.2,
+      distortionScale: 0.3,
+      temporalDistortion: 0.1,
+      attenuationDistance: 3,
       clearcoat: 1,
-      clearcoatRoughness: 0,
+      clearcoatRoughness: 0.02,
       emissive: new THREE.Color("#3b82f6"),
-      emissiveIntensity: 0.3,
+      emissiveIntensity: 0.2,
     }),
     []
   );
 
   return (
     <mesh ref={mesh} position={[0, 0, -2]} scale={[3, 4, 0.6]}>
-      <boxGeometry args={[1, 1, 1, 64, 64, 64]} />
+      <boxGeometry args={[1, 1, 1, 16, 16, 16]} />
       <MeshTransmissionMaterial {...materialProps} />
     </mesh>
   );
@@ -169,7 +169,7 @@ function SculpturalLight() {
 // パーティクルフィールド - 多数の小さな光
 function ParticleField() {
   const points = useRef<THREE.Points>(null);
-  const count = 300;
+  const count = 150;
 
   const [positions, sizes] = useMemo(() => {
     const pos = new Float32Array(count * 3);
