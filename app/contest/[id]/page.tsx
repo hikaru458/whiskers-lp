@@ -14,8 +14,9 @@ import {
   Clock,
   Gift
 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
-// モックコンテストデータ
+// モックコンテストデータ - contest/page.tsx と同期
 const contestData: Record<string, {
   id: string;
   brand: string;
@@ -33,12 +34,12 @@ const contestData: Record<string, {
   "1": {
     id: "1",
     brand: "BeautyLab",
-    product: "All-in-Oneジェル",
-    category: "美容",
+    product: "オーガニック美容液",
+    category: "美容・スキンケア",
     prize: "¥30,000",
-    deadline: "2024年12月31日",
+    deadline: "2024年4月15日",
     participants: 12,
-    description: "朝のスキンケア時間を短縮したい20〜30代女性向け。忙しい朝でも手軽に使えるオールインワンジェルの魅力を伝える動画を募集します。",
+    description: "自然派スキンケア企業の新商品。使い心地や効果を動画で紹介してください。",
     requirements: [
       "実際に商品を使用した動画",
       "縦動画（9:16）推奨",
@@ -50,18 +51,18 @@ const contestData: Record<string, {
       "テロップなし・音楽なしの素材",
       "使用感のビフォーアフター"
     ],
-    brandDescription: "ナチュラルスキンケアに特化したD2Cブランド。2022年創業、累計販売本数50万本突破。",
-    image: "💄"
+    brandDescription: "自然由来成分100%のスキンケア企業。新商品の認知拡大を目指しています。",
+    image: "�"
   },
   "2": {
     id: "2",
-    brand: "HealthyDrink",
-    product: "WHEY PROTEIN",
-    category: "食品",
-    prize: "¥50,000",
-    deadline: "2024年12月25日",
+    brand: "FitPro",
+    product: "プロテインバー",
+    category: "健康食品",
+    prize: "¥30,000",
+    deadline: "2024年4月20日",
     participants: 8,
-    description: "ワークアウト後のリカバリーに最適なプロテインドリンク。ジム通いを習慣化している20〜40代向けの動画を募集。",
+    description: "トレーニング後のお供に。味や食べごたえを重点的に。",
     requirements: [
       "トレーニング前後のシーン含む",
       "縦動画推奨",
@@ -73,18 +74,18 @@ const contestData: Record<string, {
       "飲用シーンのクローズアップ",
       "商品パッケージのクリアな映像"
     ],
-    brandDescription: "スポーツ栄養に特化したブランド。プロアスリート愛用率No.1。",
-    image: "🥤"
+    brandDescription: "高タンパク低糖質のプロテインバーを提供する健康食品企業。",
+    image: "🍫"
   },
   "3": {
     id: "3",
-    brand: "ActiveWear",
-    product: "速乾Tシャツ",
-    category: "ファッション",
-    prize: "¥25,000",
-    deadline: "2025年1月15日",
-    participants: 5,
-    description: "ランニング・ヨガなど、軽い運動時に着用できる速乾Tシャツ。伸縮性とデザイン性をアピールする動画を募集。",
+    brand: "HomeStyle",
+    product: "アロマキャンドル",
+    category: "インテリア・雑貨",
+    prize: "¥30,000",
+    deadline: "2024年4月25日",
+    participants: 15,
+    description: "リラックスできる空間演出。Lifestyle感重視。",
     requirements: [
       "動いているシーン必須",
       "動画・写真両方可",
@@ -96,8 +97,192 @@ const contestData: Record<string, {
       "全身ショット",
       "素材感がわかるアップ"
     ],
-    brandDescription: "機能性とデザイン性を両立したスポーツウェアブランド。",
-    image: "👕"
+    brandDescription: "天然アロマの癒しキャンドルを製造するインテリア企業。",
+    image: "🕯️"
+  },
+  "101": {
+    id: "101",
+    brand: "TechStart",
+    product: "コーポレートサイトリデザイン",
+    category: "Webデザイン",
+    prize: "¥50,000",
+    deadline: "2024年4月30日",
+    participants: 6,
+    description: "スタートアップ企業のHPをモダンに刷新。Figmaでのモックアップ提出。採用作品は実装予定。",
+    requirements: [
+      "Figmaでのデザイン提出",
+      "PC/SP両方のデザイン",
+      "デザインシステムの提示",
+      "3案以上の提案"
+    ],
+    deliverables: [
+      "Figmaファイル",
+      "デザインガイドライン",
+      "アニメーション仕様"
+    ],
+    brandDescription: "テクノロジースタートアップ企業。自社サイトのリブランディングを行います。",
+    image: "💻"
+  },
+  "102": {
+    id: "102",
+    brand: "CafeMori",
+    product: "カフェブランディング",
+    category: "グラフィックデザイン",
+    prize: "¥30,000",
+    deadline: "2024年5月10日",
+    participants: 9,
+    description: "新店舗のロゴ、メニュー表、店内看板のデザインを募集。シンプルで温かみのあるデザインを。",
+    requirements: [
+      "ロゴ・メニュー・看板の3点セット",
+      "AI/PDF形式での提出",
+      "カラーパレットの提示",
+      "フォント指定"
+    ],
+    deliverables: [
+      "ロゴデータ（AI/PDF/PNG）",
+      "メニューデザイン",
+      "看板デザイン"
+    ],
+    brandDescription: "自然素材を使ったカフェ。温かみのあるブランディングを求めています。",
+    image: "☕"
+  },
+  "103": {
+    id: "103",
+    brand: "EcoLife",
+    product: "ECサイトUI改善",
+    category: "UI/UXデザイン",
+    prize: "¥40,000",
+    deadline: "2024年5月5日",
+    participants: 4,
+    description: "サステナブル商品のECサイト。購入体験を向上させるUIデザイン案を募集。",
+    requirements: [
+      "Figmaでのデザイン提出",
+      "ユーザーフローの提示",
+      "コンポーネント設計",
+      "レスポンシブ対応"
+    ],
+    deliverables: [
+      "Figmaプロトタイプ",
+      "UIコンポーネント集",
+      "デザイン仕様書"
+    ],
+    brandDescription: "サステナブル商品を扱うEC企業。購入体験の向上を目指しています。",
+    image: "🛍️"
+  },
+  "201": {
+    id: "201",
+    brand: "SweetsParadise",
+    product: "パッケージイラスト",
+    category: "パッケージデザイン",
+    prize: "¥35,000",
+    deadline: "2024年5月15日",
+    participants: 18,
+    description: "新発売のスイーツ企業。可愛らしく食欲をそそるイラストを募集。デジタル・手書き可。",
+    requirements: [
+      "パッケージイラスト",
+      "AI/PSD形式での提出",
+      "カラフルで可愛らしいデザイン",
+      "印刷用データ"
+    ],
+    deliverables: [
+      "イラストデータ（AI/PSD）",
+      "印刷用PDF",
+      "カラーパレット"
+    ],
+    brandDescription: "新発売のスイーツ企業。パッケージデザインで差別化を図ります。",
+    image: "🍨"
+  },
+  "202": {
+    id: "202",
+    brand: "AnimalCafe",
+    product: "キャラクターデザイン",
+    category: "キャラクター",
+    prize: "¥40,000",
+    deadline: "2024年5月20日",
+    participants: 25,
+    description: "カフェのマスコットキャラクターを募集。SNSで使えるシンプルなデザインを。",
+    requirements: [
+      "マスコットキャラクター",
+      "表情バリエーション3種",
+      "SNSアイコン用データ",
+      "スタンプ風デザイン"
+    ],
+    deliverables: [
+      "キャラクターデザイン（AI/PNG）",
+      "表情バリエーション",
+      "SNS用データ"
+    ],
+    brandDescription: "動物カフェ。親しみやすいマスコットキャラクターを募集しています。",
+    image: "🐾"
+  },
+  "203": {
+    id: "203",
+    brand: "BookStore",
+    product: "書籍装丁イラスト",
+    category: "書籍装丁",
+    prize: "¥30,000",
+    deadline: "2024年5月25日",
+    participants: 14,
+    description: "ライトノベルの表紙イラストを募集。ファンタジー世界観の作品です。",
+    requirements: [
+      "表紙イラスト",
+      "背表紙・帯のデザイン",
+      "PSD形式での提出",
+      "印刷用高解像度データ"
+    ],
+    deliverables: [
+      "表紙イラスト（PSD）",
+      "背表紙デザイン",
+      "帯デザイン"
+    ],
+    brandDescription: "ライトノベル出版社。ファンタジー作品の表紙イラストを募集。",
+    image: "�"
+  },
+  "301": {
+    id: "301",
+    brand: "RelaxSpa",
+    product: "店内BGM制作",
+    category: "BGM・環境音楽",
+    prize: "¥45,000",
+    deadline: "2024年5月30日",
+    participants: 11,
+    description: "スパ施設で流す癒しのBGMを募集。自然音を取り入れたリラックス楽曲を。",
+    requirements: [
+      "店内BGM（3曲以上）",
+      "WAV/MP3形式",
+      "著作権フリー",
+      "自然音の使用OK"
+    ],
+    deliverables: [
+      "BGMデータ（WAV/MP3）",
+      "楽曲リスト",
+      "著作権譲渡書"
+    ],
+    brandDescription: "リラクゼーションスパ。癒しのBGMで来店者をもてなします。",
+    image: "🎵"
+  },
+  "302": {
+    id: "302",
+    brand: "GameStudio",
+    product: "ゲームBGM",
+    category: "ゲーム音楽",
+    prize: "¥50,000",
+    deadline: "2024年6月5日",
+    participants: 7,
+    description: "RPGのフィールド曲を募集。冒険心を掻き立てる楽曲をお待ちしています。",
+    requirements: [
+      "RPGフィールド曲",
+      "ループ対応",
+      "WAV形式での提出",
+      "著作権フリー"
+    ],
+    deliverables: [
+      "BGMデータ（WAV）",
+      "ループポイント情報",
+      "著作権譲渡書"
+    ],
+    brandDescription: "RPGゲーム開発スタジオ。冒険の世界観を表現するBGMを募集。",
+    image: "🎮"
   }
 };
 
@@ -211,7 +396,7 @@ export default function ContestDetailPage() {
             <div className="bg-[#f5f5f5] p-4 rounded-xl">
               <h3 className="font-medium text-[#1a1a2e] mb-2 flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-[#ff6b35]" />
-                ブランドについて
+                企業について
               </h3>
               <p className="text-sm text-gray-600">{contest.brandDescription}</p>
             </div>
@@ -316,10 +501,9 @@ export default function ContestDetailPage() {
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
               <span className="text-sm text-gray-500">— 創造をつなぐ</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
-              <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
+            <div className="flex flex-col items-center gap-4">
+              <BrandLogo />
+              <span className="text-sm text-gray-500">© 2024 Whiskers. All rights reserved.</span>
             </div>
           </div>
         </div>

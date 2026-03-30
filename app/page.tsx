@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Play, CheckCircle, ArrowRight, Zap, Users, Award, Film, Gift, Star, TrendingUp, Palette } from "lucide-react";
+import { BrandStoryTypewriter } from "@/components/TextAnimations";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"brand" | "creator">("brand");
@@ -92,10 +94,10 @@ export default function Home() {
             )}
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="inline-flex items-center gap-4">
             <Link 
               href="https://docs.google.com/forms/d/e/1FAIpQLSf_sample_form_link"
-              className={`text-white px-8 py-4 rounded-full font-medium transition-all flex items-center gap-2 ${
+              className={`inline-flex items-center gap-2 text-white px-8 py-4 rounded-full font-medium transition-all ${
                 activeTab === "brand" 
                   ? "bg-[#ff6b35] hover:bg-[#e55a2b]" 
                   : "bg-[#4ecdc4] hover:bg-[#3dbdb5]"
@@ -106,7 +108,7 @@ export default function Home() {
             </Link>
             <a 
               href="#about" 
-              className="text-[#1a1a2e] px-8 py-4 rounded-full font-medium border-2 border-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-white transition-all"
+              className="inline-flex items-center gap-2 text-[#1a1a2e] px-8 py-4 rounded-full font-medium border-2 border-[#1a1a2e] hover:bg-[#1a1a2e] hover:text-white transition-all"
             >
               詳しく見る
             </a>
@@ -217,6 +219,111 @@ export default function Home() {
               </>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Comparison Section */}
+      <section id="comparison" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#f5f5f5]">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e] mb-4">
+              なぜ Whiskers を選ぶのか
+            </h2>
+            <p className="text-gray-600">
+              従来のUGCサービスとの違い
+            </p>
+          </div>
+
+          {/* Simple Comparison Cards */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Traditional Agencies */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-2xl">🏢</span>
+                <h3 className="font-bold text-gray-700">従来の制作会社</h3>
+              </div>
+              <ul className="space-y-3 text-sm text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>1本30万円〜</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>制作期間2週間〜</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>修正回数に制限</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>単発の依頼のみ</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Influencer Marketing */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-2xl">📱</span>
+                <h3 className="font-bold text-gray-700">インフルエンサー活用</h3>
+              </div>
+              <ul className="space-y-3 text-sm text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>フォロワー数で価格変動</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>投稿義務のみ・品質不確定</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>使用権利が不明確</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-500 mt-0.5">✕</span>
+                  <span>スケジュール調整が困難</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Whiskers - Highlighted */}
+            <div className="bg-[#1a1a2e] p-6 rounded-2xl shadow-lg border-2 border-[#ff6b35] relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-[#ff6b35] text-white text-xs px-3 py-1 rounded-full font-medium">
+                  おすすめ
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mb-4 mt-2">
+                <span className="text-2xl">🎯</span>
+                <h3 className="font-bold text-white">Whiskers</h3>
+              </div>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4ecdc4] mt-0.5">✓</span>
+                  <span className="text-[#ff6b35] font-medium">月額¥99,000でコンテスト開催</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4ecdc4] mt-0.5">✓</span>
+                  <span className="text-[#ff6b35] font-medium">1週間で複数作品が集まる</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4ecdc4] mt-0.5">✓</span>
+                  <span className="text-[#ff6b35] font-medium">完全所有権付きで自由に使用</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4ecdc4] mt-0.5">✓</span>
+                  <span className="text-[#ff6b35] font-medium">継続的な関係構築が可能</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom message */}
+          <p className="text-center text-gray-600 mt-8 text-sm">
+            Whiskersは「<span className="text-[#ff6b35] font-medium">作品の質</span>」で選べる、新しいUGCのカタチです
+          </p>
         </div>
       </section>
 
@@ -537,6 +644,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Brand Story Section */}
+      <section id="brand-story" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#1a1a2e]">
+        <div className="max-w-4xl mx-auto">
+          {/* 1段目 - 導入 */}
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 1, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="text-white/40 text-sm tracking-[0.3em] uppercase mb-4 block">
+              Brand Story
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6 tracking-tight">
+              なぜ Whiskers なのか
+            </h2>
+          </motion.div>
+
+          {/* 2段目 - プロセス */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20"
+            initial={{ opacity: 1, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            {[
+              { step: "01", title: "募集", desc: "ブランドが商品と賞金を設定" },
+              { step: "02", title: "創作", desc: "クリエイターが動画を制作・応募" },
+              { step: "03", title: "採用", desc: "最適な作品を選択・使用権を取得" }
+            ].map((item, index) => (
+              <div key={index} className="text-center">
+                <span className="text-5xl font-bold text-white/10 block mb-2">{item.step}</span>
+                <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                <p className="text-white/60 text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* 3段目 - 物語（全7行タイプライティング） */}
+          <motion.div 
+            className="text-center pt-12 border-t border-white/10"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <BrandStoryTypewriter />
+          </motion.div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#f5f5f5]">
         <div className="max-w-4xl mx-auto">
@@ -641,12 +801,24 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
-              <span className="text-sm text-gray-500">— 創造をつなぐ</span>
+              <span className="text-sm text-gray-500">— 可能性をつなぐ</span>
+              <a 
+                href="https://x.com/whiskers_ugc" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ml-3 hover:text-[#ff6b35] transition-colors text-gray-500"
+                aria-label="X (Twitter)"
+              >
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
+              <span>利用規約</span>
+              <span>プライバシーポリシー</span>
               <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
+              <span>© 2024 Whiskers</span>
             </div>
           </div>
         </div>

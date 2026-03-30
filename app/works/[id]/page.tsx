@@ -14,6 +14,7 @@ import {
   Download,
   CheckCircle
 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 // モック作品データ
 const worksData: Record<string, {
@@ -204,7 +205,7 @@ export default function WorkDetailPage() {
                   <Building2 className="w-6 h-6 text-[#ff6b35]" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">ブランド</p>
+                  <p className="text-sm text-gray-500">企業</p>
                   <p className="font-bold text-[#1a1a2e]">{work.brand}</p>
                   <p className="text-sm text-gray-600">{work.product}</p>
                 </div>
@@ -253,10 +254,9 @@ export default function WorkDetailPage() {
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
               <span className="text-sm text-gray-500">— 創造をつなぐ</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
-              <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
+            <div className="flex flex-col items-center gap-4">
+              <BrandLogo />
+              <span className="text-sm text-gray-500">© 2024 Whiskers. All rights reserved.</span>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, Send, User, Building2, Mail, MessageSquare, CheckCircle, Loader2 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useState } from "react";
 
 // Google Apps Script URL - デプロイ後に書き換えてください
@@ -45,8 +46,8 @@ export default function ContactPage() {
         return;
       }
 
-      // Google Apps Scriptに送信
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      // ローカルAPI Routeに送信（CORS問題を回避）
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -95,20 +96,12 @@ export default function ContactPage() {
       {/* Header */}
       <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <Link 
-            href="/" 
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#ff6b35] transition-colors mb-6"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            トップに戻る
-          </Link>
-          
           <h1 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e] mb-4">
             お問い合わせ
           </h1>
           <p className="text-gray-600">
             Whiskersに関するご質問・ご相談はこちらから。
-            個人運営ですが、できる限り迅速にお返事いたします。
+            審査品質と対応の速さを重視し、企画への深い理解を伴走いたします。
           </p>
         </div>
       </section>
@@ -128,7 +121,7 @@ export default function ContactPage() {
                 }`}
               >
                 <Building2 className="w-4 h-4 inline mr-2" />
-                ブランド様
+                企業様
               </button>
               <button
                 onClick={() => setActiveTab("creator")}
@@ -170,7 +163,7 @@ export default function ContactPage() {
               {/* Form Header */}
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-[#1a1a2e] mb-2">
-                  {activeTab === "brand" ? "ブランド様向けお問い合わせ" : "クリエイター様向けお問い合わせ"}
+                  {activeTab === "brand" ? "企業様向けお問い合わせ" : "クリエイター様向けお問い合わせ"}
                 </h2>
                 <p className="text-gray-600 text-sm">
                   {activeTab === "brand" 
@@ -212,7 +205,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleInputChange}
                       placeholder={activeTab === "brand" ? "担当者名" : "お名前"}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                 </div>
@@ -220,7 +213,7 @@ export default function ContactPage() {
                 {/* Brand/Creator Name */}
                 <div>
                   <label className="block text-sm font-medium text-[#1a1a2e] mb-2">
-                    {activeTab === "brand" ? "会社名・ブランド名" : "SNSアカウント名（任意）"}
+                    {activeTab === "brand" ? "会社名・企業名" : "SNSアカウント名（任意）"}
                   </label>
                   <div className="relative">
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -230,7 +223,7 @@ export default function ContactPage() {
                       value={formData.company}
                       onChange={handleInputChange}
                       placeholder={activeTab === "brand" ? "例：株式会社〇〇 / Brand〇〇" : "@instagram_handle"}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                 </div>
@@ -249,7 +242,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="your@email.com"
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                 </div>
@@ -264,7 +257,7 @@ export default function ContactPage() {
                     required
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent bg-white"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent bg-white text-gray-900"
                   >
                     <option value="">選択してください</option>
                     {activeTab === "brand" ? (
@@ -301,7 +294,7 @@ export default function ContactPage() {
                       placeholder={activeTab === "brand" 
                         ? "どのような商品でコンテストを開催したいか、ご質問などをご記入ください" 
                         : "参加したいコンテストや、ご質問などをご記入ください"}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent resize-none"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-transparent text-gray-900 placeholder:text-gray-500 resize-none"
                     />
                   </div>
                 </div>
@@ -331,7 +324,7 @@ export default function ContactPage() {
 
                 {/* Note */}
                 <p className="text-xs text-gray-500 text-center">
-                  ※ 個人運営のため、お返事までにお時間をいただく場合がございます。
+                  ※ 少数精鋭体制で運営しておりますので、対応に深みとスピードをお約束いたします。
                   <br />
                   通常3営業日以内にご返信いたします。
                 </p>
@@ -341,46 +334,20 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Alternative Contact */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-[#f5f5f5]">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-lg font-bold text-[#1a1a2e] mb-4">
-            その他のお問い合わせ方法
-          </h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a 
-              href="mailto:hello@whiskers.jp" 
-              className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm hover:shadow-md transition-shadow"
-            >
-              <Mail className="w-4 h-4 text-[#ff6b35]" />
-              hello@whiskers.jp
-            </a>
-            <span className="text-gray-400">または</span>
-            <Link 
-              href="https://twitter.com/WhiskersJP"
-              className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm hover:shadow-md transition-shadow"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-              </svg>
-              @WhiskersJP
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
-              <span className="text-sm text-gray-500">— 創造をつなぐ</span>
+              <div className="flex flex-col items-center gap-4">
+                <BrandLogo />
+                <span className="text-sm text-gray-500"> 2024 Whiskers. All rights reserved.</span>
+              </div>
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
+              <span> 2024 Whiskers</span>
               <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
             </div>
           </div>
         </div>

@@ -22,6 +22,9 @@
   --color-muted: var(--muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-playfair: var(--font-playfair);
+  --font-zen: "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", serif;
+  --font-elegant: "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", var(--font-playfair), "Yu Mincho", "Noto Serif JP", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,5 +37,79 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", var(--font-playfair), "Yu Mincho", "Noto Serif JP", serif;
+}
+
+/* Cat paw prints animation */
+@keyframes paw-walk {
+  0% {
+    transform: translateX(-50px) rotate(-15deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(calc(100vw + 50px)) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes paw-walk-reverse {
+  0% {
+    transform: translateX(50px) rotate(15deg) scaleX(-1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(calc(-100vw - 50px)) rotate(15deg) scaleX(-1);
+    opacity: 0;
+  }
+}
+
+.animate-paw-walk-slow {
+  animation: paw-walk linear infinite;
+}
+
+.animate-paw-walk-reverse-slow {
+  animation: paw-walk-reverse linear infinite;
+}
+
+/* Font Optimization for Japanese Text */
+.font-heading {
+  font-feature-settings: "palt" 1;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+}
+
+.font-body {
+  font-feature-settings: "pkna" 1;
+  letter-spacing: 0.02em;
+  line-height: 1.8;
+}
+
+/* Responsive text balance */
+@media (max-width: 640px) {
+  .font-heading {
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  
+  .font-body {
+    letter-spacing: 0.01em;
+    line-height: 1.75;
+  }
+}
+
+/* Text wrap for better readability */
+.text-balance {
+  text-wrap: balance;
 }

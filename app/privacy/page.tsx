@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, Shield, FileText } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function PrivacyPage() {
   return (
@@ -68,7 +69,7 @@ export default function PrivacyPage() {
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                   <li>お名前</li>
                   <li>メールアドレス</li>
-                  <li>会社名・ブランド名（ブランド様のみ）</li>
+                  <li>会社名・企業名（企業様のみ）</li>
                   <li>SNSアカウント情報（クリエイター様のみ）</li>
                   <li>お問い合わせ内容</li>
                 </ul>
@@ -90,7 +91,7 @@ export default function PrivacyPage() {
                 <h2 className="text-lg font-bold text-[#1a1a2e] mb-3">3. 個人情報の第三者提供</h2>
                 <p>
                   法令に基づく場合を除き、お客様の同意なく第三者に個人情報を提供することはありません。
-                  ただし、コンテスト運営において、ブランド様とクリエイター様間の連絡が必要な場合、
+                  ただし、コンテスト運営において、企業様とクリエイター様間の連絡が必要な場合、
                   最小限の情報を開示することがあります。
                 </p>
               </div>
@@ -159,10 +160,9 @@ export default function PrivacyPage() {
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
               <span className="text-sm text-gray-500">— 創造をつなぐ</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
-              <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
+            <div className="flex flex-col items-center gap-4">
+              <BrandLogo />
+              <span className="text-sm text-gray-500">© 2024 Whiskers. All rights reserved.</span>
             </div>
           </div>
         </div>

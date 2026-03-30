@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, Gift, Calendar, Users, ArrowRight, Plus, Film, Palette, PenTool, Music } from "lucide-react";
+import { CatLogo } from "@/components/CatLogo";
 
 // モックデータ - 企業登録商品
 const products = [
@@ -92,94 +93,117 @@ const requestTypeLabels: Record<string, { label: string; icon: React.ReactNode; 
   music: { label: "音楽", icon: <Music className="w-3 h-3" />, color: "#4ecdc4" },
 };
 
+// Animated background component
+function AnimatedBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Gradient orbs */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-gradient-to-br from-[#ff6b35]/10 to-[#ff6b35]/5 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[#4ecdc4]/10 to-[#4ecdc4]/5 rounded-full blur-3xl animate-pulse delay-1000" />
+      
+      {/* Grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,107,53,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,107,53,0.02)_1px,transparent_1px)] bg-[size:80px_80px]" />
+    </div>
+  );
+}
+
 export default function ProductsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      <AnimatedBackground />
+      
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-[#1a1a2e]">Whiskers</span>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <Link href="/" className="flex items-center gap-3 group">
+              <CatLogo className="w-10 h-10 shadow-lg rounded-xl group-hover:scale-110 transition-transform" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#1a1a2e] to-[#4a4a5e] bg-clip-text text-transparent">
+                Whiskers
+              </span>
             </Link>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors">トップ</Link>
-              <Link href="/works" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors">ギャラリー</Link>
-              <Link href="/creators" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors">クリエイター</Link>
-              <Link href="/contest" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors">コンテスト</Link>
-              <Link href="/contact" className="bg-[#ff6b35] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#e55a2b] transition-colors">お問い合わせ</Link>
+              <Link href="/" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors relative group">
+                トップ
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff6b35] group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link href="/works" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors relative group">
+                ギャラリー
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff6b35] group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link href="/creators" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors relative group">
+                クリエイター
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff6b35] group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link href="/contest" className="text-sm text-gray-600 hover:text-[#ff6b35] transition-colors relative group">
+                コンテスト
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff6b35] group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link 
+                href="/contact"
+                className="bg-gradient-to-r from-[#ff6b35] to-[#ff8f5c] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                お問い合わせ
+              </Link>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative pt-32 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <Link 
             href="/" 
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#ff6b35] transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-[#ff6b35] transition-colors mb-8 group"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             トップに戻る
           </Link>
           
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-4xl">📦</span>
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e]">
-              商品紹介
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block px-4 py-2 bg-[#ff6b35]/10 text-[#ff6b35] rounded-full text-sm font-medium mb-4">
+              Products
+            </span>
+            <h1 style={{ fontFamily: 'var(--font-playfair), "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", "Yu Mincho", serif' }} className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 tracking-[0.1em]">
+              <span className="bg-gradient-to-r from-[#1a1a2e] via-[#ff6b35] to-[#4ecdc4] bg-clip-text text-transparent">
+                商品紹介
+              </span>
             </h1>
-          </div>
-          <p className="text-gray-600 max-w-2xl mb-4">
-            企業が作品制作を希望している商品一覧です。
-            興味のある商品を選んで、あなたのクリエイティブで魅力を伝えましょう。
-          </p>
-          <div className="bg-[#ff6b35]/10 border border-[#ff6b35]/20 rounded-xl p-4 mb-8">
-            <p className="text-[#ff6b35] font-medium text-sm flex items-center gap-2">
-              <span className="text-xl">🎁</span>
-              すべての商品は<strong>サンプル無料提供</strong>！作品制作に必要な商品を企業から直接受け取れます
+            <p className="text-gray-600 text-lg mb-8">
+              企業が作品制作を希望している商品一覧です。
+              興味のある商品を選んで、あなたのクリエイティブで魅力を伝えましょう。
             </p>
-          </div>
-
-          {/* CTA for Brands */}
-          <div className="bg-gradient-to-r from-[#ff6b35]/10 to-[#4ecdc4]/10 rounded-2xl p-6 mb-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div>
-                <h3 className="text-lg font-bold text-[#1a1a2e] mb-1">
-                  企業様：商品を登録してクリエイターに依頼しませんか？
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  あなたの商品を紹介する作品を複数のクリエイターから募集できます。
-                </p>
-              </div>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-[#ff6b35] text-white px-6 py-3 rounded-full font-medium hover:bg-[#e55a2b] transition-colors whitespace-nowrap"
-              >
-                <Plus className="w-4 h-4" />
-                商品を登録する
-              </Link>
+            
+            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#ff6b35]/10 to-[#ff8f5c]/10 rounded-full border border-[#ff6b35]/20">
+              <span className="text-xl">🎁</span>
+              <span className="text-[#ff6b35] font-medium">すべての商品は<strong>サンプル無料提供</strong></span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
               <div 
                 key={product.id} 
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                className="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-[1.02]"
               >
                 {/* Card Header */}
                 <div 
-                  className="h-32 flex items-center justify-center"
-                  style={{ backgroundColor: `${product.color}15` }}
+                  className="h-32 flex items-center justify-center relative overflow-hidden"
+                  style={{ backgroundColor: `${product.color}10` }}
                 >
+                  {/* Gradient overlay on hover */}
                   <div 
-                    className="text-6xl"
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: `linear-gradient(135deg, ${product.color}20, transparent)` }}
+                  />
+                  <div 
+                    className="text-6xl relative z-10 group-hover:scale-110 transition-transform duration-500"
                   >
                     {product.image}
                   </div>
@@ -190,7 +214,7 @@ export default function ProductsPage() {
                   {/* Category Badge */}
                   <div className="flex items-center gap-2 mb-3">
                     <span 
-                      className="inline-block px-3 py-1 rounded-full text-xs font-medium"
+                      className="inline-block px-3 py-1.5 rounded-full text-xs font-semibold"
                       style={{ 
                         backgroundColor: `${product.color}15`,
                         color: product.color 
@@ -206,7 +230,7 @@ export default function ProductsPage() {
 
                   {/* Brand & Product Name */}
                   <h3 className="text-sm text-gray-500 mb-1">{product.brand}</h3>
-                  <h2 className="text-lg font-bold text-[#1a1a2e] mb-3">
+                  <h2 style={{ fontFamily: 'var(--font-playfair), "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", "Yu Mincho", serif' }} className="text-lg font-bold text-[#1a1a2e] mb-3">
                     {product.name}
                   </h2>
 
@@ -234,14 +258,19 @@ export default function ProductsPage() {
 
                   {/* Prize */}
                   <div className="flex items-center gap-2 mb-4">
-                    <Gift className="w-4 h-4 text-[#ff6b35]" />
-                    <span className="font-bold text-[#ff6b35]">
+                    <div 
+                      className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: `${product.color}15` }}
+                    >
+                      <Gift className="w-4 h-4" style={{ color: product.color }} />
+                    </div>
+                    <span className="font-bold text-lg" style={{ color: product.color }}>
                       賞金 ¥{product.prize.toLocaleString()}
                     </span>
                   </div>
 
                   {/* Meta Info */}
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-5 py-3 border-t border-b border-gray-100">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
                       <span>締切: {product.deadline}</span>
@@ -255,7 +284,7 @@ export default function ProductsPage() {
                   {/* CTA Button */}
                   <Link
                     href={`/products/${product.id}`}
-                    className="block w-full text-center py-3 rounded-full font-medium text-white transition-all hover:opacity-90"
+                    className="block w-full text-center py-3 rounded-full font-medium text-white transition-all hover:opacity-90 shadow-md hover:shadow-lg"
                     style={{ backgroundColor: product.color }}
                   >
                     サンプルを受け取って作品を作る
@@ -267,33 +296,66 @@ export default function ProductsPage() {
           </div>
 
           {/* Empty State / More Coming */}
-          <div className="mt-12 text-center">
-            <p className="text-gray-500 text-sm">
-              新しい商品は随時追加されます。
-            </p>
+          <div className="mt-16 text-center">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-full text-gray-500 text-sm">
+              <span>✨</span>
+              <span>新しい商品は随時追加されます</span>
+            </div>
             <Link 
               href="/contact"
-              className="inline-flex items-center gap-2 mt-4 text-[#ff6b35] hover:underline"
+              className="flex items-center justify-center gap-2 mt-6 text-[#ff6b35] hover:text-[#e55a2b] font-medium transition-colors group"
             >
               企業様はこちらから商品登録のお問い合わせ
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-100">
+      {/* CTA for Brands */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-gray-50/50 to-white">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
-              <span className="text-sm text-gray-500">— 創造をつなぐ</span>
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 relative overflow-hidden">
+            {/* Decorative gradient */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#ff6b35]/10 to-[#4ecdc4]/10 rounded-bl-full" />
+            
+            <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <h3 className="text-xl font-bold text-[#1a1a2e] mb-2">
+                  企業様：商品を登録してクリエイターに依頼しませんか？
+                </h3>
+                <p className="text-gray-600">
+                  あなたの商品を紹介する作品を複数のクリエイターから募集できます。
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#ff6b35] to-[#ff8f5c] text-white px-8 py-4 rounded-full font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 whitespace-nowrap"
+              >
+                <Plus className="w-5 h-5" />
+                商品を登録する
+              </Link>
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-100 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <CatLogo className="w-10 h-10 shadow-lg rounded-xl group-hover:scale-110 transition-transform" />
+              <div>
+                <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
+                <span className="text-sm text-gray-500 ml-2">— 創造をつなぐ</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-8 text-sm text-gray-500">
+              <Link href="/terms" className="hover:text-[#ff6b35] transition-colors">利用規約</Link>
+              <Link href="/privacy" className="hover:text-[#ff6b35] transition-colors">プライバシーポリシー</Link>
               <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
+              <span>© 2024 Whiskers</span>
             </div>
           </div>
         </div>

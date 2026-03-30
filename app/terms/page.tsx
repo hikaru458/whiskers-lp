@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, FileText, Shield } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function TermsPage() {
   return (
@@ -64,35 +65,35 @@ export default function TermsPage() {
                 <h2 className="text-lg font-bold text-[#1a1a2e] mb-3">第1条（適用）</h2>
                 <p>
                   本規約は、Whiskers（以下「本サービス」）を提供する運営者（以下「運営」）と、
-                  本サービスの利用者（ブランド様・クリエイター様以下「ユーザー」）との間の
+                  本サービスの利用者（企業様・クリエイター様以下「ユーザー」）との間の
                   一切の関係に適用されるものとします。
                 </p>
               </div>
 
               <div>
                 <h2 className="text-lg font-bold text-[#1a1a2e] mb-3">第2条（サービスの内容）</h2>
-                <p>本サービスは、ブランドとクリエイターをつなぐUGCコンテストプラットフォームです。</p>
+                <p>本サービスは、企業とクリエイターをつなぐUGCコンテストプラットフォームです。</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li>ブランド様はコンテストを開催し、UGC（動画）を募集できます</li>
+                  <li>企業様はコンテストを開催し、UGC（動画）を募集できます</li>
                   <li>クリエイター様はコンテストに参加し、作品を投稿できます</li>
-                  <li>採用された作品はブランド様に所有権が移譲されます</li>
+                  <li>採用された作品は企業様に所有権が移譲されます</li>
                 </ul>
               </div>
 
               <div>
                 <h2 className="text-lg font-bold text-[#1a1a2e] mb-3">第3条（コンテストの運営）</h2>
-                <p className="font-medium mb-2">【ブランド様】</p>
+                <p className="font-medium mb-2">【企業様】</p>
                 <ul className="list-disc pl-5 mb-3 space-y-1">
                   <li>月額料金を支払うことでコンテストを開催できます</li>
                   <li>賞金・賞品は運営を通じてクリエイター様に支払われます</li>
-                  <li>採用作品の所有権はブランド様に完全に移譲されます</li>
+                  <li>採用作品の所有権は企業様に完全に移譲されます</li>
                   <li>投稿作品を広告・マーケティング目的で利用できます</li>
                 </ul>
                 <p className="font-medium mb-2">【クリエイター様】</p>
                 <ul className="list-disc pl-5 space-y-1">
                   <li>コンテストに参加する際、募集要項を確認してください</li>
                   <li>応募作品は自分で作成したオリジナル作品であることを保証します</li>
-                  <li>採用された場合、作品の所有権をブランド様に譲渡することに同意します</li>
+                  <li>採用された場合、作品の所有権を企業様に譲渡することに同意します</li>
                   <li>賞金には源泉徴収が適用される場合があります</li>
                 </ul>
               </div>
@@ -113,7 +114,7 @@ export default function TermsPage() {
               <div>
                 <h2 className="text-lg font-bold text-[#1a1a2e] mb-3">第5条（料金・支払い）</h2>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>ブランド様の月額料金は¥99,000（税別）です</li>
+                  <li>企業様の月額料金は¥99,000（税別）です</li>
                   <li>支払いは前払い制です</li>
                   <li>返金は原則として行いません</li>
                   <li>料金は予告なく変更される場合があります</li>
@@ -187,10 +188,9 @@ export default function TermsPage() {
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
               <span className="text-sm text-gray-500">— 創造をつなぐ</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>© 2024 Whiskers</span>
-              <span className="hidden sm:inline">|</span>
-              <span>Brand ≡ Creator ≡ Potential</span>
+            <div className="flex flex-col items-center gap-4">
+              <BrandLogo />
+              <span className="text-sm text-gray-500">© 2024 Whiskers. All rights reserved.</span>
             </div>
           </div>
         </div>
