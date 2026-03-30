@@ -57,7 +57,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <FilmGrain />
         {children}
       </body>
     </html>
