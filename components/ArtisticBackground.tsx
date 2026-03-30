@@ -275,11 +275,10 @@ function ArtisticScene() {
       <fog attach="fog" args={["#0f172a", 8, 20]} />
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} intensity={1} color="#ffffff" />
-      <RefractiveMonolith />
-      <LiquidChromeSphere />
-      <SculpturalLight />
-      <AtmosphericFog />
-      <LightShafts />
+      <CentralMonolith />
+      <FloatingChromeSpheres />
+      <ParticleField />
+      <DynamicLights />
       <Environment resolution={512}>
         <Lightformer
           form="rect"
