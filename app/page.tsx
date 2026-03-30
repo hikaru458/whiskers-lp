@@ -79,7 +79,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section with Artistic Animations */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#0f172a]/50">
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <ParticleBackground />
         <div className="relative max-w-4xl mx-auto text-center z-10">
           {/* BCP Concept with Floating Animation */}
