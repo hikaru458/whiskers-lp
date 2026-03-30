@@ -801,24 +801,11 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
-              <span className="text-sm text-gray-500">— 可能性をつなぐ</span>
-              <a 
-                href="https://x.com/whiskers_ugc" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="ml-3 hover:text-[#ff6b35] transition-colors text-gray-500"
-                aria-label="X (Twitter)"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-              </a>
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>利用規約</span>
-              <span>プライバシーポリシー</span>
-              <span className="hidden sm:inline">|</span>
               <span>© 2024 Whiskers</span>
+              <span className="hidden sm:inline">|</span>
+              <span>Brand ≡ Creator ≡ Potential</span>
             </div>
           </div>
         </div>
