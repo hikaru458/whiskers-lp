@@ -644,7 +644,9 @@ function NoiseOverlay() {
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         transparent
-        blending={THREE.OverlayBlending}
+        blending={THREE.CustomBlending}
+        blendSrc={THREE.SrcAlphaFactor}
+        blendDst={THREE.OneMinusSrcAlphaFactor}
         depthTest={false}
         depthWrite={false}
       />
