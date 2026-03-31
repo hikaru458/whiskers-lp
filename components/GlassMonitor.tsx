@@ -184,7 +184,7 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* === ミストエフェクト - ガラス内部を漂う霧 === */}
-      <GlassMist baseWidth={baseWidth} baseHeight={baseHeight} />
+      <GlassMist baseWidth={baseWidth} baseHeight={baseHeight} position={[0, 0, -0.02]} />
 
       {/* === ③ 中間層（内部反射フェイク層）- 超重要 === */}
       <mesh position={[0, 0, -0.1]}>
