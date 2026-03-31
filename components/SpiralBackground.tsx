@@ -162,9 +162,14 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 // ============================================
 export function SpiralBackground() {
   return (
-    <div className="fixed inset-0 z-0 bg-[#000000] overflow-hidden"> {/* スクロールバー非表示 */}
+    <div className="fixed inset-0 z-0 bg-[#000000] overflow-hidden">
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+      
       <Canvas camera={{ position: [0, 0, 28], fov: 30 }}>
-        <ScrollControls pages={6} damping={0.15} style={{ display: 'none' }}>
+        <ScrollControls pages={6} damping={0.15}>
           <ambientLight intensity={0.05} />
           <pointLight position={[10, 10, 10]} intensity={15} color="#fff" />
           
@@ -181,18 +186,28 @@ export function SpiralBackground() {
 function SceneContent() {
   const scroll = useScroll();
   const [active, setActive] = useState(0);
+  const [offset, setOffset] = useState(0);
 
   useFrame(() => {
-    const current = Math.round(scroll.offset * (SECTIONS.length - 1));
-    if (current !== active) setActive(current);
+    const currentOffset = scroll.offset;
+    setOffset(currentOffset);
+
+    const currentActive = Math.round(currentOffset * (SECTIONS.length - 1));
+    if (currentActive !== active) setActive(currentActive);
   });
 
   return (
     <>
       {SECTIONS.map((s, i) => (
-        <GlassMonitor key={s.id} index={i} {...s} isActive={i === active} scrollOffset={scroll.offset} />
+        <GlassMonitor 
+          key={s.id} 
+          index={i} 
+          {...s} 
+          isActive={i === active} 
+          scrollOffset={offset}
+        />
       ))}
-      <CrystalHelix scrollOffset={scroll?.offset || 0} />
+      <CrystalHelix scrollOffset={offset} />
     </>
   );
 }
