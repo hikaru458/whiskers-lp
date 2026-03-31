@@ -16,30 +16,27 @@ const SECTIONS = [
   { id: "contact", label: "Contact", color: "#f87171" },
 ];
 
-// --- 黄金比に基づいた空間設計 ---
-const RADIUS = 16; 
+const RADIUS = 16;
 const HEIGHT_STEP = 5.0; 
 const SPIRAL_TURNS = 1.2;
 
 // ============================================
-// Crystal Helix Core（繊細な光の繊維）- Scroll連動回転
+// Crystal Helix Core（背景の光の糸）
 // ============================================
 function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const count = 2; // 本数を絞り、重なりを上品にする
+  const count = 2;
   const points = 1000;
   
   const helixCurves = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => {
       const pts = [];
-      const phase = (i * Math.PI); // 180度対角に配置
-      const rOffset = i * 2;       // 各線の半径をわずかに変えて奥行きを出す
-      
+      const phase = (i * Math.PI);
       for (let j = 0; j <= points; j++) {
         const t = (j / points) * Math.PI * 2 * SPIRAL_TURNS;
-        const x = Math.cos(t + phase) * (RADIUS * 0.5 + rOffset);
+        const x = Math.cos(t + phase) * (RADIUS * 0.6);
         const y = (t / (Math.PI * 2)) * HEIGHT_STEP * 4 - 15;
-        const z = Math.sin(t + phase) * (RADIUS * 0.5 + rOffset);
+        const z = Math.sin(t + phase) * (RADIUS * 0.6);
         pts.push(new THREE.Vector3(x, y, z));
       }
       return new THREE.CatmullRomCurve3(pts);
@@ -48,9 +45,7 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
 
   useFrame((state, delta) => {
     if (groupRef.current) {
-      // スクロールに応じて螺旋を回転（一体感を出す）
-      const rotation = scrollOffset * Math.PI * 2;
-      damp(groupRef.current.rotation, "y", rotation, 0.05, delta);
+      damp(groupRef.current.rotation, "y", scrollOffset * Math.PI * 2, 0.05, delta);
     }
   });
 
@@ -58,19 +53,13 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
     <group ref={groupRef}>
       {helixCurves.map((curve, i) => (
         <mesh key={i}>
-          {/* 極細の 0.005 で「光の糸」を再現 */}
-          <tubeGeometry args={[curve, 800, 0.005, 12, false]} />
+          <tubeGeometry args={[curve, 800, 0.01, 8, false]} />
           <meshPhysicalMaterial
             color="#ffffff"
-            transmission={1.0}
-            ior={1.8}
-            thickness={0.5}
-            roughness={0.05}
-            iridescence={1.0}        // 虹色の干渉を最大化
-            iridescenceIOR={1.9}
             emissive="#ffffff"
-            emissiveIntensity={0.5}  // 自発光を強めて鋭い光に
+            emissiveIntensity={1.5}
             transparent
+            opacity={0.8}
           />
         </mesh>
       ))}
@@ -79,7 +68,7 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
 }
 
 // ============================================
-// Glass Monitor（フローティング・パネル）
+// Crystal Monitor（クリスタル質感 + センター吸着）
 // ============================================
 function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const meshRef = useRef<THREE.Group>(null);
@@ -89,15 +78,12 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     const canvas = document.createElement("canvas");
     canvas.width = 1024; canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
-    ctx.clearRect(0, 0, 1024, 512); // 完全透明背景
-    
-    // 鋭いネオンボーダー
-    ctx.strokeStyle = color; ctx.lineWidth = 8;
-    ctx.strokeRect(40, 40, 944, 432);
-
+    ctx.clearRect(0, 0, 1024, 512);
+    ctx.strokeStyle = color; ctx.lineWidth = 10;
+    ctx.strokeRect(20, 20, 984, 472);
     ctx.fillStyle = "#fff";
-    ctx.font = "lighter 90px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.shadowColor = color; ctx.shadowBlur = 20;
+    ctx.font = "lighter 100px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.shadowColor = color; ctx.shadowBlur = 30;
     ctx.fillText(label.toUpperCase(), 512, 256);
     return new THREE.CanvasTexture(canvas);
   }, [label, color]);
@@ -105,57 +91,61 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   useFrame((state, delta) => {
     if (!meshRef.current) return;
     
-    // スクロールに同期した螺旋移動
-    const t = (index / SECTIONS.length) * Math.PI * 2 * SPIRAL_TURNS + (scrollOffset * 8);
-    
-    // 基本の位置計算（RADIUSをそのまま使う）
+    // パネルごとの基準位置（t）を計算
+    const sectionRatio = index / (SECTIONS.length - 1);
+    const t = (sectionRatio * Math.PI * 2 * SPIRAL_TURNS) + (scrollOffset * 8);
+
+    // X, Z は螺旋軌道
     const targetX = Math.cos(t) * RADIUS;
     const targetZ = Math.sin(t) * RADIUS;
-    // アクティブなものは中心(0)へ補間、それ以外は螺旋の高さへ
-    const targetY = (t / (Math.PI * 2)) * HEIGHT_STEP * 5 - 18;
-    const currentY = isActive ? 0 : targetY;
+    
+    // Y の修正：自分の番（scroll.offset）が来たら強制的に 0（中央）へ
+    const currentScrollPos = scrollOffset * (SECTIONS.length - 1);
+    const distanceFromActive = Math.abs(currentScrollPos - index);
+    const spiralY = (t / (Math.PI * 2)) * HEIGHT_STEP * 5 - 18;
+    
+    // アクティブなほど中央(0)に吸い寄せられるロジック
+    const influence = Math.max(0, 1 - distanceFromActive); 
+    const targetY = THREE.MathUtils.lerp(spiralY, 0, influence);
 
-    // --- チカチカ防止ロジック ---
-    const isBehind = targetZ > 5; // Z軸が奥（正の方向）にある場合は非表示
-    meshRef.current.visible = !isBehind || isActive;
+    // チカチカ防止（真後ろにいる時は消す）
+    meshRef.current.visible = targetZ < 10;
 
-    damp(meshRef.current.position, "x", targetX, 0.1, delta);
-    damp(meshRef.current.position, "y", currentY, 0.1, delta);
-    damp(meshRef.current.position, "z", targetZ, 0.1, delta);
+    damp(meshRef.current.position, "x", targetX, 0.15, delta);
+    damp(meshRef.current.position, "y", targetY, 0.15, delta);
+    damp(meshRef.current.position, "z", targetZ, 0.15, delta);
 
     if (isActive) {
-      // 常にカメラを向く（正対）
       const dummy = new THREE.Object3D();
       dummy.position.copy(meshRef.current.position);
       dummy.lookAt(camera.position);
-      dampE(meshRef.current.rotation, dummy.rotation, 0.05, delta);
+      dampE(meshRef.current.rotation, dummy.rotation, 0.1, delta);
     } else {
       meshRef.current.rotation.y = -t + Math.PI / 2;
     }
 
-    // スケール
-    damp(meshRef.current.scale, "x", isActive ? 1.0 : 0.6, 0.1, delta);
-    damp(meshRef.current.scale, "y", isActive ? 1.0 : 0.6, 0.1, delta);
+    damp(meshRef.current.scale, "x", isActive ? 1.0 : 0.5, 0.1, delta);
+    damp(meshRef.current.scale, "y", isActive ? 1.0 : 0.5, 0.1, delta);
   });
 
   return (
     <group ref={meshRef}>
-      <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.4}>
-        {/* モニターサイズを大幅に縮小 [4.5, 2.5] */}
-        <RoundedBox args={[4.5, 2.5, 0.005]} radius={0.02}>
+      <Float speed={isActive ? 2 : 0} rotationIntensity={0.1} floatIntensity={0.2}>
+        {/* 厚み(0.2)を持たせてクリスタル感を出す */}
+        <RoundedBox args={[5, 3, 0.2]} radius={0.05} smoothness={4}>
           <meshPhysicalMaterial 
-            transmission={0.99} // ほぼ完全透過
-            thickness={0.5} 
-            ior={1.1} // 屈折を下げて「空気感」を出す
-            roughness={0}
-            transparent 
-            opacity={isActive ? 0.8 : 0.05} // アクティブ時でも半透明、非アクティブはほぼ消す
+            transmission={1.0} 
+            thickness={2.0} // 屈折の深さ
+            ior={2.4}       // ダイヤモンドに近い屈折率
+            roughness={0.01}
             clearcoat={1}
-            envMapIntensity={2}
+            transparent
+            opacity={isActive ? 0.9 : 0.1}
+            envMapIntensity={3} // 映り込みを強く
           />
         </RoundedBox>
-        <mesh position={[0, 0, 0.01]}>
-          <planeGeometry args={[4.3, 2.3]} />
+        <mesh position={[0, 0, 0.11]}>
+          <planeGeometry args={[4.8, 2.8]} />
           <meshBasicMaterial map={texture} transparent opacity={isActive ? 1 : 0.1} toneMapped={false} />
         </mesh>
       </Float>
@@ -168,20 +158,16 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 // ============================================
 export function SpiralBackground() {
   return (
-    <div className="fixed inset-0 z-0 bg-[#000000] overflow-hidden">
+    <div className="fixed inset-0 z-0 bg-[#000000]">
       <style jsx global>{`
         body::-webkit-scrollbar { display: none; }
         body { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
       
-      <Canvas camera={{ position: [0, 0, 28], fov: 30 }} gl={{ antialias: true }}>
-        <ScrollControls pages={6} damping={0.15}>
-          <ambientLight intensity={0.05} />
-          <pointLight position={[10, 10, 10]} intensity={15} color="#fff" />
-          
+      <Canvas camera={{ position: [0, 0, 28], fov: 30 }}>
+        <ScrollControls pages={6} damping={0.2}>
           <SceneContent />
-          
-          <Environment preset="night" />
+          <Environment preset="city" />
           <PostProcessing />
         </ScrollControls>
       </Canvas>
@@ -203,8 +189,7 @@ function SceneContent() {
       {SECTIONS.map((s, i) => (
         <GlassMonitor key={s.id} index={i} {...s} isActive={i === active} scrollOffset={scroll.offset} />
       ))}
-      {/* ★ 螺旋リボンを復活 ★ */}
-      <CrystalHelix scrollOffset={scroll?.offset || 0} />
+      <CrystalHelix scrollOffset={scroll.offset} />
     </>
   );
 }
@@ -212,8 +197,7 @@ function SceneContent() {
 function PostProcessing() {
   return (
     <EffectComposer multisampling={8}>
-      <Bloom intensity={1.5} luminanceThreshold={1.3} mipmapBlur />
-      <ChromaticAberration offset={new THREE.Vector2(0.0015, 0.0015)} />
+      <Bloom intensity={1.5} luminanceThreshold={1.2} mipmapBlur />
       <Vignette darkness={0.8} />
     </EffectComposer>
   );
