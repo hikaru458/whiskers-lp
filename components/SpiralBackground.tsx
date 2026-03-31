@@ -17,7 +17,9 @@ import {
   Vignette,
 } from "@react-three/postprocessing";
 
+// ============================================
 // SECTIONS定義
+// ============================================
 const SECTIONS = [
   { id: "gallery", label: "Gallery", color: "#3b82f6" },
   { id: "creator", label: "Creator", color: "#06b6d4" },
@@ -33,11 +35,60 @@ const SECTIONS = [
 function CrystalCore() {
   const coreRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const coordTextureRef = useRef<THREE.Mesh>(null);
 
   const { viewport } = useThree();
 
+  // 座標/数式テクスチャ生成
+  const coordTexture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1024;
+    canvas.height = 1024;
+    const ctx = canvas.getContext("2d")!;
+
+    // 透明背景
+    ctx.clearRect(0, 0, 1024, 1024);
+
+    // 数学記号と座標
+    const symbols = ["Σ", "∫", "∂", "∇", "∞", "π", "√", "≈", "≠", "≤", "≥"];
+    const coords = ["X:", "Y:", "Z:", "TC:", "ID:", "Q:", "R:"];
+
+    ctx.font = "12px 'Courier New', monospace";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+
+    for (let i = 0; i < 50; i++) {
+      const x = Math.random() * 1024;
+      const y = Math.random() * 1024;
+      const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+      const coord = coords[Math.floor(Math.random() * coords.length)];
+      const num = (Math.random() * 1000).toFixed(4);
+      ctx.fillText(`${symbol} ${coord}${num}`, x, y);
+    }
+
+    // グリッドライン
+    ctx.strokeStyle = "rgba(100, 149, 237, 0.2)";
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i < 1024; i += 64) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, 1024);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(1024, i);
+      ctx.stroke();
+    }
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.needsUpdate = true;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    return tex;
+  }, []);
+
   useFrame((state, delta) => {
-    if (!coreRef.current || !glowRef.current) return;
+    if (!coreRef.current || !glowRef.current || !coordTextureRef.current) return;
 
     const time = state.clock.elapsedTime;
     const mouseX = (state.pointer.x * viewport.width) / 2;
@@ -54,6 +105,10 @@ function CrystalCore() {
       delta
     );
 
+    // 座標テクスチャをゆっくり回転
+    coordTextureRef.current.rotation.y = time * 0.05;
+    coordTextureRef.current.rotation.x = Math.sin(time * 0.1) * 0.1;
+
     // 脈動
     const pulse = 1 + Math.sin(time * 0.8) * 0.03;
     glowRef.current.scale.setScalar(pulse);
@@ -61,15 +116,15 @@ function CrystalCore() {
 
   return (
     <group ref={coreRef}>
-      {/* メインクリスタル - 複雑な糸が絡まった形状 (p=7, q=8) */}
+      {/* メインクリスタル - ダイヤモンドガラス (p=7, q=8) */}
       <mesh>
         <torusKnotGeometry args={[1.8, 0.25, 300, 32, 7, 8]} />
         <meshPhysicalMaterial
           color="#ffffff"
           metalness={0.0}
-          roughness={0}
+          roughness={0.05}
           transmission={1.0}
-          thickness={5}
+          thickness={3.5}
           ior={2.4}
           clearcoat={1}
           clearcoatRoughness={0}
@@ -79,7 +134,19 @@ function CrystalCore() {
         />
       </mesh>
 
-      {/* 内側レイヤー - 反対方向に回転 */}
+      {/* 座標テクスチャを表面に投影 */}
+      <mesh ref={coordTextureRef} scale={[3.8, 3.8, 3.8]}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <meshBasicMaterial
+          map={coordTexture}
+          transparent
+          opacity={0.3}
+          blending={THREE.AdditiveBlending}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      {/* 内側レイヤー */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <torusKnotGeometry args={[1.3, 0.15, 200, 24, 5, 6]} />
         <meshPhysicalMaterial
@@ -87,7 +154,7 @@ function CrystalCore() {
           metalness={0.1}
           roughness={0.05}
           transmission={0.9}
-          thickness={3}
+          thickness={2}
           ior={1.9}
           emissive="#3b82f6"
           emissiveIntensity={0.3}
@@ -95,7 +162,7 @@ function CrystalCore() {
         />
       </mesh>
 
-      {/* 中央発光コア */}
+      {/* 中央発光球体 */}
       <mesh>
         <sphereGeometry args={[0.4, 64, 64]} />
         <meshPhysicalMaterial
@@ -138,6 +205,7 @@ interface HelixMonitorProps {
   heightStep: number;
   isActive: boolean;
   onActivate: () => void;
+  globalScrollOffset: number;
 }
 
 function HelixMonitor({
@@ -149,6 +217,7 @@ function HelixMonitor({
   heightStep,
   isActive,
   onActivate,
+  globalScrollOffset,
 }: HelixMonitorProps) {
   const meshRef = useRef<THREE.Group>(null);
   const frameRef = useRef<THREE.Mesh>(null);
@@ -156,7 +225,6 @@ function HelixMonitor({
   const neonEdgeRef = useRef<THREE.Mesh>(null);
 
   const { camera } = useThree();
-  const scroll = useScroll();
 
   // 螺旋上の位置計算
   const baseAngle = useMemo(() => (index / total) * Math.PI * 2, [index, total]);
@@ -216,49 +284,63 @@ function HelixMonitor({
   }, [label, color, index]);
 
   // Governance: スケールと発光の状態管理
-  const targetScaleNum = useMemo(() => (isActive ? 1.15 : 0.8), [isActive]);
-  const targetGlowOpacity = useMemo(() => (isActive ? 0.8 : 0.1), [isActive]);
-  const targetNeonIntensity = useMemo(() => (isActive ? 1.5 : 0.2), [isActive]);
+  const targetScaleNum = useMemo(() => (isActive ? 1.2 : 0.7), [isActive]);
+  const targetGlowOpacity = useMemo(() => (isActive ? 0.9 : 0.05), [isActive]);
+  const targetNeonIntensity = useMemo(() => (isActive ? 2.0 : 0.3), [isActive]);
 
   useFrame((state, delta) => {
     if (!meshRef.current || !frameRef.current || !glowRef.current || !neonEdgeRef.current) return;
 
-    const scrollOffset = scroll.offset;
-    const spiralRotation = scrollOffset * Math.PI * 3;
+    const scrollOffset = globalScrollOffset;
+    const spiralRotation = scrollOffset * Math.PI * 2.5;
     const currentAngle = baseAngle + spiralRotation;
 
-    // 螺旋位置計算
+    // 螺旋位置計算 - 奥から手前へ回り込む広がり
     const targetX = Math.cos(currentAngle) * radius;
-    const targetZ = Math.sin(currentAngle) * radius * 0.7;
-    const totalScrollY = scrollOffset * total * heightStep * 0.8;
+    const targetZ = Math.sin(currentAngle) * radius * 0.6; // Zを圧縮してカメラ近くに
+    const totalScrollY = scrollOffset * total * heightStep * 0.6;
     const targetY = baseY - totalScrollY;
 
-    damp(meshRef.current.position, "x", targetX, 0.06, delta);
-    damp(meshRef.current.position, "y", targetY, 0.06, delta);
-    damp(meshRef.current.position, "z", targetZ, 0.06, delta);
+    damp(meshRef.current.position, "x", targetX, 0.04, delta);
+    damp(meshRef.current.position, "y", targetY, 0.04, delta);
+    damp(meshRef.current.position, "z", targetZ, 0.04, delta);
 
-    // Governance: カメラに対して完全に正対
-    const dummy = new THREE.Object3D();
-    dummy.position.copy(meshRef.current.position);
-    dummy.lookAt(camera.position);
-    dampE(meshRef.current.rotation, dummy.rotation, 0.05, delta);
+    // Governance: アクティブ時のみカメラに正対、非アクティブは螺旋の傾きを保持
+    if (isActive) {
+      // アクティブ: カメラに完全に正対
+      const dummy = new THREE.Object3D();
+      dummy.position.copy(meshRef.current.position);
+      dummy.lookAt(camera.position);
+      dampE(meshRef.current.rotation, dummy.rotation, 0.05, delta);
+    } else {
+      // 非アクティブ: 螺旋のカーブに合わせて斜めに傾ける（背景として後退）
+      const curveAngle = Math.atan2(targetX, targetZ);
+      const targetRotation = new THREE.Euler(
+        0,
+        -currentAngle + Math.PI / 2,
+        0
+      );
+      const dummy = new THREE.Object3D();
+      dummy.rotation.copy(targetRotation);
+      dampE(meshRef.current.rotation, dummy.rotation, 0.08, delta);
+    }
 
     // Governance: スケールのdamp補完
-    damp(meshRef.current.scale, "x", targetScaleNum, 0.08, delta);
-    damp(meshRef.current.scale, "y", targetScaleNum, 0.08, delta);
-    damp(meshRef.current.scale, "z", targetScaleNum, 0.08, delta);
+    damp(meshRef.current.scale, "x", targetScaleNum, 0.06, delta);
+    damp(meshRef.current.scale, "y", targetScaleNum, 0.06, delta);
+    damp(meshRef.current.scale, "z", targetScaleNum, 0.06, delta);
 
     // ネオンエッジの発光
     const frameMaterial = frameRef.current.material as THREE.MeshBasicMaterial;
-    damp(frameMaterial, "opacity", targetNeonIntensity, 0.1, delta);
+    damp(frameMaterial, "opacity", targetNeonIntensity, 0.08, delta);
 
     // グロー効果
     const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
-    damp(glowMaterial, "opacity", targetGlowOpacity, 0.1, delta);
+    damp(glowMaterial, "opacity", targetGlowOpacity, 0.08, delta);
 
     // ネオンエッジ
     const neonMaterial = neonEdgeRef.current.material as THREE.MeshBasicMaterial;
-    neonMaterial.opacity = isActive ? 0.8 : 0.1;
+    neonMaterial.opacity = isActive ? 0.9 : 0.15;
   });
 
   return (
@@ -266,16 +348,16 @@ function HelixMonitor({
       {/* ネオンエッジ枠 */}
       <mesh ref={neonEdgeRef}>
         <boxGeometry args={[2.7, 1.7, 0.2]} />
-        <meshBasicMaterial color={color} transparent opacity={0.1} />
+        <meshBasicMaterial color={color} transparent opacity={0.15} />
       </mesh>
 
       {/* ワイヤーフレーム枠 */}
       <mesh ref={frameRef}>
         <boxGeometry args={[2.6, 1.6, 0.18]} />
-        <meshBasicMaterial color={color} transparent opacity={0.2} wireframe />
+        <meshBasicMaterial color={color} transparent opacity={0.3} wireframe />
       </mesh>
 
-      {/* 厚みのあるガラスパネル - transmission 0.9 */}
+      {/* 厚みのあるクリスタルガラスパネル */}
       <RoundedBox args={[2.5, 1.5, 0.15]} radius={0.04} smoothness={4}>
         <meshPhysicalMaterial
           color="#020408"
@@ -283,7 +365,7 @@ function HelixMonitor({
           roughness={0.05}
           envMapIntensity={3}
           transparent
-          opacity={0.3}
+          opacity={0.25}
           transmission={0.9}
           thickness={0.5}
           ior={1.8}
@@ -313,7 +395,7 @@ function HelixMonitor({
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.1}
+          opacity={0.05}
           blending={THREE.AdditiveBlending}
           depthTest={false}
           depthWrite={false}
@@ -323,9 +405,9 @@ function HelixMonitor({
       {/* ポイントライト - ネオン効果 */}
       <pointLight
         color={color}
-        intensity={isActive ? 5 : 1}
-        distance={8}
-        decay={1.5}
+        intensity={isActive ? 6 : 1}
+        distance={10}
+        decay={1.2}
         position={[0, 0, -0.8]}
       />
     </group>
@@ -333,42 +415,66 @@ function HelixMonitor({
 }
 
 // ============================================
-// メインシーン
+// メインシーン with Z-based Governance
 // ============================================
 function HelixScene() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scroll = useScroll();
   const { camera } = useThree();
 
-  // Z-based Governance
+  const monitorPositions = useRef<Map<number, THREE.Vector3>>(new Map());
+
+  // Z-based Governance: カメラに最も近いモニターを自動選択
   useFrame(() => {
     if (!scroll) return;
 
     const scrollOffset = scroll.offset;
-    const scrollIndex = Math.round(scrollOffset * (SECTIONS.length - 1));
-    const clampedIndex = Math.max(0, Math.min(scrollIndex, SECTIONS.length - 1));
 
-    if (clampedIndex !== activeIndex) {
-      setActiveIndex(clampedIndex);
+    // 各モニターのZ距離を計算
+    let closestIndex = 0;
+    let closestDistance = -Infinity;
+
+    monitorPositions.current.forEach((position, index) => {
+      // カメラからのZ距離（カメラ空間）
+      const worldPos = position.clone();
+      const distance = worldPos.z;
+
+      if (distance > closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    // フォールバック: スクロール位置ベース
+    const scrollIndex = Math.round(scrollOffset * (SECTIONS.length - 1));
+    const finalIndex = monitorPositions.current.size > 0 ? closestIndex : scrollIndex;
+
+    if (finalIndex !== activeIndex && finalIndex >= 0 && finalIndex < SECTIONS.length) {
+      setActiveIndex(finalIndex);
     }
   });
 
-  // 再設計された螺旋パラメータ
-  const radius = 8;
-  const heightStep = 2.5;
+  // 再設計された螺旋パラメータ - ゆったりとした螺旋
+  const radius = 12; // 8→12 より広い螺旋
+  const heightStep = 1.8; // 2.5→1.8 垂直圧縮
+
+  // 位置更新コールバック
+  const updatePosition = useCallback((index: number, position: THREE.Vector3) => {
+    monitorPositions.current.set(index, position.clone());
+  }, []);
 
   return (
     <>
-      {/* 深い紺色から黒へのグラデーション背景 */}
+      {/* 深い紺色から黒へのグラデーション背景 - 濃い霧 */}
       <color attach="background" args={["#020617"]} />
       <fogExp2 attach="fog" args={["#020617", 0.035]} />
 
       {/* 環境照明 */}
-      <ambientLight intensity={0.05} color="#1e293b" />
-      <directionalLight position={[10, 20, 10]} intensity={0.2} color="#e2e8f0" />
+      <ambientLight intensity={0.03} color="#1e293b" />
+      <directionalLight position={[10, 20, 10]} intensity={0.15} color="#e2e8f0" />
 
-      <pointLight color="#3b82f6" intensity={0.8} distance={40} position={[20, 10, -10]} />
-      <pointLight color="#ec4899" intensity={0.6} distance={40} position={[-20, -10, -10]} />
+      <pointLight color="#3b82f6" intensity={0.6} distance={50} position={[25, 15, -15]} />
+      <pointLight color="#ec4899" intensity={0.5} distance={50} position={[-25, -15, -15]} />
 
       {/* Crystal Core */}
       <CrystalCore />
@@ -385,6 +491,7 @@ function HelixScene() {
           heightStep={heightStep}
           isActive={index === activeIndex}
           onActivate={() => setActiveIndex(index)}
+          globalScrollOffset={scroll?.offset || 0}
         />
       ))}
 
@@ -400,15 +507,18 @@ function HelixScene() {
 function PostProcessing() {
   return (
     <EffectComposer>
+      {/* Bloom - 白い発光部分だけが滲み出す */}
       <Bloom
-        intensity={1.5}
-        luminanceThreshold={0.3}
-        luminanceSmoothing={0.8}
-        height={300}
+        intensity={1.8}
+        luminanceThreshold={1.5}
+        luminanceSmoothing={0.6}
+        height={400}
         mipmapBlur
       />
-      <ChromaticAberration offset={[0.0015, 0.001]} />
-      <Vignette eskil={false} offset={0.1} darkness={0.6} />
+      {/* Chromatic Aberration - 色収差/虹色の歪み */}
+      <ChromaticAberration offset={[0.002, 0.0015]} />
+      {/* Vignette - 四隅の暗がり */}
+      <Vignette eskil={false} offset={0.15} darkness={0.7} />
     </EffectComposer>
   );
 }
@@ -420,7 +530,7 @@ export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0">
       <Canvas
-        camera={{ position: [0, 0, 14], fov: 38, near: 0.1, far: 100 }}
+        camera={{ position: [0, 0, 16], fov: 36, near: 0.1, far: 100 }}
         gl={{
           antialias: true,
           alpha: true,
@@ -430,7 +540,7 @@ export function SpiralBackground() {
         }}
         dpr={[1, 2]}
       >
-        <ScrollControls pages={6} damping={0.08}>
+        <ScrollControls pages={6} damping={0.06}>
           <HelixScene />
           <PostProcessing />
         </ScrollControls>
