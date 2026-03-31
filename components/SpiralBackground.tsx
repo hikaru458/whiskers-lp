@@ -206,7 +206,7 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     const targetY = 0;
 
     const depth = Math.abs(distance);
-    const targetZ = -Math.pow(depth, 1.8) * 14;
+    const targetZ = -Math.pow(depth, 1.4) * 6;
 
     damp(meshRef.current.position, "x", targetX, 0.15, delta);
     damp(meshRef.current.position, "y", targetY, 0.15, delta);
@@ -294,7 +294,7 @@ export function SpiralBackground() {
         gl={{ antialias: true }}
       >
         <CameraTilt />
-        <ScrollControls pages={SECTIONS.length} damping={0.2}>
+        <ScrollControls pages={2} damping={0.2}>
           <SceneContent />
           <BackgroundNoise />
           <Particles />
