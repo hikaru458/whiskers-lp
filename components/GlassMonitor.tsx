@@ -44,7 +44,7 @@ export default function GlassMonitor({
   scrollFactor: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const fresnel = useFresnel("#ffffff");
+  const fresnel = useFresnel("#1a1a2e");
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -62,7 +62,7 @@ export default function GlassMonitor({
   return (
     <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0, 0, Math.PI / 2] : [0, 0, 0]}>
       {/* ガラス本体 */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.3} smoothness={12}>
+      <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.1} smoothness={8}>
         <meshPhysicalMaterial
           color="#ffffff"
           roughness={0.02}
