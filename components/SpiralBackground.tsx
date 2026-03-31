@@ -38,11 +38,11 @@ function useResponsiveSettings() {
       if (w < 640) {
         // スマホ
         setSettings({
-          panelWidth: 4,
-          panelHeight: 2.6,
-          spacing: 5,
-          cameraZ: 9,
-          labelSize: 0.35,
+          panelWidth: 3.2,
+          panelHeight: 2.0,
+          spacing: 4.2,
+          cameraZ: 11,
+          labelSize: 0.28,
         });
       } else if (w < 1024) {
         // タブレット
@@ -169,14 +169,18 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
 // =============================
 export function SpiralBackground() {
   const [active, setActive] = useState(0);
+  const settings = useResponsiveSettings();
+
+  // 初期 offset を activeIndex に同期（Gallery だけ大きくなる問題の解消）
   const [offset, setOffset] = useState(0);
 
-  const settings = useResponsiveSettings();
+  useEffect(() => {
+    setOffset(-active * settings.spacing);
+  }, [active, settings.spacing]);
 
   // PC ホイールスクロール
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      // 縦スクロールを横移動に変換
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         setOffset((o) => o - e.deltaY * 0.01);
       }
