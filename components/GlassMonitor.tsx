@@ -153,20 +153,20 @@ export default function GlassMonitor({
         />
       </RoundedBox>
 
-      {/* === ⑤ コンテンツ（画像・動画）- ガラスの中 === */}
+      {/* === ⑤ コンテンツ（画像・動画）- 前面ガラスの前 === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, -0.05]}>
+        <mesh position={[0, 0, 0.18]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
 
-      {/* === ④ メインガラス本体（透明にして画像が見える） === */}
+      {/* === ④ メインガラス本体（厚みのある屈折層） === */}
       <RoundedBox 
         args={[baseWidth, baseHeight, 0.5]} 
         radius={0.15} 
         smoothness={10}
-        position={[0, 0, 0]}
+        position={[0, 0, -0.05]}
       >
         <meshPhysicalMaterial
           color="#ffffff"
@@ -187,7 +187,7 @@ export default function GlassMonitor({
       <GlassMist baseWidth={baseWidth} baseHeight={baseHeight} />
 
       {/* === ③ 中間層（内部反射フェイク層）- 超重要 === */}
-      <mesh position={[0, 0, 0]}>
+      <mesh position={[0, 0, -0.1]}>
         <RoundedBox 
           args={[baseWidth - 0.15, baseHeight - 0.15, 0.02]} 
           radius={0.13} 
@@ -210,7 +210,7 @@ export default function GlassMonitor({
         args={[baseWidth + 0.02, baseHeight + 0.02, 0.08]} 
         radius={0.16} 
         smoothness={10}
-        position={[0, 0, 0.12]}
+        position={[0, 0, 0.05]}
       >
         <meshPhysicalMaterial
           color="#ffffff"
@@ -226,7 +226,7 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* === ⑧ 前面反射専用レイヤー - Active Theory スタイル === */}
-      <mesh position={[0, 0, 0.16]}>
+      <mesh position={[0, 0, 0.08]}>
         <planeGeometry args={[baseWidth, baseHeight]} />
         <meshPhysicalMaterial
           color="#ffffff"
