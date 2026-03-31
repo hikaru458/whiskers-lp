@@ -236,6 +236,7 @@ function HelixMonitor({
   const glowRef = useRef<THREE.Mesh>(null);
 
   const { camera } = useThree();
+  const scroll = useScroll(); // useFrameの外でフックを呼び出す
 
   // 螺旋上の位置計算
   const baseAngle = useMemo(() => (index / total) * Math.PI * 2, [index, total]);
@@ -306,29 +307,27 @@ function HelixMonitor({
   }, [label, color, index]);
 
   // Governance: スケールと発光の状態管理
-  const targetScale = useMemo(() => (isActive ? 1.2 : 0.85), [isActive]);
+  const targetScaleNum = useMemo(() => (isActive ? 1.2 : 0.85), [isActive]);
   const targetGlowOpacity = useMemo(() => (isActive ? 0.6 : 0.15), [isActive]);
   const targetEdgeIntensity = useMemo(() => (isActive ? 2.0 : 0.5), [isActive]);
 
   useFrame((state, delta) => {
     if (!meshRef.current || !frameRef.current || !glowRef.current) return;
 
-    const scroll = state.scroll?.offset || 0;
-    const spiralRotation = scroll * Math.PI * 4;
+    // 修正1: useScrollフックからoffsetを取得
+    const scrollOffset = scroll.offset;
+    const spiralRotation = scrollOffset * Math.PI * 4;
     const currentAngle = baseAngle + spiralRotation;
 
-    // 螺旋位置計算
     const targetX = Math.cos(currentAngle) * radius;
     const targetZ = Math.sin(currentAngle) * radius;
-    const scrollY = scroll * total * heightStep * 1.5;
-    const targetY = baseY - scrollY;
+    const totalScrollY = scrollOffset * total * heightStep * 1.5;
+    const targetY = baseY - totalScrollY;
 
-    // 位置のdamp補完
     damp(meshRef.current.position, "x", targetX, 0.08, delta);
     damp(meshRef.current.position, "y", targetY, 0.08, delta);
     damp(meshRef.current.position, "z", targetZ, 0.08, delta);
 
-    // Governance: アクティブ時はカメラを向く、非アクティブは軸を向く
     const lookAtTarget = isActive
       ? camera.position.clone()
       : new THREE.Vector3(0, targetY, 0);
@@ -338,18 +337,17 @@ function HelixMonitor({
     dummy.lookAt(lookAtTarget);
     dampE(meshRef.current.rotation, dummy.rotation, 0.06, delta);
 
-    // Governance: スケールのdamp補完
-    const currentScale = meshRef.current.scale.x;
-    const newScale = damp(currentScale, targetScale, 0.1, delta);
-    meshRef.current.scale.setScalar(newScale);
+    // 修正2: dampを直接使い、scale.x, scale.y, scale.z を更新
+    damp(meshRef.current.scale, "x", targetScaleNum, 0.1, delta);
+    damp(meshRef.current.scale, "y", targetScaleNum, 0.1, delta);
+    damp(meshRef.current.scale, "z", targetScaleNum, 0.1, delta);
 
-    // Governance: 発光エッジの強度変化
-    if (frameRef.current.material instanceof THREE.MeshBasicMaterial) {
-      frameRef.current.material.opacity = targetEdgeIntensity * 0.3;
-    }
+    // 修正3: 型アサーションを行いマテリアルのプロパティを更新
+    const frameMaterial = frameRef.current.material as THREE.MeshBasicMaterial;
+    damp(frameMaterial, "opacity", targetEdgeIntensity * 0.3, 0.1, delta);
 
-    // グロー効果
-    glowRef.current.material.opacity = targetGlowOpacity;
+    const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
+    damp(glowMaterial, "opacity", targetGlowOpacity, 0.1, delta);
   });
 
   return (
@@ -438,11 +436,11 @@ function HelixScene() {
   // スクロールに応じてアクティブインデックスを更新
   useFrame(() => {
     if (!scroll) return;
+    // scroll.offsetは0~1なので、セクション数で割って現在のインデックスを出す
     const scrollOffset = scroll.offset;
-    const newIndex = Math.floor(scrollOffset * (SECTIONS.length - 1));
-    const clampedIndex = Math.max(0, Math.min(newIndex, SECTIONS.length - 1));
-    if (clampedIndex !== activeIndex) {
-      setActiveIndex(clampedIndex);
+    const newIndex = Math.round(scrollOffset * (SECTIONS.length - 1));
+    if (newIndex !== activeIndex) {
+      setActiveIndex(newIndex);
     }
   });
 
