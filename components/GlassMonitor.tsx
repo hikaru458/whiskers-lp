@@ -23,8 +23,8 @@ function useFresnel(color: string) {
           varying float vEdge;
           uniform vec3 uColor;
           void main() {
-            float fres = pow(vEdge, 1.8);
-            gl_FragColor = vec4(uColor * fres * 3.0, fres * 0.8);
+            float fres = pow(vEdge, 1.5);
+            gl_FragColor = vec4(uColor * fres * 4.0, fres);
           }
         `,
         transparent: true,
@@ -65,17 +65,16 @@ export default function GlassMonitor({
       <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.3} smoothness={12}>
         <meshPhysicalMaterial
           color="#ffffff"
-          transparent
-          opacity={0.2}
-          roughness={0.05}
-          metalness={0.15}
-          transmission={0.95}
-          thickness={3.0}
-          envMapIntensity={2.5}
+          roughness={0.02}
+          metalness={0.1}
+          transmission={1.0}
+          thickness={4.0}
+          ior={1.5}
+          envMapIntensity={3.0}
           clearcoat={1.0}
-          clearcoatRoughness={0.05}
-          attenuationColor="#e8f4ff"
-          attenuationDistance={5.0}
+          clearcoatRoughness={0.03}
+          attenuationColor="#ffffff"
+          attenuationDistance={10.0}
         />
       </RoundedBox>
 
