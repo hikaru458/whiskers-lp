@@ -1,6 +1,6 @@
 "use client";
 
-import { RoundedBox, Text } from "@react-three/drei";
+import { RoundedBox, Text, useVideoTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMemo, useRef } from "react";
@@ -38,13 +38,18 @@ export default function GlassMonitor({
   label,
   z,
   scrollFactor,
+  videoUrl = null,
 }: {
   label: string;
   z: number;
   scrollFactor: number;
+  videoUrl?: string | null;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const fresnel = useFresnel("#7dd3fc");
+
+  // 動画テクスチャ（任意）
+  const videoTexture = videoUrl ? useVideoTexture(videoUrl, { start: true, muted: true, loop: true }) : null;
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -61,6 +66,18 @@ export default function GlassMonitor({
 
   return (
     <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0.1, -0.2, Math.PI / 2] : [0.15, -0.25, 0]}>
+      {/* 背面ガラス - 厚みを強調 */}
+      <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.15} smoothness={10} position={[0, 0, -0.2]}>
+        <meshPhysicalMaterial
+          color="#0c4a6e"
+          roughness={0.05}
+          metalness={0.1}
+          transmission={0.95}
+          thickness={2.0}
+          envMapIntensity={2.0}
+        />
+      </RoundedBox>
+
       {/* ガラス本体 - 厚みと色付き */}
       <RoundedBox args={[baseWidth, baseHeight, 0.4]} radius={0.15} smoothness={10}>
         <meshPhysicalMaterial
@@ -75,6 +92,27 @@ export default function GlassMonitor({
           clearcoatRoughness={0.01}
         />
       </RoundedBox>
+
+      {/* 動画/コンテンツレイヤー */}
+      {videoTexture && (
+        <mesh position={[0, 0, 0.05]}>
+          <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
+          <meshBasicMaterial map={videoTexture} toneMapped={false} />
+        </mesh>
+      )}
+
+      {/* 側面エッジ - 厚み強調 */}
+      <mesh position={[0, 0, -0.2]}>
+        <RoundedBox args={[baseWidth + 0.02, baseHeight + 0.02, 0.4]} radius={0.15} smoothness={10}>
+          <meshPhysicalMaterial
+            color="#0ea5e9"
+            roughness={0.1}
+            metalness={0.2}
+            transparent
+            opacity={0.3}
+          />
+        </RoundedBox>
+      </mesh>
 
       {/* Fresnel エッジ - より繊細に */}
       <mesh scale={[baseWidth + 0.15, baseHeight + 0.15, 0.15]}>
