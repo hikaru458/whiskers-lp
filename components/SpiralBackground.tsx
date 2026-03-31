@@ -227,24 +227,12 @@ export function SpiralBackground() {
     };
   }, []);
 
-  // スマホ：横スワイプ + 縦スクロール → 横移動
+  // スマホ：横スワイプのみ
   const handlers = useSwipeable({
     onSwipedLeft: () => setActive((a) => Math.min(a + 1, PANELS.length - 1)),
     onSwipedRight: () => setActive((a) => Math.max(a - 1, 0)),
     trackMouse: false,
   });
-
-  useEffect(() => {
-    const handleTouchScroll = (e: TouchEvent) => {
-      if (e.touches.length === 1) {
-        const deltaY = e.touches[0].clientY;
-        setOffset((o) => o - deltaY * 0.002);
-      }
-    };
-
-    window.addEventListener("touchmove", handleTouchScroll);
-    return () => window.removeEventListener("touchmove", handleTouchScroll);
-  }, []);
 
   return (
     <div {...handlers} className="fixed inset-0 bg-black">
