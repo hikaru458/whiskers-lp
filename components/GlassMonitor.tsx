@@ -39,21 +39,23 @@ function GlassMist({ baseWidth, baseHeight }: { baseWidth: number; baseHeight: n
   });
   
   return (
-    <points ref={particlesRef} position={[0, 0, 0]}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
+    <section className="h-[200vh] flex items-center justify-center relative z-30">
+      <points ref={particlesRef} position={[0, 0, 0]}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[positions, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          color="#7dd3fc"
+          size={0.15}
+          transparent
+          opacity={0.6}
+          sizeAttenuation
         />
-      </bufferGeometry>
-      <pointsMaterial
-        color="#7dd3fc"
-        size={0.15}
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-      />
-    </points>
+      </points>
+    </section>
   );
 }
 
@@ -122,9 +124,9 @@ export default function GlassMonitor({
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  // 1.5倍大きく + スマホは縦長
-  const baseHeight = isPC ? 5.25 : (isMobile ? 4.5 : 4.5);
-  const baseWidth = isPC ? 8.4 : (isMobile ? 8.0 : 7.2); // スマホ: 9:16 縦長
+  // 元のサイズに戻す
+  const baseHeight = isPC ? 3.5 : (isMobile ? 3.0 : 3.0);
+  const baseWidth = isPC ? 5.6 : (isMobile ? 5.3 : 4.8);
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -161,7 +163,9 @@ export default function GlassMonitor({
       {images.length > 0 && (
         <mesh position={[0, 0, 0.12]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
-          <meshBasicMaterial map={texture} toneMapped={false} />
+          <div className="w-full max-w-7xl h-[200vh] relative" style={{ zIndex: 50 }}>
+            <meshBasicMaterial map={texture} toneMapped={false} />
+          </div>
         </mesh>
       )}
 
