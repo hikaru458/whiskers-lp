@@ -190,8 +190,20 @@ export default function SpiralBackground() {
 
       {/* ヘッダー */}
       <header className="w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-        <div className="text-sm tracking-[0.25em] uppercase text-slate-300">
-          Whiskers
+        {/* ロゴアイコン + テキスト */}
+        <div className="flex items-center gap-2">
+          <svg
+            viewBox="0 0 24 24"
+            className="w-5 h-5 text-slate-300"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          <span className="text-sm tracking-[0.25em] uppercase text-slate-300">
+            Whiskers
+          </span>
         </div>
         <nav className="flex gap-6 text-xs text-slate-300">
           <span>Gallery</span>
