@@ -145,7 +145,7 @@ export default function GlassMonitor({
 
       {/* === ① 画像（前面） === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.02]}>
+        <mesh position={[0, 0, 0.01]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
@@ -153,7 +153,7 @@ export default function GlassMonitor({
 
       {/* === ② メインガラス（屈折 + 色） === */}
       <RoundedBox 
-        args={[baseWidth, baseHeight, 0.4]} 
+        args={[baseWidth, baseHeight, 0.05]} 
         radius={0.15} 
         smoothness={10}
         position={[0, 0, 0]}
@@ -165,7 +165,7 @@ export default function GlassMonitor({
           roughness={0.05}
           metalness={0.1}
           transmission={0.78}
-          thickness={1.2}
+          thickness={0.2}
           ior={1.5}
           envMapIntensity={2.0}
           clearcoat={1.0}
@@ -177,17 +177,17 @@ export default function GlassMonitor({
 
       {/* === ③ 前面ガラス（薄い透明層） === */}
       <RoundedBox 
-        args={[baseWidth + 0.02, baseHeight + 0.02, 0.05]} 
+        args={[baseWidth + 0.02, baseHeight + 0.02, 0.02]} 
         radius={0.16} 
         smoothness={10}
-        position={[0, 0, 0.05]}
+        position={[0, 0, 0.03]}
       >
         <meshPhysicalMaterial
           color={theme.color}
           roughness={0.1}
           metalness={0.05}
           transmission={0.85}
-          thickness={0.1}
+          thickness={0.05}
           ior={1.45}
           envMapIntensity={1.5}
           clearcoat={1.0}
@@ -196,7 +196,7 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* === ④ 反射レイヤー（薄い膜） === */}
-      <mesh position={[0, 0, 0.04]}>
+      <mesh position={[0, 0, 0.02]}>
         <planeGeometry args={[baseWidth, baseHeight]} />
         <meshPhysicalMaterial
           color={theme.color}
@@ -204,7 +204,7 @@ export default function GlassMonitor({
           roughness={0.2}
           envMapIntensity={4.0}
           transparent
-          opacity={0.05}
+          opacity={0.03}
         />
       </mesh>
 
