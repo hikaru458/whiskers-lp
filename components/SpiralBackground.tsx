@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ScrollControls, useScroll, RoundedBox, Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { damp, dampE } from "maath/easing";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
 
 const SECTIONS = [
   { id: "gallery", label: "Gallery", color: "#60a5fa" },
@@ -16,8 +16,46 @@ const SECTIONS = [
   { id: "contact", label: "Contact", color: "#f87171" },
 ];
 
+const SPACING = 20;
+const FLOW_SPEED = 50;
+
 // ============================================
-// Crystal Monitor（斜めスライド・高精度クリスタル）
+// Particle Background (Active Theory style)
+// ============================================
+function Particles() {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const count = 200;
+
+  const { positions } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 100;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 50 - 20;
+    }
+    return { positions };
+  }, []);
+
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    const time = state.clock.elapsedTime * 0.05;
+    meshRef.current.rotation.y = time * 0.1;
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      <sphereGeometry args={[0.08, 8, 8]} />
+      <meshBasicMaterial color="#ffffff" transparent opacity={0.4} />
+      <bufferAttribute
+        attach="instanceMatrix"
+        args={[new THREE.InstancedBufferAttribute(positions, 3)]}
+      />
+    </instancedMesh>
+  );
+}
+
+// ============================================
+// Glass Monitor (Active Theory style)
 // ============================================
 function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const meshRef = useRef<THREE.Group>(null);
@@ -29,82 +67,91 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, 1024, 512);
     
-    // ガラスのエッジを強調する枠線
-    ctx.strokeStyle = color; ctx.lineWidth = 12;
+    // Glass edge border
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 12;
     ctx.strokeRect(30, 30, 964, 452);
 
+    // Text with glow
     ctx.fillStyle = "#ffffff";
-    ctx.font = "lighter 100px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    // 文字にわずかな光彩を付与
-    ctx.shadowColor = color; ctx.shadowBlur = 30;
+    ctx.font = "lighter 100px 'Playfair Display', serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 40;
     ctx.fillText(label.toUpperCase(), 512, 256);
+    
     return new THREE.CanvasTexture(canvas);
   }, [label, color]);
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
-    
+
+    // Current position based on scroll
     const currentPos = scrollOffset * (SECTIONS.length - 1);
     const distance = index - currentPos;
 
-    // --- 立体的な横スライド・ロジック ---
+    // 1. Horizontal movement (Active Theory style)
+    const targetX = index * SPACING - scrollOffset * FLOW_SPEED;
     
-    // 1. X軸：横に並べる（間隔を広めに取る）
-    const targetX = distance * 18; 
+    // 2. Fixed Y position
+    const targetY = 0;
     
-    // 2. Y軸：垂直方向は固定（微細な揺れはFloatコンポーネントに任せる）
-    const targetY = 0; 
-    
-    // 3. Z軸：中央（distance=0）に来るほど手前に飛び出す
-    const targetZ = isActive ? 10 : -10 - Math.abs(distance) * 8;
+    // 3. Non-linear Z depth
+    const depth = Math.abs(distance);
+    const targetZ = -Math.pow(depth, 1.6) * 12;
 
-    damp(meshRef.current.position, "x", targetX, 0.2, delta);
-    damp(meshRef.current.position, "y", targetY, 0.2, delta);
-    damp(meshRef.current.position, "z", targetZ, 0.2, delta);
+    // Apply positions with damping
+    damp(meshRef.current.position, "x", targetX, 0.15, delta);
+    damp(meshRef.current.position, "y", targetY, 0.15, delta);
+    damp(meshRef.current.position, "z", targetZ, 0.15, delta);
 
-    // 4. 回転：ここが「ダサくない」斜め演出の肝
-    // 左右にいるときは中央を向くようにY軸を回転させ、わずかに前傾(X軸)させる
-    const targetRotY = -distance * 0.4; 
-    const targetRotX = 0.15; // 常に少し前傾させて立体感を出す
+    // 4. Rotation: look at camera + forward tilt
+    if (meshRef.current) {
+      meshRef.current.lookAt(camera.position);
+      meshRef.current.rotation.x += 0.2; // Forward tilt for Active Theory style
+    }
 
-    damp(meshRef.current.rotation, "y", targetRotY, 0.15, delta);
-    damp(meshRef.current.rotation, "x", targetRotX, 0.15, delta);
-
-    // スケール：非アクティブは小さくして奥行きを強調
+    // 5. Scale based on distance
     const s = isActive ? 1.0 : 0.5;
     damp(meshRef.current.scale, "x", s, 0.2, delta);
     damp(meshRef.current.scale, "y", s, 0.2, delta);
-    
-    // 画面外のものは描画をスキップして負荷軽減
-    meshRef.current.visible = Math.abs(distance) < 2.2;
+
+    // 6. Visibility culling
+    meshRef.current.visible = Math.abs(distance) < 3;
   });
+
+  // Calculate opacity based on distance
+  const currentPos = scrollOffset * (SECTIONS.length - 1);
+  const distance = Math.abs(index - currentPos);
+  const opacity = THREE.MathUtils.mapLinear(distance, 0, 2, 1.0, 0.05);
 
   return (
     <group ref={meshRef}>
-      <Float speed={isActive ? 2 : 0} rotationIntensity={0.1} floatIntensity={0.4}>
-        {/* 厚みと屈折を極限まで高めたクリスタルボディ */}
-        <RoundedBox args={[7, 4, 0.4]} radius={0.12} smoothness={8}>
-          <meshPhysicalMaterial 
+      <Float speed={isActive ? 1.5 : 0} rotationIntensity={0.1} floatIntensity={0.3}>
+        {/* Crystal body with high refraction */}
+        <RoundedBox args={[6.5, 3.8, 0.4]} radius={0.15} smoothness={8}>
+          <meshPhysicalMaterial
             color="#ffffff"
-            transmission={1.0}      // 100%透過
-            thickness={3.0}         // 屈折の深さ
-            ior={2.4}               // ダイヤモンド級の屈折率
-            roughness={0.01}        // 鏡面仕上げ
-            clearcoat={1}           // 表面光沢
-            envMapIntensity={4}     // 周囲の映り込みを強く
+            transmission={1.0}
+            thickness={3.0}
+            ior={2.4}
+            roughness={0.01}
+            clearcoat={1}
+            envMapIntensity={4}
             transparent
-            opacity={isActive ? 0.98 : 0.1} // 非アクティブはゴーストのように
+            opacity={opacity}
           />
         </RoundedBox>
         
-        {/* テクスチャ（文字と枠線）をガラスのわずか手前に配置 */}
+        {/* Label slightly in front */}
         <mesh position={[0, 0, 0.21]}>
-          <planeGeometry args={[6.6, 3.6]} />
-          <meshBasicMaterial 
-            map={texture} 
-            transparent 
-            opacity={isActive ? 1 : 0.1} 
-            toneMapped={false} 
+          <planeGeometry args={[6.1, 3.4]} />
+          <meshBasicMaterial
+            map={texture}
+            transparent
+            opacity={isActive ? 1 : opacity * 0.5}
+            toneMapped={false}
           />
         </mesh>
       </Float>
@@ -113,21 +160,28 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 }
 
 // ============================================
-// メインコンポーネント
+// Main Component (Active Theory Camera Style)
 // ============================================
 export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0 bg-[#000000]">
-      {/* ブラウザのスクロールバーを消去 */}
+      {/* Hide scrollbar */}
       <style jsx global>{`
         body::-webkit-scrollbar { display: none; }
         body { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
       
-      <Canvas camera={{ position: [0, 0, 25], fov: 35 }} gl={{ antialias: true }}>
-        <ScrollControls pages={SECTIONS.length} damping={0.25}>
+      <Canvas 
+        camera={{ 
+          position: [0, 12, 28], 
+          fov: 35,
+          rotation: { x: -0.42, y: 0, z: 0 }
+        }} 
+        gl={{ antialias: true }}
+      >
+        <ScrollControls pages={SECTIONS.length} damping={0.2}>
           <SceneContent />
-          {/* クリスタルのエッジに都会的な反射を入れる */}
+          <Particles />
           <Environment preset="city" />
           <PostProcessing />
         </ScrollControls>
@@ -141,7 +195,6 @@ function SceneContent() {
   const [active, setActive] = useState(0);
 
   useFrame(() => {
-    // スクロール位置から現在のアクティブなインデックスを特定
     const current = Math.round(scroll.offset * (SECTIONS.length - 1));
     if (current !== active) setActive(current);
   });
@@ -149,12 +202,12 @@ function SceneContent() {
   return (
     <>
       {SECTIONS.map((s, i) => (
-        <GlassMonitor 
-          key={s.id} 
-          index={i} 
-          {...s} 
-          isActive={i === active} 
-          scrollOffset={scroll.offset} 
+        <GlassMonitor
+          key={s.id}
+          index={i}
+          {...s}
+          isActive={i === active}
+          scrollOffset={scroll.offset}
         />
       ))}
     </>
@@ -164,12 +217,9 @@ function SceneContent() {
 function PostProcessing() {
   return (
     <EffectComposer multisampling={8}>
-      <Bloom 
-        intensity={1.5} 
-        luminanceThreshold={1.2} 
-        mipmapBlur 
-      />
-      <Vignette darkness={0.8} />
+      <Bloom intensity={1.5} luminanceThreshold={1.2} mipmapBlur />
+      <ChromaticAberration offset={new THREE.Vector2(0.0015, 0.0015)} />
+      <Vignette darkness={0.75} />
     </EffectComposer>
   );
 }
