@@ -20,7 +20,7 @@ const PANELS = [
 ];
 
 // =============================
-// レスポンシブ設定
+// レスポンシブ設定 + スマホ判定
 // =============================
 function useResponsiveSettings() {
   const [settings, setSettings] = useState({
@@ -29,6 +29,7 @@ function useResponsiveSettings() {
     spacing: 8,
     cameraZ: 12,
     labelSize: 0.5,
+    isMobile: false,
   });
 
   useEffect(() => {
@@ -36,28 +37,34 @@ function useResponsiveSettings() {
       const w = window.innerWidth;
 
       if (w < 640) {
+        // スマホ（縦長パネル）
         setSettings({
-          panelWidth: 3.2,
-          panelHeight: 2.0,
+          panelWidth: 2.6,
+          panelHeight: 4.2,
           spacing: 4.2,
-          cameraZ: 11,
-          labelSize: 0.28,
+          cameraZ: 12,
+          labelSize: 0.32,
+          isMobile: true,
         });
       } else if (w < 1024) {
+        // タブレット
         setSettings({
           panelWidth: 5,
           panelHeight: 3.2,
           spacing: 6.5,
           cameraZ: 10,
           labelSize: 0.45,
+          isMobile: false,
         });
       } else {
+        // PC
         setSettings({
           panelWidth: 6,
           panelHeight: 4,
           spacing: 8,
           cameraZ: 12,
           labelSize: 0.5,
+          isMobile: false,
         });
       }
     };
@@ -120,6 +127,13 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
     damp(ref.current.position, "x", targetX, 0.15, delta);
     damp(ref.current.scale, "x", targetScale, 0.2, delta);
     damp(ref.current.scale, "y", targetScale, 0.2, delta);
+
+    // スマホではパネルを縦向きに回転
+    if (settings.isMobile) {
+      ref.current.rotation.z = Math.PI / 2;
+    } else {
+      ref.current.rotation.z = 0;
+    }
   });
 
   return (
@@ -154,6 +168,7 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
         color="white"
         anchorX="center"
         anchorY="middle"
+        rotation={[0, 0, settings.isMobile ? -Math.PI / 2 : 0]}
       >
         {label}
       </Text>
@@ -174,9 +189,7 @@ export function SpiralBackground() {
     setOffset(-active * settings.spacing);
   }, [active, settings.spacing]);
 
-  // =============================
   // PC：ホイール + ドラッグ
-  // =============================
   useEffect(() => {
     let isDragging = false;
     let lastX = 0;
@@ -214,9 +227,7 @@ export function SpiralBackground() {
     };
   }, []);
 
-  // =============================
-  // スマホ：横スワイプ + 縦スクロールも横移動に変換
-  // =============================
+  // スマホ：横スワイプ + 縦スクロール → 横移動
   const handlers = useSwipeable({
     onSwipedLeft: () => setActive((a) => Math.min(a + 1, PANELS.length - 1)),
     onSwipedRight: () => setActive((a) => Math.max(a - 1, 0)),
