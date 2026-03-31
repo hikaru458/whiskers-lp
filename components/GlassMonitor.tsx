@@ -155,10 +155,18 @@ export default function GlassMonitor({
 
       {/* === ⑤ コンテンツ（画像・動画）- ガラスの前面に配置 === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.2]}>
-          <planeGeometry args={[baseWidth - 0.4, baseHeight - 0.4]} />
-          <meshBasicMaterial map={texture} toneMapped={false} />
-        </mesh>
+        <>
+          {/* 画像の影 - ガラスの奥行き演出 */}
+          <mesh position={[0, 0, 0.1]}>
+            <planeGeometry args={[baseWidth - 0.35, baseHeight - 0.35]} />
+            <meshBasicMaterial color="black" transparent opacity={0.08} />
+          </mesh>
+          {/* 画像本体 */}
+          <mesh position={[0, 0, 0.2]}>
+            <planeGeometry args={[baseWidth - 0.4, baseHeight - 0.4]} />
+            <meshBasicMaterial map={texture} toneMapped={false} />
+          </mesh>
+        </>
       )}
 
       {/* === ④ メインガラス本体（透明にして画像が見える） === */}
@@ -224,6 +232,19 @@ export default function GlassMonitor({
           clearcoatRoughness={0.005}
         />
       </RoundedBox>
+
+      {/* === ⑧ 前面反射専用レイヤー - Active Theory スタイル === */}
+      <mesh position={[0, 0, 0.16]}>
+        <planeGeometry args={[baseWidth, baseHeight]} />
+        <meshPhysicalMaterial
+          color="#ffffff"
+          metalness={1.0}
+          roughness={0.05}
+          envMapIntensity={6.0}
+          transparent
+          opacity={0.12}
+        />
+      </mesh>
 
       {/* === ① Fresnel（縁の光） === */}
       <mesh scale={[baseWidth + 0.12, baseHeight + 0.12, 0.15]} position={[0, 0, 0]}>
