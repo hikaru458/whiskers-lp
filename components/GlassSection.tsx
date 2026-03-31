@@ -22,8 +22,8 @@ export default function GlassSection({
   const scrollFactor = scrollY * 0.01 * (index + 1);
 
   return (
-    <section className="h-[150vh] flex items-center justify-center relative z-30">
-      <div className="w-full max-w-7xl h-[90vh]">
+    <section className="h-[180vh] flex items-center justify-center relative z-30">
+      <div className="w-full max-w-7xl h-[100vh]">
         <Canvas
           camera={{ position: [0, 0, 11], fov: 32 }}
           gl={{ antialias: true }}
