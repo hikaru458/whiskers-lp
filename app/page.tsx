@@ -2,84 +2,46 @@
 
 import { useEffect, useState } from "react";
 import SpiralBackground from "@/components/SpiralBackground";
-import GlassSection from "@/components/GlassSection";
 import HelloGlassMonitor from "@/components/HelloGlassMonitor";
 
-const PANELS = [
-  { label: "Gallery", z: 0 },
-  { label: "Creator", z: 0 },
-  { label: "Contest", z: 0 },
-  { label: "Product", z: 0 },
-  { label: "FAQ", z: 0 },
-  { label: "Contact", z: 0 },
-];
-
-// 画像を6パネルに分配（3-4枚ずつ）
-const IMAGES = [
-  // Gallery: image_fx 0-2 (3枚)
-  ["/images/image_fx_0.jpg", "/images/image_fx_1.jpg", "/images/image_fx_2.jpg"],
-  // Creator: image_fx 3-5 (3枚)
-  ["/images/image_fx_3.jpg", "/images/image_fx_4.jpg", "/images/image_fx_5.jpg"],
-  // Contest: image_fx 6-7 + juno_0 (3枚)
-  ["/images/image_fx_6.jpg", "/images/image_fx_7.jpg", "/images/juno_0.png"],
-  // Product: juno 1-2 + Whisk 1枚 (3枚)
-  ["/images/juno_1.png", "/images/juno_2.png", "/images/Whisk_183ee3fd14.jpg"],
-  // FAQ: Whisk 4枚
-  ["/images/Whisk_3013699a43.jpg", "/images/Whisk_4a53114df4.jpg", "/images/Whisk_c4c5e10064.jpg", "/images/Whisk_cab3f11229.jpg"],
-  // Contact: Whisk 残り4枚
-  ["/images/Whisk_ccf674b333.jpg", "/images/Whisk_d6ef45a2de.jpg", "/images/Whisk_d869a0da19.jpg", "/images/Whisk_edb0a6bb60.jpg"],
+// 全20枚の画像を1つの配列にまとめる
+const ALL_IMAGES = [
+  // image_fx 0-7 (8枚)
+  "/images/image_fx_0.jpg",
+  "/images/image_fx_1.jpg",
+  "/images/image_fx_2.jpg",
+  "/images/image_fx_3.jpg",
+  "/images/image_fx_4.jpg",
+  "/images/image_fx_5.jpg",
+  "/images/image_fx_6.jpg",
+  "/images/image_fx_7.jpg",
+  // juno 0-2 (3枚)
+  "/images/juno_0.png",
+  "/images/juno_1.png",
+  "/images/juno_2.png",
+  // Whisk 9枚
+  "/images/Whisk_183ee3fd14.jpg",
+  "/images/Whisk_3013699a43.jpg",
+  "/images/Whisk_4a53114df4.jpg",
+  "/images/Whisk_c4c5e10064.jpg",
+  "/images/Whisk_cab3f11229.jpg",
+  "/images/Whisk_ccf674b333.jpg",
+  "/images/Whisk_d6ef45a2de.jpg",
+  "/images/Whisk_d869a0da19.jpg",
+  "/images/Whisk_edb0a6bb60.jpg",
 ];
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState(0);
+  const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll("section");
-      let current = 0;
-      sections.forEach((sec, i) => {
-        const rect = sec.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.5) current = i;
-      });
-      setActiveSection(Math.max(0, current - 1));
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // ハローページは常にアクティブ
+    setIsActive(true);
   }, []);
-
-  const scrollToSection = (index: number) => {
-    const target = document.querySelectorAll("section")[index + 1];
-    target?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <main className="min-h-screen bg-[#050814] text-white relative">
       <SpiralBackground />
-
-      {/* 右側ナビ */}
-      <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
-        {PANELS.map((p, i) => {
-          const active = i === activeSection;
-          return (
-            <button
-              key={p.label}
-              onClick={() => scrollToSection(i)}
-              className={`
-                text-[10px] tracking-[0.3em] font-serif transition
-                ${active ? "text-sky-300" : "text-slate-500 hover:text-slate-300"}
-              `}
-              style={{
-                textShadow: active
-                  ? "0 0 14px rgba(125,211,252,0.9), 0 0 26px rgba(125,211,252,0.7)"
-                  : "none",
-              }}
-            >
-              {p.label}
-            </button>
-          );
-        })}
-      </nav>
 
       {/* Header */}
       <header className="w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between relative z-40">
@@ -88,32 +50,12 @@ export default function Home() {
         </span>
       </header>
 
-      {/* Hero */}
-      <section className="min-h-[100vh] flex flex-col items-center justify-center px-6 relative z-30">
-        <div className="w-full max-w-3xl space-y-6 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-slate-400">
-            Hello, Creator
-          </p>
-          <h1 className="text-5xl md:text-6xl font-light leading-[1.1] tracking-wide font-serif text-slate-50">
-            Glass-like horizontal monitors
-            <br />
-            in a midnight mist.
-          </h1>
-          <p className="text-sm text-slate-300 max-w-xl mx-auto">
-            Deep navy, soft gradients, and floating glass panels with cinematic depth.
-          </p>
-        </div>
-        
-        {/* Hello Glass Monitor - Active only on hero section */}
-        <div className="w-full max-w-2xl mt-8">
-          <HelloGlassMonitor images={IMAGES[0]} isActive={activeSection === -1} />
+      {/* Hero - ガラスモニター1枚のみ */}
+      <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 relative z-30">
+        <div className="w-full max-w-2xl">
+          <HelloGlassMonitor images={ALL_IMAGES} isActive={isActive} />
         </div>
       </section>
-
-      {/* Glass Sections */}
-      {PANELS.map((panel, i) => (
-        <GlassSection key={panel.label} panel={panel} index={i} images={IMAGES[i]} />
-      ))}
 
       {/* Footer */}
       <footer className="w-full max-w-5xl mx-auto px-6 py-10 text-xs text-slate-500 flex justify-between relative z-40">
