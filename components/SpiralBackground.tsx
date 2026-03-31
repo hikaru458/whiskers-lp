@@ -120,11 +120,14 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
       dummy.position.copy(meshRef.current.position);
       dummy.lookAt(camera.position);
       dampE(meshRef.current.rotation, dummy.rotation, 0.05, delta);
-      damp(meshRef.current.scale, "x", 1.1, 0.1, delta);
     } else {
       meshRef.current.rotation.y = -t + Math.PI / 2;
-      damp(meshRef.current.scale, "x", 0.6, 0.1, delta);
     }
+
+    // スケールは常に適用
+    damp(meshRef.current.scale, "x", isActive ? 1.2 : 0.7, 0.1, delta);
+    damp(meshRef.current.scale, "y", isActive ? 1.2 : 0.7, 0.1, delta);
+    damp(meshRef.current.scale, "z", isActive ? 1.2 : 0.7, 0.1, delta);
   });
 
   return (
@@ -165,7 +168,6 @@ export function SpiralBackground() {
           <ambientLight intensity={0.05} />
           <pointLight position={[10, 10, 10]} intensity={15} color="#fff" />
           
-          <CrystalHelix scrollOffset={0} />
           <SceneContent />
           
           <Environment preset="night" />
