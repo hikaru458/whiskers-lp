@@ -105,7 +105,7 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* 白いフレーム枠 - フォトフレーム風 */}
-      <RoundedBox args={[baseWidth + 0.1, baseHeight + 0.1, 0.05]} radius={0.18} smoothness={10} position={[0, 0, 0.21]}>
+      <RoundedBox args={[baseWidth + 0.1, baseHeight + 0.1, 0.05]} radius={0.18} smoothness={10} position={[0, 0, -0.05]}>
         <meshPhysicalMaterial
           color="#ffffff"
           roughness={0.1}
@@ -117,7 +117,7 @@ export default function GlassMonitor({
 
       {/* 画像/コンテンツレイヤー */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.05]}>
+        <mesh position={[0, 0, 0.1]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
