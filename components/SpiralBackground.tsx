@@ -273,7 +273,7 @@ function GlassMonitor({ index, label, subtitle, color, scrollProgress, isActive,
           fontSize={0.5}
           color="#ffffff"
           anchorX="center"
-          anchorY="center"
+          anchorY="middle"
           font="/fonts/PlayfairDisplay-Bold.ttf"
           letterSpacing={0.1}
         >
@@ -286,7 +286,7 @@ function GlassMonitor({ index, label, subtitle, color, scrollProgress, isActive,
           fontSize={0.25}
           color={color}
           anchorX="center"
-          anchorY="center"
+          anchorY="middle"
           font="/fonts/Inter-Light.ttf"
           letterSpacing={0.2}
         >
