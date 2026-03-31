@@ -44,7 +44,7 @@ export default function GlassMonitor({
   scrollFactor: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const fresnel = useFresnel("#1a1a2e");
+  const fresnel = useFresnel("#7dd3fc");
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -61,20 +61,20 @@ export default function GlassMonitor({
 
   return (
     <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0, 0, Math.PI / 2] : [0, 0, 0]}>
-      {/* ガラス本体 */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.1} smoothness={8}>
+      {/* ガラス本体 - 厚みと色付き */}
+      <RoundedBox args={[baseWidth, baseHeight, 0.4]} radius={0.15} smoothness={10}>
         <meshPhysicalMaterial
-          color="#ffffff"
-          roughness={0.02}
-          metalness={0.0}
-          transmission={1.0}
-          thickness={5.0}
-          ior={1.5}
-          envMapIntensity={2.0}
+          color="#0ea5e9"
+          roughness={0.03}
+          metalness={0.1}
+          transmission={0.98}
+          thickness={8.0}
+          ior={1.6}
+          envMapIntensity={4.0}
           clearcoat={1.0}
-          clearcoatRoughness={0.01}
-          attenuationColor="#a8d8ff"
-          attenuationDistance={8.0}
+          clearcoatRoughness={0.02}
+          attenuationColor="#38bdf8"
+          attenuationDistance={5.0}
         />
       </RoundedBox>
 
@@ -97,11 +97,11 @@ export default function GlassMonitor({
         </RoundedBox>
       </group>
 
-      {/* ラベルテキスト */}
+      {/* ラベルテキスト - より明るく */}
       <Text
-        position={[0.4, 0, 0.1]}
+        position={[0.4, 0, 0.15]}
         fontSize={0.6}
-        color="#ffffff"
+        color="#e0f2fe"
         anchorX="left"
         anchorY="middle"
         rotation={isMobile ? [0, 0, -Math.PI / 2] : [0, 0, 0]}
