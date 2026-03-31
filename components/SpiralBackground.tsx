@@ -122,18 +122,23 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   return (
     <group ref={meshRef}>
       <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.4}>
-        <RoundedBox args={[4.5, 2.5, 0.005]} radius={0.02}>
+        <RoundedBox args={[15, 9, 0.08]} radius={0.3} smoothness={8}>
           <meshPhysicalMaterial 
-            transmission={0.99} 
-            thickness={0.5} 
-            ior={1.1} 
-            transparent 
-            opacity={isActive ? 0.8 : 0.05} // 非アクティブはほぼ消す
+            color="#ffffff"
+            transmission={1.0}
+            thickness={3}
+            ior={1.5}
+            transparent
+            opacity={isActive ? 0.15 : 0.08}
             roughness={0}
+            clearcoat={1}
+            clearcoatRoughness={0}
+            attenuationColor="#ffffff"
+            attenuationDistance={5}
           />
         </RoundedBox>
-        <mesh position={[0, 0, 0.01]}>
-          <planeGeometry args={[4.3, 2.3]} />
+        <mesh position={[0, 0, 0.15]}>
+          <planeGeometry args={[14, 8]} />
           <meshBasicMaterial map={texture} transparent opacity={isActive ? 1 : 0.1} toneMapped={false} />
         </mesh>
       </Float>
