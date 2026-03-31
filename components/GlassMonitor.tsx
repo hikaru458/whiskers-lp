@@ -43,9 +43,7 @@ function GlassMist({ baseWidth, baseHeight }: { baseWidth: number; baseHeight: n
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={30}
-          array={positions}
-          itemSize={3}
+          args={[positions, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
