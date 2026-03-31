@@ -5,7 +5,8 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMemo, useRef, useState, useEffect } from "react";
 
-function useFresnel(color: string) {
+// Fresnel エッジ発光シェーダー
+function useFresnel(color: string, intensity = 2.5) {
   return useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -24,13 +25,13 @@ function useFresnel(color: string) {
           uniform vec3 uColor;
           void main() {
             float fres = pow(vEdge, 2.0);
-            gl_FragColor = vec4(uColor * fres * 2.5, fres * 0.6);
+            gl_FragColor = vec4(uColor * fres * ${intensity.toFixed(1)}, fres * 0.6);
           }
         `,
         transparent: true,
         depthWrite: false,
       }),
-    [color]
+    [color, intensity]
   );
 }
 
@@ -48,7 +49,7 @@ export default function GlassMonitor({
   slideInterval?: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const fresnel = useFresnel("#7dd3fc");
+  const fresnel = useFresnel("#7dd3fc", 2.5);
 
   // 画像スライドショー
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -77,103 +78,114 @@ export default function GlassMonitor({
 
   return (
     <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0.1, -0.2, Math.PI / 2] : [0.15, -0.25, 0]}>
-      {/* 背面ガラス - 厚みを強調 */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.15} smoothness={10} position={[0, 0, -0.2]}>
+      
+      {/* === ⑦ 背景空間（SpiralBackgroundで実装済み） === */}
+      
+      {/* === ⑥ 背面ガラス（裏側の反射層） === */}
+      <RoundedBox 
+        args={[baseWidth - 0.1, baseHeight - 0.1, 0.15]} 
+        radius={0.14} 
+        smoothness={10} 
+        position={[0, 0, -0.25]}
+      >
         <meshPhysicalMaterial
-          color="#0c4a6e"
-          roughness={0.05}
-          metalness={0.1}
-          transmission={0.95}
-          thickness={2.0}
-          envMapIntensity={2.0}
-        />
-      </RoundedBox>
-
-      {/* ガラス本体 - 厚みと色付き */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.4]} radius={0.15} smoothness={10}>
-        <meshPhysicalMaterial
-          color="#ffffff"
-          roughness={0.02}
-          metalness={0.05}
-          transmission={0.99}
-          thickness={6.0}
-          ior={1.5}
-          envMapIntensity={3.0}
-          clearcoat={1.0}
-          clearcoatRoughness={0.01}
-        />
-      </RoundedBox>
-
-      {/* 白いフレーム枠 - フォトフレーム風 */}
-      <RoundedBox args={[baseWidth + 0.1, baseHeight + 0.1, 0.05]} radius={0.18} smoothness={10} position={[0, 0, -0.05]}>
-        <meshPhysicalMaterial
-          color="#ffffff"
+          color="#0a2540"
           roughness={0.1}
-          metalness={0.0}
-          transmission={0.0}
-          envMapIntensity={1.0}
+          metalness={0.15}
+          transmission={0.6}
+          thickness={1.5}
+          ior={1.5}
+          envMapIntensity={1.5}
+          clearcoat={0.5}
+          clearcoatRoughness={0.1}
         />
       </RoundedBox>
 
-      {/* 画像/コンテンツレイヤー */}
+      {/* === ⑤ コンテンツ（画像・動画）- ガラスの中 === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.1]}>
-          <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
+        <mesh position={[0, 0, -0.08]}>
+          <planeGeometry args={[baseWidth - 0.4, baseHeight - 0.4]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
 
-      {/* 側面エッジ - 厚み強調 */}
-      <mesh position={[0, 0, -0.2]}>
-        <RoundedBox args={[baseWidth + 0.02, baseHeight + 0.02, 0.4]} radius={0.15} smoothness={10}>
+      {/* === ④ メインガラス本体（厚みのある屈折層） === */}
+      <RoundedBox 
+        args={[baseWidth, baseHeight, 0.5]} 
+        radius={0.15} 
+        smoothness={10}
+        position={[0, 0, 0]}
+      >
+        <meshPhysicalMaterial
+          color="#ffffff"
+          roughness={0.05}
+          metalness={0.08}
+          transmission={0.25}
+          thickness={4.0}
+          ior={1.52}
+          envMapIntensity={2.5}
+          clearcoat={1.0}
+          clearcoatRoughness={0.02}
+          attenuationColor="#7dd3fc"
+          attenuationDistance={2.0}
+        />
+      </RoundedBox>
+
+      {/* === ③ 中間層（内部反射フェイク層）- 超重要 === */}
+      <mesh position={[0, 0, 0]}>
+        <RoundedBox 
+          args={[baseWidth - 0.15, baseHeight - 0.15, 0.02]} 
+          radius={0.13} 
+          smoothness={8}
+        >
           <meshPhysicalMaterial
-            color="#0ea5e9"
-            roughness={0.1}
-            metalness={0.2}
+            color="#a5f3fc"
+            roughness={0.2}
+            metalness={0.3}
+            transmission={0.4}
             transparent
-            opacity={0.3}
+            opacity={0.15}
+            envMapIntensity={1.8}
           />
         </RoundedBox>
       </mesh>
 
-      {/* Fresnel エッジ - より繊細に */}
-      <mesh scale={[baseWidth + 0.15, baseHeight + 0.15, 0.15]}>
-        <planeGeometry args={[1, 1]} />
-        <primitive object={fresnel} />
-      </mesh>
-
-      {/* ガラスカバー - 保護フィルム風 */}
-      <RoundedBox args={[baseWidth - 0.2, baseHeight - 0.2, 0.02]} radius={0.12} smoothness={8} position={[0, 0, 0.06]}>
+      {/* === ② 前面ガラス（薄い透明層） === */}
+      <RoundedBox 
+        args={[baseWidth + 0.02, baseHeight + 0.02, 0.08]} 
+        radius={0.16} 
+        smoothness={10}
+        position={[0, 0, 0.12]}
+      >
         <meshPhysicalMaterial
           color="#ffffff"
-          roughness={0.01}
-          metalness={0.0}
-          transmission={0.95}
-          thickness={0.5}
-          ior={1.4}
+          roughness={0.02}
+          metalness={0.05}
+          transmission={0.92}
+          thickness={0.3}
+          ior={1.45}
           envMapIntensity={2.0}
           clearcoat={1.0}
           clearcoatRoughness={0.01}
         />
       </RoundedBox>
 
-      {/* 擬似シャドウ */}
-      <mesh position={[0, -baseHeight / 2 - 0.3, 0]}>
-        <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.12]} />
-        <meshBasicMaterial color="black" transparent opacity={0.15} />
+      {/* === ① Fresnel（縁の光） === */}
+      <mesh scale={[baseWidth + 0.12, baseHeight + 0.12, 0.15]} position={[0, 0, 0]}>
+        <planeGeometry args={[1, 1]} />
+        <primitive object={fresnel} />
       </mesh>
 
-      {/* アイコン枠 */}
-      <group position={[-baseWidth * 0.25, 0, 0.08]} rotation={isMobile ? [0, 0, -Math.PI / 2] : [0, 0, 0]}>
-        <RoundedBox args={[0.8, 0.8, 0.02]} radius={0.2} smoothness={8}>
-          <meshBasicMaterial color="#e5e7eb" transparent opacity={0.9} wireframe />
-        </RoundedBox>
-      </group>
+      {/* シャドウ */}
+      <mesh position={[0, -baseHeight / 2 - 0.3, -0.1]}>
+        <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.12]} />
+        <meshBasicMaterial color="black" transparent opacity={0.2} />
+      </mesh>
 
-      {/* ラベルテキスト - より明るく */}
+      {/* ラベルテキスト */}
       <Text
-        position={[0.4, 0, 0.15]}
-        fontSize={0.6}
+        position={[0.4, -baseHeight / 2 - 0.6, 0.15]}
+        fontSize={0.5}
         color="#e0f2fe"
         anchorX="left"
         anchorY="middle"
