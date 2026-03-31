@@ -47,8 +47,8 @@ function CrystalHelix() {
     <group>
       {helixCurves.map((curve, i) => (
         <mesh key={i}>
-          {/* セグメント数を200に削減、半径を0.03に増加 */}
-          <tubeGeometry args={[curve, 200, 0.03, 8, false]} />
+          {/* セグメント数を100に削減、半径を0.08に増加して見やすく */}
+          <tubeGeometry args={[curve, 100, 0.08, 8, false]} />
           <meshPhysicalMaterial
             color="#ffffff"
             transmission={1.0}
@@ -120,16 +120,18 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
       <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
         <RoundedBox args={[4, 2.2, 0.01]} radius={0.05} smoothness={4}>
           <meshPhysicalMaterial 
-            transmission={0.98} 
-            thickness={1} 
+            transmission={0.95} 
+            thickness={0.5} 
             ior={1.2} 
             transparent 
-            opacity={isActive ? 0.9 : 0.1} // 非アクティブ時はほぼ消す
+            opacity={isActive ? 0.95 : 0.4}
+            roughness={0.1}
+            metalness={0.1}
           />
         </RoundedBox>
         <mesh position={[0, 0, 0.02]}>
           <planeGeometry args={[3.8, 2]} />
-          <meshBasicMaterial map={texture} transparent opacity={isActive ? 1 : 0.2} toneMapped={false} />
+          <meshBasicMaterial map={texture} transparent opacity={isActive ? 1 : 0.5} toneMapped={false} />
         </mesh>
       </Float>
     </group>
