@@ -267,14 +267,13 @@ function GlassMonitor({ index, label, subtitle, color, scrollProgress, isActive,
           />
         </mesh>
 
-        {/* テキストラベル */}
+        {/* テキストラベル - システムフォント使用 */}
         <Text
           position={[0, 0.3, 0.05]}
           fontSize={0.5}
           color="#ffffff"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/PlayfairDisplay-Bold.ttf"
           letterSpacing={0.1}
         >
           {label}
@@ -287,7 +286,6 @@ function GlassMonitor({ index, label, subtitle, color, scrollProgress, isActive,
           color={color}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Inter-Light.ttf"
           letterSpacing={0.2}
         >
           {subtitle}
