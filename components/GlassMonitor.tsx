@@ -93,12 +93,16 @@ export default function GlassMonitor({
   scrollFactor,
   images = [],
   slideInterval = 3000,
+  transmission = 0.78,
+  thickness = 1.6,
 }: {
   label: string;
   z: number;
   scrollFactor: number;
   images?: string[];
   slideInterval?: number;
+  transmission?: number;
+  thickness?: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const fresnel = useFresnel("#7dd3fc", 2.5);
@@ -172,8 +176,8 @@ export default function GlassMonitor({
           color="#ffffff"
           roughness={0.02}
           metalness={0.1}
-          transmission={0.78}
-          thickness={1.6}
+          transmission={transmission}
+          thickness={thickness}
           ior={1.5}
           envMapIntensity={3.0}
           clearcoat={1.0}

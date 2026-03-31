@@ -24,8 +24,8 @@ export default function GlassSection({
   const scrollFactor = 0;
 
   return (
-    <section className="h-[100vh] flex items-center justify-center relative z-30">
-      <div className="w-full max-w-7xl h-[100vh] relative" style={{ zIndex: 50 }}>
+    <section className="h-[150vh] flex items-center justify-center relative z-30">
+      <div className="w-full max-w-7xl h-[150vh] relative" style={{ zIndex: 50 }}>
         <Canvas
           camera={{ position: [0, 0, 8], fov: 45 }}
           gl={{ antialias: true }}
@@ -33,7 +33,14 @@ export default function GlassSection({
         >
           <ambientLight intensity={0.75} />
           <directionalLight position={[4, 6, 8]} intensity={1.5} />
-          <GlassMonitor label={panel.label} z={panel.z} scrollFactor={scrollFactor} images={images} />
+          <GlassMonitor 
+            label={panel.label} 
+            z={panel.z} 
+            scrollFactor={scrollFactor} 
+            transmission={0.75} 
+            thickness={1.4} 
+            images={images} 
+          />
         </Canvas>
       </div>
     </section>
