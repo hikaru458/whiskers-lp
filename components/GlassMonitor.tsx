@@ -154,24 +154,24 @@ export default function GlassMonitor({
       {/* === ② メインガラス（屈折 + 色） === */}
       <RoundedBox 
         args={[baseWidth, baseHeight, 0.05]} 
-        radius={0.05} 
+        radius={0.08} 
         smoothness={10}
         position={[0, 0, 0]}
       >
         <meshPhysicalMaterial
           color={theme.color}
           attenuationColor={theme.attenuationColor}
-          attenuationDistance={4.0}
-          roughness={0.05}
-          metalness={0.1}
-          transmission={0.78}
-          thickness={0.2}
-          ior={1.5}
-          envMapIntensity={2.0}
+          attenuationDistance={3.0}
+          roughness={0.03}
+          metalness={0.15}
+          transmission={0.72}
+          thickness={0.35}
+          ior={1.52}
+          envMapIntensity={2.5}
           clearcoat={1.0}
-          clearcoatRoughness={0.02}
+          clearcoatRoughness={0.01}
           transparent
-          opacity={0.22}
+          opacity={0.32}
         />
       </RoundedBox>
 
@@ -184,14 +184,16 @@ export default function GlassMonitor({
       >
         <meshPhysicalMaterial
           color={theme.color}
-          roughness={0.1}
+          roughness={0.04}
           metalness={0.05}
-          transmission={0.85}
-          thickness={0.05}
+          transmission={0.88}
+          thickness={0.08}
           ior={1.45}
-          envMapIntensity={1.5}
+          envMapIntensity={1.8}
           clearcoat={1.0}
-          clearcoatRoughness={0.01}
+          clearcoatRoughness={0.005}
+          transparent
+          opacity={0.12}
         />
       </RoundedBox>
 
@@ -201,10 +203,10 @@ export default function GlassMonitor({
         <meshPhysicalMaterial
           color={theme.color}
           metalness={1.0}
-          roughness={0.2}
-          envMapIntensity={4.0}
+          roughness={0.03}
+          envMapIntensity={5.0}
           transparent
-          opacity={0.03}
+          opacity={0.04}
         />
       </mesh>
 
