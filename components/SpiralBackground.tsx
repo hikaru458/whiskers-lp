@@ -164,7 +164,6 @@ function GlassMonitor({
         anchorX="center"
         anchorY="middle"
         letterSpacing={0.08}
-        font="/fonts/Inter-Bold.woff"
       >
         {label.toUpperCase()}
       </Text>
