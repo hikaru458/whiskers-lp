@@ -60,7 +60,7 @@ export default function GlassMonitor({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0, 0, Math.PI / 2] : [0, 0, 0]}>
+    <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0.1, -0.2, Math.PI / 2] : [0.15, -0.25, 0]}>
       {/* ガラス本体 - 厚みと色付き */}
       <RoundedBox args={[baseWidth, baseHeight, 0.4]} radius={0.15} smoothness={10}>
         <meshPhysicalMaterial
