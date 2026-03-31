@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ScrollControls, useScroll, RoundedBox, Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
@@ -26,15 +26,32 @@ function Particles() {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const count = 200;
 
-  const { positions } = useMemo(() => {
-    const positions = new Float32Array(count * 3);
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 120;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 80;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 60 - 40; // Further back
+      arr[i * 3] = (Math.random() - 0.5) * 120;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 60 - 40;
     }
-    return { positions };
+    return arr;
   }, []);
+
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  // 初期配置
+  useEffect(() => {
+    if (!meshRef.current) return;
+    for (let i = 0; i < count; i++) {
+      dummy.position.set(
+        positions[i * 3],
+        positions[i * 3 + 1],
+        positions[i * 3 + 2]
+      );
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  }, [positions, count, dummy]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -45,7 +62,7 @@ function Particles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[0.08, 8, 8]} />
-      <meshBasicMaterial color="#bbbbff" transparent opacity={0.25} />
+      <meshBasicMaterial color="#bbbbff" transparent opacity={0.25} depthWrite={false} />
     </instancedMesh>
   );
 }
@@ -114,11 +131,7 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     damp(meshRef.current.position, "y", targetY, 0.15, delta);
     damp(meshRef.current.position, "z", targetZ, 0.15, delta);
 
-    // 4. Rotation: look at camera + fixed forward tilt
-    if (meshRef.current) {
-      meshRef.current.lookAt(camera.position);
-      meshRef.current.rotation.x = -0.2; // Fixed angle, not additive
-    }
+    // 4. Rotation removed - using fixed rotation on group instead
 
     // 5. Scale based on distance
     const s = isActive ? 1.0 : 0.5;
@@ -135,15 +148,18 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const opacity = THREE.MathUtils.mapLinear(distance, 0, 2, 1.0, 0.05);
 
   return (
-    <group ref={meshRef} frustumCulled={false}>
-      <Float speed={isActive ? 1.5 : 0} rotationIntensity={0.1} floatIntensity={0.3}>
-        {/* Crystal body with high refraction */}
-        <RoundedBox
-          args={[6.5, 3.8, 0.4]}
-          radius={0.15}
-          smoothness={8}
-          renderOrder={5}
-        >
+    <group
+      ref={meshRef}
+      frustumCulled={false}
+      rotation={[-0.2, 0, 0]}
+    >
+      {/* Float temporarily disabled for stability */}
+      <RoundedBox
+        args={[6.5, 3.8, 0.4]}
+        radius={0.15}
+        smoothness={8}
+        renderOrder={5}
+      >
           <meshPhysicalMaterial
             color="#ffffff"
             transmission={1.0}
@@ -174,7 +190,7 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
             depthWrite={false}
           />
         </mesh>
-      </Float>
+      {/* </Float> */}
     </group>
   );
 }
