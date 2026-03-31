@@ -39,23 +39,21 @@ function GlassMist({ baseWidth, baseHeight }: { baseWidth: number; baseHeight: n
   });
   
   return (
-    <section className="h-[200vh] flex items-center justify-center relative z-30">
-      <points ref={particlesRef} position={[0, 0, 0]}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            args={[positions, 3]}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          color="#7dd3fc"
-          size={0.15}
-          transparent
-          opacity={0.6}
-          sizeAttenuation
+    <points ref={particlesRef} position={[0, 0, 0]}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
         />
-      </points>
-    </section>
+      </bufferGeometry>
+      <pointsMaterial
+        color="#7dd3fc"
+        size={0.15}
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+      />
+    </points>
   );
 }
 
@@ -94,32 +92,40 @@ export default function GlassMonitor({
   z,
   scrollFactor,
   images = [],
-  slideInterval = 3000,
-  transmission = 0.78,
-  thickness = 1.6,
+  glassTheme = "blue",
 }: {
   label: string;
   z: number;
   scrollFactor: number;
   images?: string[];
-  slideInterval?: number;
-  transmission?: number;
-  thickness?: number;
+  glassTheme?: string;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const fresnel = useFresnel("#7dd3fc", 2.5);
 
-  // 画像スライドショー
+  // 6色テーマ（Active Theory 風）
+  const themes: Record<string, { color: string; attenuationColor: string }> = {
+    blue:   { color: "#d0f4ff", attenuationColor: "#a0e8ff" },
+    red:    { color: "#ffd0d0", attenuationColor: "#ffb3b3" },
+    green:  { color: "#d4ffe7", attenuationColor: "#b2f5ea" },
+    purple: { color: "#f3d9ff", attenuationColor: "#e0b3ff" },
+    yellow: { color: "#fff3b0", attenuationColor: "#ffe08a" },
+    pink:   { color: "#ffd6f5", attenuationColor: "#ffb3eb" },
+  };
+
+  const theme = themes[glassTheme] ?? themes.blue;
+
+  // 画像
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const texture = useTexture(images[currentImageIndex] || "/placeholder.png");
-  
+
   useEffect(() => {
     if (images.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, slideInterval);
+    }, 3000);
     return () => clearInterval(interval);
-  }, [images, slideInterval]);
+  }, [images]);
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -163,9 +169,7 @@ export default function GlassMonitor({
       {images.length > 0 && (
         <mesh position={[0, 0, 0.12]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
-          <div className="w-full max-w-7xl h-[200vh] relative" style={{ zIndex: 50 }}>
-            <meshBasicMaterial map={texture} toneMapped={false} />
-          </div>
+          <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
 
@@ -177,11 +181,13 @@ export default function GlassMonitor({
         position={[0, 0, -0.05]}
       >
         <meshPhysicalMaterial
-          color="#ffffff"
+          color={theme.color}
+          attenuationColor={theme.attenuationColor}
+          attenuationDistance={4.0}
           roughness={0.02}
           metalness={0.1}
-          transmission={transmission}
-          thickness={thickness}
+          transmission={0.82}
+          thickness={1.6}
           ior={1.5}
           envMapIntensity={3.0}
           clearcoat={1.0}
@@ -204,7 +210,7 @@ export default function GlassMonitor({
           smoothness={8}
         >
           <meshPhysicalMaterial
-            color="#a5f3fc"
+            color={theme.attenuationColor}
             roughness={0.2}
             metalness={0.3}
             transmission={0.4}
@@ -223,7 +229,7 @@ export default function GlassMonitor({
         position={[0, 0, 0.05]}
       >
         <meshPhysicalMaterial
-          color="#ffffff"
+          color={theme.color}
           roughness={0.01}
           metalness={0.05}
           transmission={0.82}
@@ -239,7 +245,7 @@ export default function GlassMonitor({
       <mesh position={[0, 0, 0.08]}>
         <planeGeometry args={[baseWidth, baseHeight]} />
         <meshPhysicalMaterial
-          color="#ffffff"
+          color={theme.color}
           metalness={1.0}
           roughness={0.05}
           envMapIntensity={6.0}
