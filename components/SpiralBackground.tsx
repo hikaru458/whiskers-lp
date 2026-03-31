@@ -36,7 +36,6 @@ function useResponsiveSettings() {
       const w = window.innerWidth;
 
       if (w < 640) {
-        // スマホ
         setSettings({
           panelWidth: 3.2,
           panelHeight: 2.0,
@@ -45,7 +44,6 @@ function useResponsiveSettings() {
           labelSize: 0.28,
         });
       } else if (w < 1024) {
-        // タブレット
         setSettings({
           panelWidth: 5,
           panelHeight: 3.2,
@@ -54,7 +52,6 @@ function useResponsiveSettings() {
           labelSize: 0.45,
         });
       } else {
-        // PC
         setSettings({
           panelWidth: 6,
           panelHeight: 4,
@@ -171,30 +168,72 @@ export function SpiralBackground() {
   const [active, setActive] = useState(0);
   const settings = useResponsiveSettings();
 
-  // 初期 offset を activeIndex に同期（Gallery だけ大きくなる問題の解消）
-  const [offset, setOffset] = useState(() => -PANELS.length * 0.5);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     setOffset(-active * settings.spacing);
   }, [active, settings.spacing]);
 
-  // PC ホイールスクロール
+  // =============================
+  // PC：ホイール + ドラッグ
+  // =============================
   useEffect(() => {
+    let isDragging = false;
+    let lastX = 0;
+
     const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        setOffset((o) => o - e.deltaY * 0.01);
-      }
+      setOffset((o) => o - e.deltaY * 0.01);
     };
+
+    const handleDown = (e: MouseEvent) => {
+      isDragging = true;
+      lastX = e.clientX;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      const delta = e.clientX - lastX;
+      lastX = e.clientX;
+      setOffset((o) => o + delta * 0.02);
+    };
+
+    const handleUp = () => {
+      isDragging = false;
+    };
+
     window.addEventListener("wheel", handleWheel);
-    return () => window.removeEventListener("wheel", handleWheel);
+    window.addEventListener("mousedown", handleDown);
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleUp);
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("mousedown", handleDown);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
+    };
   }, []);
 
-  // スマホ横フリック
+  // =============================
+  // スマホ：横スワイプ + 縦スクロールも横移動に変換
+  // =============================
   const handlers = useSwipeable({
     onSwipedLeft: () => setActive((a) => Math.min(a + 1, PANELS.length - 1)),
     onSwipedRight: () => setActive((a) => Math.max(a - 1, 0)),
     trackMouse: false,
   });
+
+  useEffect(() => {
+    const handleTouchScroll = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        const deltaY = e.touches[0].clientY;
+        setOffset((o) => o - deltaY * 0.002);
+      }
+    };
+
+    window.addEventListener("touchmove", handleTouchScroll);
+    return () => window.removeEventListener("touchmove", handleTouchScroll);
+  }, []);
 
   return (
     <div {...handlers} className="fixed inset-0 bg-black">
