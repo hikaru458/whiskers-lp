@@ -153,20 +153,12 @@ export default function GlassMonitor({
         />
       </RoundedBox>
 
-      {/* === ⑤ コンテンツ（画像・動画）- ガラスの前面に配置 === */}
+      {/* === ⑤ コンテンツ（画像・動画）- ガラスの中 === */}
       {images.length > 0 && (
-        <>
-          {/* 画像の影 - ガラスの奥行き演出 */}
-          <mesh position={[0, 0, 0.1]}>
-            <planeGeometry args={[baseWidth - 0.35, baseHeight - 0.35]} />
-            <meshBasicMaterial color="black" transparent opacity={0.08} />
-          </mesh>
-          {/* 画像本体 */}
-          <mesh position={[0, 0, 0.2]}>
-            <planeGeometry args={[baseWidth - 0.4, baseHeight - 0.4]} />
-            <meshBasicMaterial map={texture} toneMapped={false} />
-          </mesh>
-        </>
+        <mesh position={[0, 0, -0.05]}>
+          <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
+          <meshBasicMaterial map={texture} toneMapped={false} />
+        </mesh>
       )}
 
       {/* === ④ メインガラス本体（透明にして画像が見える） === */}
