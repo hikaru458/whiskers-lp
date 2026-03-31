@@ -17,8 +17,8 @@ const SECTIONS = [
 ];
 
 // --- 定数（螺旋の設計図） ---
-const RADIUS = 12; // 螺旋の半径（広げることで余白を作る）
-const HEIGHT_STEP = 2.0; // 垂直方向の間隔（階段の勾配）
+const RADIUS = 18; // 螺旋の半径（広げることで中央に大きな闇を作る）
+const HEIGHT_STEP = 1.2; // 垂直の動きを抑え、横の広がりを強調
 const SPIRAL_TURNS = 3; // 螺旋の回転数
 
 // ============================================
@@ -144,7 +144,7 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0 bg-[#000208]">
-      <Canvas camera={{ position: [0, 0, 20], fov: 35 }}>
+      <Canvas camera={{ position: [0, 0, 25], fov: 35 }}>
         <ScrollControls pages={5} damping={0.1}>
           <ambientLight intensity={0.1} />
           <spotLight position={[0, 30, 10]} intensity={20} angle={0.3} penumbra={1} castShadow />
