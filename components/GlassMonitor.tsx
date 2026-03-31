@@ -48,55 +48,56 @@ export default function GlassMonitor({
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
 
-  // 横長（16:10）＋ PC で大きめ
-  const baseHeight = isPC ? 4.8 : 4.2;
+  // 小さめにして画面に収める
+  const baseHeight = isPC ? 3.5 : 3.0;
   const baseWidth = baseHeight * 1.6;
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.position.y = scrollFactor * 0.15;
+    // 上に配置して軽く浮遊感
+    groupRef.current.position.y = 1.5 + scrollFactor * 0.1;
   });
 
   return (
-    <group ref={groupRef} position={[0, 0.5, Math.abs(z)]}>
+    <group ref={groupRef} position={[0, 0, z]}>
       {/* ガラス本体 */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.22]} radius={0.45} smoothness={16}>
+      <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.3} smoothness={12}>
         <meshPhysicalMaterial
           color="#ffffff"
           transparent
-          opacity={0.34}
+          opacity={0.4}
           roughness={0.08}
-          metalness={0.25}
-          transmission={0.92}
-          thickness={2.4}
-          envMapIntensity={2.4}
+          metalness={0.2}
+          transmission={0.9}
+          thickness={2.0}
+          envMapIntensity={2.0}
         />
       </RoundedBox>
 
       {/* Fresnel エッジ */}
       <mesh>
-        <planeGeometry args={[baseWidth + 0.35, baseHeight + 0.35]} />
+        <planeGeometry args={[baseWidth + 0.25, baseHeight + 0.25]} />
         <primitive object={fresnel} />
       </mesh>
 
       {/* 擬似シャドウ */}
-      <mesh position={[0, -baseHeight / 2 - 0.55, 0]}>
-        <planeGeometry args={[baseWidth * 0.85, baseHeight * 0.18]} />
-        <meshBasicMaterial color="black" transparent opacity={0.16} />
+      <mesh position={[0, -baseHeight / 2 - 0.3, 0]}>
+        <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.12]} />
+        <meshBasicMaterial color="black" transparent opacity={0.14} />
       </mesh>
 
       {/* アイコン枠 */}
-      <group position={[-baseWidth * 0.22, 0.2, 0.08]}>
-        <RoundedBox args={[1.1, 1.1, 0.02]} radius={0.25} smoothness={10}>
+      <group position={[-baseWidth * 0.25, 0, 0.08]}>
+        <RoundedBox args={[0.8, 0.8, 0.02]} radius={0.2} smoothness={8}>
           <meshBasicMaterial color="#e5e7eb" transparent opacity={0.9} wireframe />
         </RoundedBox>
       </group>
 
       {/* ラベルテキスト */}
       <Text
-        position={[0.5, 0, 0.1]}
-        fontSize={0.75}
-        color="#f9fafb"
+        position={[0.4, 0, 0.1]}
+        fontSize={0.6}
+        color="#ffffff"
         anchorX="left"
         anchorY="middle"
       >
