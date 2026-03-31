@@ -145,8 +145,8 @@ export default function GlassMonitor({
 
       {/* === ① 画像（前面） === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.01]}>
-          <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
+        <mesh position={[0, 0, 0.015]}>
+          <planeGeometry args={[baseWidth - 0.25, baseHeight - 0.25]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
@@ -154,7 +154,7 @@ export default function GlassMonitor({
       {/* === ② メインガラス（屈折 + 色） === */}
       <RoundedBox 
         args={[baseWidth, baseHeight, 0.05]} 
-        radius={0.15} 
+        radius={0.05} 
         smoothness={10}
         position={[0, 0, 0]}
       >
@@ -177,8 +177,8 @@ export default function GlassMonitor({
 
       {/* === ③ 前面ガラス（薄い透明層） === */}
       <RoundedBox 
-        args={[baseWidth + 0.02, baseHeight + 0.02, 0.02]} 
-        radius={0.16} 
+        args={[baseWidth - 0.02, baseHeight - 0.02, 0.02]} 
+        radius={0.04} 
         smoothness={10}
         position={[0, 0, 0.03]}
       >
@@ -196,8 +196,8 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* === ④ 反射レイヤー（薄い膜） === */}
-      <mesh position={[0, 0, 0.02]}>
-        <planeGeometry args={[baseWidth, baseHeight]} />
+      <mesh position={[0, 0, 0.025]}>
+        <planeGeometry args={[baseWidth - 0.02, baseHeight - 0.02]} />
         <meshPhysicalMaterial
           color={theme.color}
           metalness={1.0}
