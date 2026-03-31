@@ -25,7 +25,7 @@ export default function GlassSection({
     <section className="h-[230vh] flex items-center justify-center relative z-30">
       <div className="w-full max-w-7xl h-[100vh]">
         <Canvas
-          camera={{ position: [0, 0, 22], fov: 32 }}
+          camera={{ position: [0, 0, 12], fov: 35 }}
           gl={{ antialias: true }}
         >
           <ambientLight intensity={0.75} />

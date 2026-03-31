@@ -54,7 +54,7 @@ export default function GlassMonitor({
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.position.y = -0.8 + scrollFactor * 0.22;
+    groupRef.current.position.y = scrollFactor * 0.15;
   });
 
   return (
