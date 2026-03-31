@@ -45,7 +45,7 @@ function useResponsiveSettings() {
           panelWidth: width,
           panelHeight: height,
           spacing: 5.0,
-          cameraZ: 13.5, // 上下に余白を作る
+          cameraZ: 13.5,
           labelSize: 0.32,
           isMobile: true,
         });
@@ -116,8 +116,8 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
 
     const targetX = (index - activeIndex) * settings.spacing + offset;
 
-    // ★ アクティブパネルを大きく強調（1.5）
-    const targetScale = index === activeIndex ? 1.5 : 0.75;
+    // ★ アクティブパネルを大きく強調（1.3）
+    const targetScale = index === activeIndex ? 1.3 : 0.75;
 
     damp(ref.current.position, "x", targetX, 0.15, delta);
     damp(ref.current.scale, "x", targetScale, 0.2, delta);
@@ -171,9 +171,10 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
 // Main Scene
 // =============================
 export function SpiralBackground() {
-  const [active, setActive] = useState(0);
-  const settings = useResponsiveSettings();
+  // ★ 初期アクティブを Creator（index=1）にする
+  const [active, setActive] = useState(1);
 
+  const settings = useResponsiveSettings();
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
@@ -218,7 +219,7 @@ export function SpiralBackground() {
     };
   }, []);
 
-  // スマホ：横フリックのみ（操作性改善）
+  // スマホ：横フリックのみ
   const handlers = useSwipeable({
     onSwipedLeft: () => setActive((a) => Math.min(a + 1, PANELS.length - 1)),
     onSwipedRight: () => setActive((a) => Math.max(a - 1, 0)),
