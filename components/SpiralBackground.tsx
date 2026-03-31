@@ -290,10 +290,9 @@ function GlassMonitor({
   return (
     <group ref={meshRef} onClick={onActivate}>
       {/* 虹色エッジ */}
-      <mesh ref={edgeRef} position={[0, 0, 0.12]}>
-        <roundedBoxGeometry args={[2.8, 1.8, 0.02, 4, 0.02]} />
+      <RoundedBox args={[2.8, 1.8, 0.02]} radius={0.02} smoothness={2} position={[0, 0, 0.12]}>
         <meshBasicMaterial color={color} transparent opacity={0.2} />
-      </mesh>
+      </RoundedBox>
 
       {/* ガラスフレーム */}
       <RoundedBox args={[2.7, 1.7, 0.1]} radius={0.03} smoothness={4}>
