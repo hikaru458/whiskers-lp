@@ -155,7 +155,7 @@ export default function GlassMonitor({
 
       {/* === ⑤ コンテンツ（画像・動画）- 前面ガラスの前 === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.18]}>
+        <mesh position={[0, 0, 0.12]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
@@ -179,7 +179,7 @@ export default function GlassMonitor({
           clearcoat={1.0}
           clearcoatRoughness={0.01}
           transparent
-          opacity={0.3}
+          opacity={0.18}
         />
       </RoundedBox>
 
@@ -218,7 +218,7 @@ export default function GlassMonitor({
           color="#ffffff"
           roughness={0.01}
           metalness={0.05}
-          transmission={0.95}
+          transmission={0.82}
           thickness={0.2}
           ior={1.45}
           envMapIntensity={4.0}
@@ -236,7 +236,7 @@ export default function GlassMonitor({
           roughness={0.05}
           envMapIntensity={6.0}
           transparent
-          opacity={0.12}
+          opacity={0.06}
         />
       </mesh>
 
