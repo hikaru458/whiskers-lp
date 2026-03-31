@@ -16,8 +16,8 @@ const SECTIONS = [
   { id: "contact", label: "Contact", color: "#f87171" },
 ];
 
-const SPACING = 20;
-const FLOW_SPEED = 50;
+const SPACING = 22;
+const FLOW_SPEED = 60;
 
 // ============================================
 // Particle Background (Active Theory style)
@@ -64,6 +64,60 @@ function Particles() {
       <sphereGeometry args={[0.08, 8, 8]} />
       <meshBasicMaterial color="#bbbbff" transparent opacity={0.25} depthWrite={false} />
     </instancedMesh>
+  );
+}
+
+// ============================================
+// Background Noise (Active Theory style gradient + noise)
+// ============================================
+function BackgroundNoise() {
+  const material = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform float uTime;
+
+        float noise(vec2 p){
+          return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453);
+        }
+
+        void main() {
+          float n = noise(vUv * 8.0 + uTime * 0.05);
+          float gradient = smoothstep(0.0, 1.0, vUv.y);
+
+          vec3 color = mix(
+            vec3(0.02, 0.02, 0.05),
+            vec3(0.05, 0.07, 0.12),
+            gradient
+          );
+
+          color += n * 0.05;
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `,
+      transparent: false,
+    });
+  }, []);
+
+  useFrame((state) => {
+    material.uniforms.uTime.value = state.clock.elapsedTime;
+  });
+
+  return (
+    <mesh scale={[2, 2, 1]} position={[0, 0, -50]}>
+      <planeGeometry args={[50, 50]} />
+      <primitive object={material} />
+    </mesh>
   );
 }
 
@@ -124,7 +178,7 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     
     // 3. Non-linear Z depth
     const depth = Math.abs(distance);
-    const targetZ = -Math.pow(depth, 1.6) * 12;
+    const targetZ = -Math.pow(depth, 1.8) * 14;
 
     // Apply positions with damping
     damp(meshRef.current.position, "x", targetX, 0.15, delta);
@@ -162,18 +216,18 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
         <meshPhysicalMaterial
           color="#ffffff"
           transmission={1.0}
-          thickness={5.0}
-          ior={2.1}
-          roughness={0.04}
+          thickness={7.0}
+          ior={2.0}
+          roughness={0.06}
           clearcoat={1}
-          clearcoatRoughness={0.1}
-          envMapIntensity={1.2}
+          clearcoatRoughness={0.15}
+          envMapIntensity={1.0}
           transparent
           opacity={opacity}
           depthWrite={false}
           side={THREE.DoubleSide}
           attenuationColor={new THREE.Color(color)}
-          attenuationDistance={0.8}
+          attenuationDistance={0.6}
           emissive={new THREE.Color(color)}
           emissiveIntensity={0.08}
         />
@@ -187,6 +241,37 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
           opacity={isActive ? 1 : opacity * 0.5}
           toneMapped={false}
           depthWrite={false}
+        />
+      </mesh>
+
+      {/* Fresnel edge glow - Vision Pro style */}
+      <mesh renderOrder={8}>
+        <planeGeometry args={[9.2, 5.2]} />
+        <primitive
+          object={new THREE.ShaderMaterial({
+            uniforms: {
+              uColor: { value: new THREE.Color(color) },
+            },
+            vertexShader: `
+              varying float vEdge;
+              void main() {
+                vec3 worldNormal = normalize(normalMatrix * normal);
+                vec3 viewDir = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
+                vEdge = 1.0 - max(dot(worldNormal, viewDir), 0.0);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              }
+            `,
+            fragmentShader: `
+              varying float vEdge;
+              uniform vec3 uColor;
+              void main() {
+                float fres = pow(vEdge, 3.0);
+                gl_FragColor = vec4(uColor * fres * 1.5, fres);
+              }
+            `,
+            transparent: true,
+            depthWrite: false,
+          })}
         />
       </mesh>
     </group>
@@ -215,6 +300,7 @@ export function SpiralBackground() {
         <CameraTilt />
         <ScrollControls pages={SECTIONS.length} damping={0.2}>
           <SceneContent />
+          <BackgroundNoise />
           <Particles />
           <Environment preset="city" />
           <PostProcessing />
