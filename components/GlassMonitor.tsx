@@ -47,10 +47,11 @@ export default function GlassMonitor({
   const fresnel = useFresnel("#ffffff");
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  // 小さめにして画面に収める
-  const baseHeight = isPC ? 3.5 : 3.0;
-  const baseWidth = baseHeight * 1.6;
+  // 1.5倍大きく + スマホは縦長
+  const baseHeight = isPC ? 5.25 : (isMobile ? 4.5 : 4.5);
+  const baseWidth = isPC ? 8.4 : (isMobile ? 8.0 : 7.2); // スマホ: 9:16 縦長
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -59,7 +60,7 @@ export default function GlassMonitor({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, z]}>
+    <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0, 0, Math.PI / 2] : [0, 0, 0]}>
       {/* ガラス本体 */}
       <RoundedBox args={[baseWidth, baseHeight, 0.15]} radius={0.3} smoothness={12}>
         <meshPhysicalMaterial
@@ -87,7 +88,7 @@ export default function GlassMonitor({
       </mesh>
 
       {/* アイコン枠 */}
-      <group position={[-baseWidth * 0.25, 0, 0.08]}>
+      <group position={[-baseWidth * 0.25, 0, 0.08]} rotation={isMobile ? [0, 0, -Math.PI / 2] : [0, 0, 0]}>
         <RoundedBox args={[0.8, 0.8, 0.02]} radius={0.2} smoothness={8}>
           <meshBasicMaterial color="#e5e7eb" transparent opacity={0.9} wireframe />
         </RoundedBox>
@@ -100,6 +101,7 @@ export default function GlassMonitor({
         color="#ffffff"
         anchorX="left"
         anchorY="middle"
+        rotation={isMobile ? [0, 0, -Math.PI / 2] : [0, 0, 0]}
       >
         {label}
       </Text>
