@@ -22,10 +22,10 @@ export default function GlassSection({
   const scrollFactor = scrollY * 0.01 * (index + 1);
 
   return (
-    <section className="h-[200vh] flex items-center justify-center relative z-30">
+    <section className="h-[230vh] flex items-center justify-center relative z-30">
       <div className="w-full max-w-7xl h-[100vh]">
         <Canvas
-          camera={{ position: [0, 0, 16], fov: 32 }}
+          camera={{ position: [0, 0, 22], fov: 32 }}
           gl={{ antialias: true }}
         >
           <ambientLight intensity={0.75} />

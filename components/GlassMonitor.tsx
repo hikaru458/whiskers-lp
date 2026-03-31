@@ -49,12 +49,12 @@ export default function GlassMonitor({
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
 
   // 横長（16:10）＋ PC で大きめ
-  const baseHeight = isPC ? 5.4 : 4.6;
+  const baseHeight = isPC ? 4.8 : 4.2;
   const baseWidth = baseHeight * 1.6;
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.position.y = -0.2 + scrollFactor * 0.22;
+    groupRef.current.position.y = -0.8 + scrollFactor * 0.22;
   });
 
   return (
