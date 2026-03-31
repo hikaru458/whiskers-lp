@@ -54,8 +54,8 @@ export default function GlassMonitor({
 
   useFrame(() => {
     if (!groupRef.current) return;
-    // 上に配置して軽く浮遊感
-    groupRef.current.position.y = 1.5 + scrollFactor * 0.1;
+    // 軽い浮遊アニメーションのみ（下方向への移動を防ぐ）
+    groupRef.current.position.y = scrollFactor * 0.05;
   });
 
   return (

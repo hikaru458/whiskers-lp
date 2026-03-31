@@ -6,11 +6,11 @@ import GlassSection from "@/components/GlassSection";
 
 const PANELS = [
   { label: "Gallery", z: 0 },
-  { label: "Creator", z: -0.2 },
-  { label: "Contest", z: -0.4 },
-  { label: "Product", z: -0.6 },
-  { label: "FAQ", z: -0.8 },
-  { label: "Contact", z: -1.0 },
+  { label: "Creator", z: 0 },
+  { label: "Contest", z: 0 },
+  { label: "Product", z: 0 },
+  { label: "FAQ", z: 0 },
+  { label: "Contact", z: 0 },
 ];
 
 export default function Home() {
