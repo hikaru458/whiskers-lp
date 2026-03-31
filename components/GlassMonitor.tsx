@@ -23,8 +23,8 @@ function useFresnel(color: string) {
           varying float vEdge;
           uniform vec3 uColor;
           void main() {
-            float fres = pow(vEdge, 1.5);
-            gl_FragColor = vec4(uColor * fres * 4.0, fres);
+            float fres = pow(vEdge, 3.0);
+            gl_FragColor = vec4(uColor * fres * 1.5, fres * 0.3);
           }
         `,
         transparent: true,
@@ -66,28 +66,28 @@ export default function GlassMonitor({
         <meshPhysicalMaterial
           color="#ffffff"
           roughness={0.02}
-          metalness={0.1}
+          metalness={0.0}
           transmission={1.0}
-          thickness={4.0}
+          thickness={5.0}
           ior={1.5}
-          envMapIntensity={3.0}
+          envMapIntensity={2.0}
           clearcoat={1.0}
-          clearcoatRoughness={0.03}
-          attenuationColor="#ffffff"
-          attenuationDistance={10.0}
+          clearcoatRoughness={0.01}
+          attenuationColor="#a8d8ff"
+          attenuationDistance={8.0}
         />
       </RoundedBox>
 
-      {/* Fresnel エッジ */}
-      <mesh>
-        <planeGeometry args={[baseWidth + 0.25, baseHeight + 0.25]} />
+      {/* Fresnel エッジ - より繊細に */}
+      <mesh scale={[baseWidth + 0.15, baseHeight + 0.15, 0.15]}>
+        <planeGeometry args={[1, 1]} />
         <primitive object={fresnel} />
       </mesh>
 
       {/* 擬似シャドウ */}
       <mesh position={[0, -baseHeight / 2 - 0.3, 0]}>
         <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.12]} />
-        <meshBasicMaterial color="black" transparent opacity={0.14} />
+        <meshBasicMaterial color="black" transparent opacity={0.08} />
       </mesh>
 
       {/* アイコン枠 */}
