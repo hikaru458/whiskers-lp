@@ -23,7 +23,7 @@ export default function GlassSection({
 
   return (
     <section className="h-[230vh] flex items-center justify-center relative z-30">
-      <div className="w-full max-w-7xl h-[100vh]">
+      <div className="w-full max-w-7xl h-[100vh] relative" style={{ zIndex: 50 }}>
         <Canvas
           camera={{ position: [0, 0, 12], fov: 35 }}
           gl={{ antialias: true }}

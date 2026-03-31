@@ -58,7 +58,7 @@ export default function GlassMonitor({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, z]}>
+    <group ref={groupRef} position={[0, 0.5, Math.abs(z)]}>
       {/* ガラス本体 */}
       <RoundedBox args={[baseWidth, baseHeight, 0.22]} radius={0.45} smoothness={16}>
         <meshPhysicalMaterial
