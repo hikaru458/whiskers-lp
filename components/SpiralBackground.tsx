@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ScrollControls, useScroll, RoundedBox, Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { damp, dampE } from "maath/easing";
-import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 
 const SECTIONS = [
   { id: "gallery", label: "Gallery", color: "#60a5fa" },
@@ -16,58 +16,8 @@ const SECTIONS = [
   { id: "contact", label: "Contact", color: "#f87171" },
 ];
 
-const RADIUS = 16;
-const HEIGHT_STEP = 5.0; 
-const SPIRAL_TURNS = 1.2;
-
 // ============================================
-// Crystal Helix Core（背景の光の糸）
-// ============================================
-function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const count = 2;
-  const points = 1000;
-  
-  const helixCurves = useMemo(() => {
-    return Array.from({ length: count }).map((_, i) => {
-      const pts = [];
-      const phase = (i * Math.PI);
-      for (let j = 0; j <= points; j++) {
-        const t = (j / points) * Math.PI * 2 * SPIRAL_TURNS;
-        const x = Math.cos(t + phase) * (RADIUS * 0.6);
-        const y = (t / (Math.PI * 2)) * HEIGHT_STEP * 4 - 15;
-        const z = Math.sin(t + phase) * (RADIUS * 0.6);
-        pts.push(new THREE.Vector3(x, y, z));
-      }
-      return new THREE.CatmullRomCurve3(pts);
-    });
-  }, []);
-
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      damp(groupRef.current.rotation, "y", scrollOffset * Math.PI * 2, 0.05, delta);
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      {helixCurves.map((curve, i) => (
-        <mesh key={i}>
-          {/* 極細の光の糸 */}
-          <tubeGeometry args={[curve, 400, 0.003, 8, false]} />
-          <meshBasicMaterial
-            color="#60a5fa"
-            transparent
-            opacity={0.3}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-// ============================================
-// Crystal Monitor（クリスタル質感 + センター吸着）
+// Crystal Monitor（螺旋廃止・高精度クリスタル）
 // ============================================
 function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const meshRef = useRef<THREE.Group>(null);
@@ -78,11 +28,11 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     canvas.width = 1024; canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, 1024, 512);
-    ctx.strokeStyle = color; ctx.lineWidth = 10;
-    ctx.strokeRect(20, 20, 984, 472);
-    ctx.fillStyle = "#fff";
+    ctx.strokeStyle = color; ctx.lineWidth = 15;
+    ctx.strokeRect(40, 40, 944, 432);
+    ctx.fillStyle = "#ffffff";
     ctx.font = "lighter 100px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.shadowColor = color; ctx.shadowBlur = 30;
+    ctx.shadowColor = color; ctx.shadowBlur = 40;
     ctx.fillText(label.toUpperCase(), 512, 256);
     return new THREE.CanvasTexture(canvas);
   }, [label, color]);
@@ -90,64 +40,56 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   useFrame((state, delta) => {
     if (!meshRef.current) return;
     
-    // パネルごとの基準位置（t）を計算
-    const sectionRatio = index / (SECTIONS.length - 1);
-    const t = (sectionRatio * Math.PI * 2 * SPIRAL_TURNS) + (scrollOffset * 8);
+    // 現在のスクロール位置に基づくインデックスの小数値
+    const currentPos = scrollOffset * (SECTIONS.length - 1);
+    const distance = index - currentPos;
 
-    // X, Z は螺旋軌道
-    const targetX = Math.cos(t) * RADIUS;
-    const targetZ = Math.sin(t) * RADIUS;
-    
-    // Y の修正：自分の番（scroll.offset）が来たら強制的に 0（中央）へ
-    const currentScrollPos = scrollOffset * (SECTIONS.length - 1);
-    const distanceFromActive = Math.abs(currentScrollPos - index);
-    const spiralY = (t / (Math.PI * 2)) * HEIGHT_STEP * 5 - 18;
-    
-    // アクティブなほど中央(0)に吸い寄せられるロジック
-    const influence = Math.max(0, 1 - distanceFromActive); 
-    const targetY = THREE.MathUtils.lerp(spiralY, 0, influence);
-
-    // チカチカ防止（真後ろにいる時は消す）
-    meshRef.current.visible = targetZ < 10;
+    // 配置ロジック：中央に近づくほど大きく、正面に
+    // y軸は垂直に並べる（螺旋をやめてシンプルに）
+    const targetY = -distance * 12; 
+    const targetZ = isActive ? 0 : -10 - Math.abs(distance) * 5; // 非アクティブは奥へ
+    const targetX = distance * 2; // わずかに斜めに並べて奥行きを出す
 
     damp(meshRef.current.position, "x", targetX, 0.15, delta);
     damp(meshRef.current.position, "y", targetY, 0.15, delta);
     damp(meshRef.current.position, "z", targetZ, 0.15, delta);
 
+    // 回転：アクティブなら正面、それ以外は少し傾ける
     if (isActive) {
       const dummy = new THREE.Object3D();
       dummy.position.copy(meshRef.current.position);
       dummy.lookAt(camera.position);
       dampE(meshRef.current.rotation, dummy.rotation, 0.1, delta);
     } else {
-      meshRef.current.rotation.y = -t + Math.PI / 2;
+      damp(meshRef.current.rotation, "y", distance * 0.5, 0.1, delta);
     }
 
-    damp(meshRef.current.scale, "x", isActive ? 1.0 : 0.5, 0.1, delta);
-    damp(meshRef.current.scale, "y", isActive ? 1.0 : 0.5, 0.1, delta);
+    const s = isActive ? 1.2 : 0.6;
+    damp(meshRef.current.scale, "x", s, 0.1, delta);
+    damp(meshRef.current.scale, "y", s, 0.1, delta);
   });
 
   return (
     <group ref={meshRef}>
-      <Float speed={isActive ? 2 : 0} rotationIntensity={0.1} floatIntensity={0.2}>
-        {/* クリスタル質感のモニター */}
-        <RoundedBox args={[5, 3, 0.3]} radius={0.08} smoothness={8}>
+      <Float speed={isActive ? 1.5 : 0} rotationIntensity={0.2} floatIntensity={0.5}>
+        {/* 厚みと屈折を最大化したクリスタルボディ */}
+        <RoundedBox args={[6, 3.5, 0.5]} radius={0.15} smoothness={8}>
           <meshPhysicalMaterial 
             color="#ffffff"
-            emissive={color}
-            emissiveIntensity={isActive ? 2.0 : 0.3}
-            transmission={0.9}
-            thickness={3}
-            ior={2.0}
-            roughness={0}
+            transmission={1.0}
+            thickness={3.0}
+            ior={2.4} 
+            roughness={0.02}
             clearcoat={1}
-            clearcoatRoughness={0}
+            envMapIntensity={5} // 螺旋がない分、環境の映り込みを強くして質感を出す
             transparent
-            opacity={isActive ? 0.95 : 0.15}
+            opacity={isActive ? 1 : 0.2}
+            attenuationColor={color}
+            attenuationDistance={2}
           />
         </RoundedBox>
-        <mesh position={[0, 0, 0.11]}>
-          <planeGeometry args={[4.8, 2.8]} />
+        <mesh position={[0, 0, 0.26]}>
+          <planeGeometry args={[5.6, 3.1]} />
           <meshBasicMaterial map={texture} transparent opacity={isActive ? 1 : 0.1} toneMapped={false} />
         </mesh>
       </Float>
@@ -166,9 +108,10 @@ export function SpiralBackground() {
         body { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
       
-      <Canvas camera={{ position: [0, 0, 28], fov: 30 }}>
+      <Canvas camera={{ position: [0, 0, 25], fov: 35 }}>
         <ScrollControls pages={6} damping={0.2}>
           <SceneContent />
+          {/* presetを"city"にすることで、クリスタルのエッジに綺麗なビル群の光が映り込みます */}
           <Environment preset="city" />
           <PostProcessing />
         </ScrollControls>
@@ -191,16 +134,15 @@ function SceneContent() {
       {SECTIONS.map((s, i) => (
         <GlassMonitor key={s.id} index={i} {...s} isActive={i === active} scrollOffset={scroll.offset} />
       ))}
-      <CrystalHelix scrollOffset={scroll.offset} />
     </>
   );
 }
 
 function PostProcessing() {
   return (
-    <EffectComposer multisampling={8}>
-      <Bloom intensity={1.5} luminanceThreshold={1.2} mipmapBlur />
-      <Vignette darkness={0.8} />
+    <EffectComposer multisampling={4}>
+      <Bloom intensity={1.2} luminanceThreshold={1.1} mipmapBlur />
+      <Vignette darkness={0.7} />
     </EffectComposer>
   );
 }
