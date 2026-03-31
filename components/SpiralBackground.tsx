@@ -29,9 +29,9 @@ function Particles() {
   const { positions } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 100;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 50 - 20;
+      positions[i * 3] = (Math.random() - 0.5) * 120;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 60 - 40; // Further back
     }
     return { positions };
   }, []);
@@ -45,7 +45,7 @@ function Particles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[0.08, 8, 8]} />
-      <meshBasicMaterial color="#ffffff" transparent opacity={0.4} />
+      <meshBasicMaterial color="#bbbbff" transparent opacity={0.25} />
     </instancedMesh>
   );
 }
@@ -114,10 +114,10 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     damp(meshRef.current.position, "y", targetY, 0.15, delta);
     damp(meshRef.current.position, "z", targetZ, 0.15, delta);
 
-    // 4. Rotation: look at camera + forward tilt
+    // 4. Rotation: look at camera + fixed forward tilt
     if (meshRef.current) {
       meshRef.current.lookAt(camera.position);
-      meshRef.current.rotation.x += 0.2; // Forward tilt for Active Theory style
+      meshRef.current.rotation.x = -0.2; // Fixed angle, not additive
     }
 
     // 5. Scale based on distance
@@ -138,7 +138,12 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     <group ref={meshRef} frustumCulled={false}>
       <Float speed={isActive ? 1.5 : 0} rotationIntensity={0.1} floatIntensity={0.3}>
         {/* Crystal body with high refraction */}
-        <RoundedBox args={[6.5, 3.8, 0.4]} radius={0.15} smoothness={8} renderOrder={5}>
+        <RoundedBox
+          args={[6.5, 3.8, 0.4]}
+          radius={0.15}
+          smoothness={8}
+          renderOrder={5}
+        >
           <meshPhysicalMaterial
             color="#ffffff"
             transmission={1.0}
@@ -147,28 +152,18 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
             roughness={0.04}
             clearcoat={1}
             clearcoatRoughness={0.1}
-            envMapIntensity={2.5}
+            envMapIntensity={1.2}
             transparent
             opacity={opacity}
             depthWrite={false}
             side={THREE.DoubleSide}
             attenuationColor={new THREE.Color(color)}
             attenuationDistance={0.8}
+            emissive={new THREE.Color(color)}
+            emissiveIntensity={0.08}
           />
         </RoundedBox>
-        
-        {/* Fresnel edge glow - Vision Pro style */}
-        <mesh>
-          <planeGeometry args={[6.7, 4.0]} />
-          <meshBasicMaterial
-            color={color}
-            transparent
-            opacity={isActive ? 0.15 : 0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        {/* Label slightly in front */}
+
         <mesh position={[0, 0, 0.21]} renderOrder={10}>
           <planeGeometry args={[6.1, 3.4]} />
           <meshBasicMaterial
@@ -243,10 +238,10 @@ function PostProcessing() {
   return (
     <EffectComposer multisampling={8}>
       <Bloom 
-        intensity={1.0} 
-        luminanceThreshold={0.9}
-        luminanceSmoothing={0.2}
-        mipmapBlur 
+        intensity={0.8}
+        luminanceThreshold={0.92}
+        luminanceSmoothing={0.25}
+        mipmapBlur
       />
       <ChromaticAberration offset={new THREE.Vector2(0.0015, 0.0015)} />
       <Vignette darkness={0.75} />
