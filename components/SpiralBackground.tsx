@@ -126,7 +126,7 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
             thickness={1} 
             ior={1.2} 
             transparent 
-            opacity={isActive ? 0.9 : 0.1} // 非アクティブ時はほぼ消す
+            opacity={isActive ? 0.9 : 0.05} // 非アクティブ時はさらに消す
           />
         </RoundedBox>
         <mesh position={[0, 0, 0.02]}>
@@ -143,8 +143,8 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 // ============================================
 export function SpiralBackground() {
   return (
-    <div className="fixed inset-0 z-0 bg-[#000208]">
-      <Canvas camera={{ position: [0, 0, 25], fov: 35 }}>
+    <div className="fixed inset-0 z-0 bg-black">
+      <Canvas camera={{ position: [0, 0, 25], fov: 28 }}>
         <ScrollControls pages={5} damping={0.1}>
           <ambientLight intensity={0.1} />
           <spotLight position={[0, 30, 10]} intensity={20} angle={0.3} penumbra={1} castShadow />
@@ -189,7 +189,7 @@ function SceneContent() {
 function PostProcessing() {
   return (
     <EffectComposer>
-      <Bloom intensity={2.0} luminanceThreshold={1.2} luminanceSmoothing={0.4} mipmapBlur />
+      <Bloom intensity={2.0} luminanceThreshold={1.4} luminanceSmoothing={0.4} mipmapBlur />
       <ChromaticAberration offset={[0.002, 0.001]} />
       <Vignette darkness={0.8} offset={0.3} />
     </EffectComposer>

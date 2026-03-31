@@ -36,19 +36,20 @@ export default function Home() {
       <SpiralBackground />
       
       {/* 垂直ナビゲーション - 右側サイドバー */}
-      <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
+      <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
         {SECTIONS.map((section, index) => (
           <button
             key={section.id}
             onClick={() => scrollToSection(index)}
-            className={`text-right text-[10px] tracking-[0.2em] font-light transition-all duration-300 ${
+            className={`text-right text-[9px] tracking-[0.35em] font-serif font-extralight transition-all duration-500 ${
               index === activeSection 
-                ? "text-white opacity-100 translate-x-0" 
-                : "text-slate-400 opacity-50 hover:opacity-80 translate-x-1"
+                ? "opacity-100 translate-x-0" 
+                : "text-slate-600 opacity-20 hover:opacity-40 translate-x-2"
             }`}
             style={{
               color: index === activeSection ? section.color : undefined,
-              textShadow: index === activeSection ? `0 0 10px ${section.color}80` : undefined,
+              textShadow: index === activeSection ? `0 0 20px ${section.color}, 0 0 40px ${section.color}60` : undefined,
+              fontFamily: "'Playfair Display', Georgia, 'Times New Roman', serif",
             }}
           >
             {section.label}
