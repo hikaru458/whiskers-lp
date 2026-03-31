@@ -22,7 +22,7 @@ export default function GlassSection({
   const scrollFactor = 0;
 
   return (
-    <section className="h-[230vh] flex items-center justify-center relative z-30">
+    <section className="h-[150vh] flex items-center justify-center relative z-30">
       <div className="w-full max-w-7xl h-[100vh] relative" style={{ zIndex: 50 }}>
         <Canvas
           camera={{ position: [0, 0, 8], fov: 45 }}
