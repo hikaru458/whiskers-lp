@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SpiralBackground } from "@/components/SpiralBackground";
+import SpiralBackground from "@/components/SpiralBackground";
 
 const SECTIONS = [
   { id: "gallery", label: "GALLERY", color: "#60a5fa" },
