@@ -22,7 +22,7 @@ const HEIGHT_STEP = 2.0; // 垂直方向の間隔（階段の勾配）
 const SPIRAL_TURNS = 3; // 螺旋の回転数
 
 // ============================================
-// Crystal Helix Core（数式ベースの無限螺旋）
+// Crystal Helix Core - Clean Architecture
 // ============================================
 function CrystalHelix() {
   const count = 3; // 重ねるリボンの数
