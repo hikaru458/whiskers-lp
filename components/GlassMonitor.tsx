@@ -145,7 +145,7 @@ export default function GlassMonitor({
 
       {/* === ① 画像（前面） === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, 0.1]}>
+        <mesh position={[0, 0, 0.02]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
@@ -180,7 +180,7 @@ export default function GlassMonitor({
         args={[baseWidth + 0.02, baseHeight + 0.02, 0.05]} 
         radius={0.16} 
         smoothness={10}
-        position={[0, 0, 0.03]}
+        position={[0, 0, 0.05]}
       >
         <meshPhysicalMaterial
           color={theme.color}
@@ -196,7 +196,7 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* === ④ 反射レイヤー（薄い膜） === */}
-      <mesh position={[0, 0, 0.05]}>
+      <mesh position={[0, 0, 0.04]}>
         <planeGeometry args={[baseWidth, baseHeight]} />
         <meshPhysicalMaterial
           color={theme.color}
