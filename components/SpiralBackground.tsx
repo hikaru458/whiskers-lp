@@ -135,10 +135,10 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const opacity = THREE.MathUtils.mapLinear(distance, 0, 2, 1.0, 0.05);
 
   return (
-    <group ref={meshRef}>
+    <group ref={meshRef} frustumCulled={false}>
       <Float speed={isActive ? 1.5 : 0} rotationIntensity={0.1} floatIntensity={0.3}>
         {/* Crystal body with high refraction */}
-        <RoundedBox args={[6.5, 3.8, 0.4]} radius={0.15} smoothness={8}>
+        <RoundedBox args={[6.5, 3.8, 0.4]} radius={0.15} smoothness={8} renderOrder={5}>
           <meshPhysicalMaterial
             color="#ffffff"
             transmission={1.0}
@@ -147,9 +147,11 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
             roughness={0.04}
             clearcoat={1}
             clearcoatRoughness={0.1}
-            envMapIntensity={6}
+            envMapIntensity={2.5}
             transparent
             opacity={opacity}
+            depthWrite={false}
+            side={THREE.DoubleSide}
             attenuationColor={new THREE.Color(color)}
             attenuationDistance={0.8}
           />
@@ -167,13 +169,14 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
         </mesh>
         
         {/* Label slightly in front */}
-        <mesh position={[0, 0, 0.21]}>
+        <mesh position={[0, 0, 0.21]} renderOrder={10}>
           <planeGeometry args={[6.1, 3.4]} />
           <meshBasicMaterial
             map={texture}
             transparent
             opacity={isActive ? 1 : opacity * 0.5}
             toneMapped={false}
+            depthWrite={false}
           />
         </mesh>
       </Float>
@@ -240,8 +243,8 @@ function PostProcessing() {
   return (
     <EffectComposer multisampling={8}>
       <Bloom 
-        intensity={1.4} 
-        luminanceThreshold={0.85}
+        intensity={1.0} 
+        luminanceThreshold={0.9}
         luminanceSmoothing={0.2}
         mipmapBlur 
       />
