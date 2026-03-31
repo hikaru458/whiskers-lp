@@ -181,7 +181,7 @@ function SceneContent() {
 
 function PostProcessing() {
   return (
-    <EffectComposer disableNormalPass>
+    <EffectComposer>
       <Bloom intensity={1.5} luminanceThreshold={1.3} mipmapBlur />
       <ChromaticAberration offset={[0.0015, 0.0015]} />
       <Vignette darkness={0.7} />
