@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ScrollControls, useScroll, RoundedBox, Environment } from "@react-three/drei";
+import { ScrollControls, useScroll, RoundedBox, Environment, Text, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { damp, dampE } from "maath/easing";
 
@@ -19,9 +19,10 @@ const SECTIONS = [
 const HELIX_RADIUS = 10;
 const HELIX_HEIGHT_SPAN = 20;
 const HELIX_TURNS = 2.5;
+const SECTION_COUNT = SECTIONS.length;
 
 // ============================================
-// Crystal Helix - モニターと同じ半径を使用
+// Crystal Helix - Scroll連動型螺旋
 // ============================================
 function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -31,8 +32,8 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
     return Array.from({ length: count }).map((_, i) => {
       const pts = [];
       const phase = (i * Math.PI * 2) / count;
-      for (let j = 0; j <= 200; j++) {
-        const t = (j / 200) * Math.PI * 2 * HELIX_TURNS;
+      for (let j = 0; j <= 300; j++) {
+        const t = (j / 300) * Math.PI * 2 * HELIX_TURNS;
         const x = Math.cos(t + phase) * (HELIX_RADIUS * 0.5);
         const y = (t / (Math.PI * 2)) * HELIX_HEIGHT_SPAN - HELIX_HEIGHT_SPAN / 2;
         const z = Math.sin(t + phase) * (HELIX_RADIUS * 0.5);
@@ -44,7 +45,6 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
 
   useFrame((state, delta) => {
     if (groupRef.current) {
-      // スクロールに連動して螺旋を回転
       const rotation = scrollOffset * Math.PI * 2;
       damp(groupRef.current.rotation, "y", rotation, 0.05, delta);
     }
@@ -72,7 +72,7 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
 }
 
 // ============================================
-// Glass Monitor - 螺旋と同じ計算式を使用
+// Glass Monitor - Scrollに応じて螺旋上を移動
 // ============================================
 function GlassMonitor({ 
   index, 
@@ -87,81 +87,61 @@ function GlassMonitor({
   isActive: boolean; 
   scrollOffset: number;
 }) {
-  const meshRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
 
-  const texture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 512; 
-    canvas.height = 256;
-    const ctx = canvas.getContext("2d")!;
-    
-    ctx.fillStyle = "rgba(2, 6, 15, 0.4)";
-    ctx.fillRect(0, 0, 512, 256);
-    
-    const grad = ctx.createLinearGradient(0, 0, 512, 256);
-    grad.addColorStop(0, color);
-    grad.addColorStop(0.5, "#fff");
-    grad.addColorStop(1, color);
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 6;
-    ctx.strokeRect(10, 10, 492, 236);
-
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 40px serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 20;
-    ctx.fillText(label.toUpperCase(), 256, 128);
-    
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.needsUpdate = true;
-    return tex;
-  }, [label, color]);
-
   useFrame((state, delta) => {
-    if (!meshRef.current) return;
+    if (!groupRef.current) return;
 
-    // 螺旋上の位置を計算（モニターは螺旋の外側に配置）
-    const baseAngle = (index / SECTIONS.length) * Math.PI * 2;
-    const scrollAngle = scrollOffset * Math.PI * 2 * HELIX_TURNS;
-    const currentAngle = baseAngle + scrollAngle;
+    // スクロール位置に基づく現在のセクション計算
+    const totalSections = SECTION_COUNT;
+    const rawIndex = (scrollOffset * (totalSections - 1));
     
-    // 螺旋の外側に配置（HELIX_RADIUSの0.9倍）
-    const x = Math.cos(currentAngle) * (HELIX_RADIUS * 0.9);
-    const z = Math.sin(currentAngle) * (HELIX_RADIUS * 0.9);
-    const y = ((index / SECTIONS.length) - 0.5) * HELIX_HEIGHT_SPAN * 0.8;
+    // 現在のセクションと次のセクションの間を補間
+    const sectionIndex = Math.floor(rawIndex);
+    const nextSection = sectionIndex + 1;
+    const localProgress = rawIndex - sectionIndex;
+    
+    // モニターの位置を計算 - 螺旋状に配置
+    const baseAngle = (index / totalSections) * Math.PI * 2 * 3; // 3回転
+    const scrollAngle = scrollOffset * Math.PI * 2 * HELIX_TURNS;
+    const currentAngle = baseAngle - scrollAngle;
+    
+    // 螺旋の外側に配置
+    const radius = HELIX_RADIUS * 0.85;
+    const x = Math.cos(currentAngle) * radius;
+    const z = Math.sin(currentAngle) * radius;
+    
+    // Y位置はスクロールに応じて移動
+    const sectionHeight = 8;
+    const baseY = (index - rawIndex) * sectionHeight;
+    // 無限スクロール効果
+    const loopedY = ((baseY % (sectionHeight * totalSections)) + (sectionHeight * totalSections)) % (sectionHeight * totalSections) - (sectionHeight * totalSections / 2);
 
-    damp(meshRef.current.position, "x", x, 0.08, delta);
-    damp(meshRef.current.position, "y", y, 0.08, delta);
-    damp(meshRef.current.position, "z", z, 0.08, delta);
+    damp(groupRef.current.position, "x", x, 0.08, delta);
+    damp(groupRef.current.position, "y", loopedY, 0.08, delta);
+    damp(groupRef.current.position, "z", z, 0.08, delta);
 
     if (isActive) {
-      // アクティブ時はカメラを向く
       const dummy = new THREE.Object3D();
-      dummy.position.copy(meshRef.current.position);
+      dummy.position.copy(groupRef.current.position);
       dummy.lookAt(camera.position);
-      dampE(meshRef.current.rotation, dummy.rotation, 0.06, delta);
-      
-      // アクティブ時は前に出る
-      damp(meshRef.current.position, "z", z + 3, 0.06, delta);
+      dampE(groupRef.current.rotation, dummy.rotation, 0.06, delta);
+      damp(groupRef.current.position, "z", z + 4, 0.06, delta);
     } else {
-      // 非アクティブ時は螺旋に沿った角度
       const targetRotationY = -currentAngle + Math.PI / 2;
       const dummy = new THREE.Object3D();
       dummy.rotation.set(0, targetRotationY, 0);
-      dampE(meshRef.current.rotation, dummy.rotation, 0.1, delta);
+      dampE(groupRef.current.rotation, dummy.rotation, 0.1, delta);
     }
 
-    // スケール
-    damp(meshRef.current.scale, "x", isActive ? 1.15 : 0.85, 0.1, delta);
-    damp(meshRef.current.scale, "y", isActive ? 1.15 : 0.85, 0.1, delta);
-    damp(meshRef.current.scale, "z", isActive ? 1.15 : 0.85, 0.1, delta);
+    damp(groupRef.current.scale, "x", isActive ? 1.2 : 0.75, 0.1, delta);
+    damp(groupRef.current.scale, "y", isActive ? 1.2 : 0.75, 0.1, delta);
+    damp(groupRef.current.scale, "z", isActive ? 1.2 : 0.75, 0.1, delta);
   });
 
   return (
-    <group ref={meshRef}>
+    <group ref={groupRef}>
       <RoundedBox args={[3.5, 2, 0.02]} radius={0.08} smoothness={4}>
         <meshPhysicalMaterial 
           color="#020617"
@@ -169,33 +149,62 @@ function GlassMonitor({
           thickness={0.5}
           ior={1.2}
           transparent
-          opacity={isActive ? 0.9 : 0.5}
+          opacity={isActive ? 0.95 : 0.4}
           roughness={0.1}
           metalness={0.1}
           clearcoat={1}
           clearcoatRoughness={0.05}
         />
       </RoundedBox>
-      <mesh position={[0, 0, 0.03]}>
-        <planeGeometry args={[3.3, 1.8]} />
-        <meshBasicMaterial 
-          map={texture} 
-          transparent 
-          opacity={isActive ? 1 : 0.6} 
-          toneMapped={false} 
-        />
-      </mesh>
-      {/* エッジグロー */}
+      
+      <Text
+        position={[0, 0, 0.03]}
+        fontSize={0.45}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        letterSpacing={0.08}
+        font="/fonts/Inter-Bold.woff"
+      >
+        {label.toUpperCase()}
+      </Text>
+      
       <mesh position={[0, 0, 0.04]}>
         <planeGeometry args={[3.6, 2.1]} />
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={isActive ? 0.3 : 0.1}
+          opacity={isActive ? 0.4 : 0.15}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
+      
+      {isActive && (
+        <pointLight
+          color={color}
+          intensity={2}
+          distance={8}
+          position={[0, 0, -1]}
+        />
+      )}
     </group>
+  );
+}
+
+// ============================================
+// StarField - 背景の星
+// ============================================
+function StarField() {
+  return (
+    <Stars
+      radius={100}
+      depth={50}
+      count={5000}
+      factor={4}
+      saturation={0}
+      fade
+      speed={0.5}
+    />
   );
 }
 
@@ -206,10 +215,10 @@ export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0 bg-[#000208]">
       <Canvas 
-        camera={{ position: [0, 0, 25], fov: 35 }}
+        camera={{ position: [0, 0, 22], fov: 40 }}
         dpr={[1, 1.5]}
       >
-        <ScrollControls pages={5} damping={0.08}>
+        <ScrollControls pages={SECTION_COUNT} damping={0.15}>
           <SceneContent />
           <Environment preset="city" />
         </ScrollControls>
@@ -221,23 +230,39 @@ export function SpiralBackground() {
 function SceneContent() {
   const scroll = useScroll();
   const [activeIndex, setActiveIndex] = useState(0);
+  const prevScrollRef = useRef(0);
 
   useFrame(() => {
     if (!scroll) return;
-    const current = Math.round(scroll.offset * (SECTIONS.length - 1));
-    if (current !== activeIndex) setActiveIndex(current);
+    
+    const currentScroll = scroll.offset;
+    const totalSections = SECTION_COUNT;
+    
+    // スクロール方向を検出
+    const scrollDirection = currentScroll > prevScrollRef.current ? 1 : -1;
+    prevScrollRef.current = currentScroll;
+    
+    // 現在のセクション計算
+    const rawIndex = currentScroll * (totalSections - 1);
+    const newIndex = Math.round(rawIndex);
+    
+    if (newIndex !== activeIndex && newIndex >= 0 && newIndex < totalSections) {
+      setActiveIndex(newIndex);
+    }
   });
 
   return (
     <>
       <color attach="background" args={["#000208"]} />
-      <fog attach="fog" args={["#000208", 15, 50]} />
+      <fog attach="fog" args={["#000208", 20, 60]} />
       
-      <ambientLight intensity={0.15} />
-      <spotLight position={[0, 20, 15]} intensity={15} angle={0.4} penumbra={0.5} color="#ffffff" />
-      <spotLight position={[15, 5, 10]} intensity={5} angle={0.5} penumbra={0.8} color="#60a5fa" />
-      <spotLight position={[-15, -5, 10]} intensity={4} angle={0.5} penumbra={0.8} color="#c084fc" />
+      <ambientLight intensity={0.2} />
+      <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+      <spotLight position={[0, 20, 10]} intensity={12} angle={0.5} penumbra={0.5} color="#ffffff" />
+      <spotLight position={[12, 5, 8]} intensity={4} angle={0.6} penumbra={0.8} color="#60a5fa" />
+      <spotLight position={[-12, -5, 8]} intensity={3} angle={0.6} penumbra={0.8} color="#c084fc" />
 
+      <StarField />
       <CrystalHelix scrollOffset={scroll?.offset || 0} />
       
       {SECTIONS.map((s, i) => (
