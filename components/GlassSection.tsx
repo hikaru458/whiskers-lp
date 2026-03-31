@@ -16,14 +16,14 @@ export default function GlassSection({ panel, index }: { panel: { label: string;
   const scrollFactor = scrollY * 0.01 * (index + 1);
 
   return (
-    <section className="h-[140vh] flex items-center justify-center relative z-20">
-      <div className="w-full max-w-6xl h-[80vh]">
+    <section className="h-[150vh] flex items-center justify-center relative z-30">
+      <div className="w-full max-w-7xl h-[85vh]">
         <Canvas
           camera={{ position: [0, 0, 10], fov: 32 }}
           gl={{ antialias: true }}
         >
-          <ambientLight intensity={0.7} />
-          <directionalLight position={[4, 6, 8]} intensity={1.4} />
+          <ambientLight intensity={0.75} />
+          <directionalLight position={[4, 6, 8]} intensity={1.5} />
           <GlassMonitor label={panel.label} z={panel.z} scrollFactor={scrollFactor} />
         </Canvas>
       </div>

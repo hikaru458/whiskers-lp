@@ -23,8 +23,8 @@ function useFresnel(color: string) {
           varying float vEdge;
           uniform vec3 uColor;
           void main() {
-            float fres = pow(vEdge, 2.0);
-            gl_FragColor = vec4(uColor * fres * 2.2, fres);
+            float fres = pow(vEdge, 2.2);
+            gl_FragColor = vec4(uColor * fres * 2.8, fres);
           }
         `,
         transparent: true,
@@ -40,8 +40,9 @@ export default function GlassMonitor({ label, z, scrollFactor }: { label: string
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
 
-  const baseHeight = isPC ? 8 : 6;
-  const baseWidth = (9 / 16) * baseHeight * (isPC ? 1.2 : 1);
+  // 横長（16:10）＋ PC で大きく
+  const baseHeight = isPC ? 6.5 : 5.2;
+  const baseWidth = baseHeight * 1.6;
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -49,44 +50,44 @@ export default function GlassMonitor({ label, z, scrollFactor }: { label: string
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, z]}>
+    <group ref={groupRef} position={[0, 0.4, z]}>
       {/* ガラス本体 */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.18]} radius={0.35} smoothness={14}>
+      <RoundedBox args={[baseWidth, baseHeight, 0.22]} radius={0.45} smoothness={16}>
         <meshPhysicalMaterial
           color="#ffffff"
           transparent
-          opacity={0.28}
-          roughness={0.08}
+          opacity={0.35}
+          roughness={0.06}
           metalness={0.25}
           transmission={0.92}
-          thickness={2.0}
-          envMapIntensity={2.2}
+          thickness={2.4}
+          envMapIntensity={2.4}
         />
       </RoundedBox>
 
       {/* Fresnel */}
       <mesh>
-        <planeGeometry args={[baseWidth + 0.3, baseHeight + 0.3]} />
+        <planeGeometry args={[baseWidth + 0.35, baseHeight + 0.35]} />
         <primitive object={fresnel} />
       </mesh>
 
       {/* 擬似シャドウ */}
       <mesh position={[0, -baseHeight / 2 - 0.5, 0]}>
-        <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.15]} />
+        <planeGeometry args={[baseWidth * 0.85, baseHeight * 0.18]} />
         <meshBasicMaterial color="black" transparent opacity={0.12} />
       </mesh>
 
       {/* アイコン（角丸 4〜6px） */}
-      <group position={[-baseWidth * 0.18, 0.2, 0.08]}>
-        <RoundedBox args={[1.0, 1.0, 0.02]} radius={0.22} smoothness={10}>
+      <group position={[-baseWidth * 0.22, 0.15, 0.08]}>
+        <RoundedBox args={[1.1, 1.1, 0.02]} radius={0.25} smoothness={10}>
           <meshBasicMaterial color="#e5e7eb" transparent opacity={0.9} wireframe />
         </RoundedBox>
       </group>
 
       {/* テキスト */}
       <Text
-        position={[0.4, 0, 0.1]}
-        fontSize={0.7}
+        position={[0.5, 0, 0.1]}
+        fontSize={0.75}
         color="#ffffff"
         anchorX="left"
         anchorY="middle"
