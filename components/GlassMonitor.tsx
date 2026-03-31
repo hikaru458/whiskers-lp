@@ -24,7 +24,7 @@ function useFresnel(color: string) {
           uniform vec3 uColor;
           void main() {
             float fres = pow(vEdge, 2.0);
-            gl_FragColor = vec4(uColor * fres * 1.8, fres);
+            gl_FragColor = vec4(uColor * fres * 2.2, fres);
           }
         `,
         transparent: true,
@@ -34,70 +34,59 @@ function useFresnel(color: string) {
   );
 }
 
-export default function GlassMonitor({
-  label,
-  z,
-  scrollFactor,
-}: {
-  label: string;
-  z: number;
-  scrollFactor: number;
-}) {
+export default function GlassMonitor({ label, z, scrollFactor }: { label: string; z: number; scrollFactor: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const fresnel = useFresnel("#ffffff");
 
-  const baseHeight = 6;
-  const baseWidth = (9 / 16) * baseHeight;
+  const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
+
+  const baseHeight = isPC ? 8 : 6;
+  const baseWidth = (9 / 16) * baseHeight * (isPC ? 1.2 : 1);
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.position.y = scrollFactor * 0.2;
+    groupRef.current.position.y = scrollFactor * 0.25;
   });
 
   return (
     <group ref={groupRef} position={[0, 0, z]}>
       {/* ガラス本体 */}
-      <RoundedBox args={[baseWidth, baseHeight, 0.12]} radius={0.3} smoothness={12}>
+      <RoundedBox args={[baseWidth, baseHeight, 0.18]} radius={0.35} smoothness={14}>
         <meshPhysicalMaterial
           color="#ffffff"
           transparent
-          opacity={0.22}
-          roughness={0.1}
-          metalness={0.2}
-          transmission={0.9}
-          thickness={1.5}
-          envMapIntensity={1.8}
+          opacity={0.28}
+          roughness={0.08}
+          metalness={0.25}
+          transmission={0.92}
+          thickness={2.0}
+          envMapIntensity={2.2}
         />
       </RoundedBox>
 
       {/* Fresnel */}
       <mesh>
-        <planeGeometry args={[baseWidth + 0.25, baseHeight + 0.25]} />
+        <planeGeometry args={[baseWidth + 0.3, baseHeight + 0.3]} />
         <primitive object={fresnel} />
       </mesh>
 
       {/* 擬似シャドウ */}
-      <mesh position={[0, -baseHeight / 2 - 0.4, 0]}>
-        <planeGeometry args={[baseWidth * 0.7, baseHeight * 0.12]} />
-        <meshBasicMaterial color="black" transparent opacity={0.14} />
+      <mesh position={[0, -baseHeight / 2 - 0.5, 0]}>
+        <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.15]} />
+        <meshBasicMaterial color="black" transparent opacity={0.12} />
       </mesh>
 
-      {/* アイコン（角丸 4〜6px / 2.5px ライン） */}
-      <group position={[-baseWidth * 0.18, 0.1, 0.08]}>
-        <RoundedBox args={[0.9, 0.9, 0.02]} radius={0.18} smoothness={8}>
-          <meshBasicMaterial
-            color="#e5e7eb"
-            transparent
-            opacity={0.9}
-            wireframe
-          />
+      {/* アイコン（角丸 4〜6px） */}
+      <group position={[-baseWidth * 0.18, 0.2, 0.08]}>
+        <RoundedBox args={[1.0, 1.0, 0.02]} radius={0.22} smoothness={10}>
+          <meshBasicMaterial color="#e5e7eb" transparent opacity={0.9} wireframe />
         </RoundedBox>
       </group>
 
       {/* テキスト */}
       <Text
-        position={[0.3, 0, 0.1]}
-        fontSize={0.6}
+        position={[0.4, 0, 0.1]}
+        fontSize={0.7}
         color="#ffffff"
         anchorX="left"
         anchorY="middle"
