@@ -27,6 +27,7 @@ export default function GlassSection({
         <Canvas
           camera={{ position: [0, 0, 12], fov: 35 }}
           gl={{ antialias: true }}
+          style={{ width: "100%", height: "100%" }}
         >
           <ambientLight intensity={0.75} />
           <directionalLight position={[4, 6, 8]} intensity={1.5} />
