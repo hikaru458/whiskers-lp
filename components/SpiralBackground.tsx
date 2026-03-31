@@ -5,7 +5,6 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ScrollControls, useScroll, RoundedBox, Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { damp, dampE } from "maath/easing";
-import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
 
 const SECTIONS = [
   { id: "gallery", label: "Gallery", color: "#60a5fa" },
@@ -32,8 +31,9 @@ function CrystalHelix() {
     return Array.from({ length: count }).map((_, i) => {
       const pts = [];
       const phase = (i * Math.PI * 2) / count;
-      for (let j = 0; j <= points; j++) {
-        const t = (j / points) * Math.PI * 2 * SPIRAL_TURNS;
+      // ポイント数を300に削減（1200→300）
+      for (let j = 0; j <= 300; j++) {
+        const t = (j / 300) * Math.PI * 2 * SPIRAL_TURNS;
         const x = Math.cos(t + phase) * (RADIUS * 0.4);
         const y = (t / (Math.PI * 2)) * HEIGHT_STEP * 4 - 10;
         const z = Math.sin(t + phase) * (RADIUS * 0.4);
@@ -47,17 +47,16 @@ function CrystalHelix() {
     <group>
       {helixCurves.map((curve, i) => (
         <mesh key={i}>
-          <tubeGeometry args={[curve, 1000, 0.005, 8, false]} />
+          {/* セグメント数を200に削減、半径を0.03に増加 */}
+          <tubeGeometry args={[curve, 200, 0.03, 8, false]} />
           <meshPhysicalMaterial
             color="#ffffff"
             transmission={1.0}
             ior={1.5}
             thickness={0.2}
-            roughness={0.02}
-            iridescence={1.0}
-            iridescenceIOR={1.8}
+            roughness={0.05}
             emissive="#ffffff"
-            emissiveIntensity={0.2}
+            emissiveIntensity={0.5}
           />
         </mesh>
       ))}
@@ -75,21 +74,20 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1024; canvas.height = 512;
+    canvas.width = 512; canvas.height = 256;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "rgba(2, 6, 15, 0.2)"; // 背景をより透明に
-    ctx.fillRect(0, 0, 1024, 512);
+    ctx.fillStyle = "rgba(2, 6, 15, 0.3)";
+    ctx.fillRect(0, 0, 512, 256);
     
-    // 虹色ボーダー
-    const grad = ctx.createLinearGradient(0, 0, 1024, 512);
+    const grad = ctx.createLinearGradient(0, 0, 512, 256);
     grad.addColorStop(0, color); grad.addColorStop(0.5, "#fff"); grad.addColorStop(1, color);
-    ctx.strokeStyle = grad; ctx.lineWidth = 10;
-    ctx.strokeRect(20, 20, 984, 472);
+    ctx.strokeStyle = grad; ctx.lineWidth = 6;
+    ctx.strokeRect(10, 10, 492, 236);
 
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 80px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.shadowColor = color; ctx.shadowBlur = 30;
-    ctx.fillText(label.toUpperCase(), 512, 256);
+    ctx.font = "bold 40px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.shadowColor = color; ctx.shadowBlur = 20;
+    ctx.fillText(label.toUpperCase(), 256, 128);
     return new THREE.CanvasTexture(canvas);
   }, [label, color]);
 
@@ -153,8 +151,8 @@ export function SpiralBackground() {
           
           <SceneContent />
           
-          <Environment preset="city" />
           <PostProcessing />
+          <Environment preset="city" />
         </ScrollControls>
       </Canvas>
     </div>
@@ -180,11 +178,6 @@ function SceneContent() {
 }
 
 function PostProcessing() {
-  return (
-    <EffectComposer>
-      <Bloom intensity={1.5} luminanceThreshold={1.3} mipmapBlur />
-      <ChromaticAberration offset={[0.0015, 0.0015]} />
-      <Vignette darkness={0.7} />
-    </EffectComposer>
-  );
+  // パフォーマンスのため一旦無効化
+  return null;
 }
