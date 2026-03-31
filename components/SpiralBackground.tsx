@@ -46,16 +46,24 @@ function Particles() {
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[0.08, 8, 8]} />
       <meshBasicMaterial color="#ffffff" transparent opacity={0.4} />
-      <bufferAttribute
-        attach="instanceMatrix"
-        args={[new THREE.InstancedBufferAttribute(positions, 3)]}
-      />
     </instancedMesh>
   );
 }
 
 // ============================================
-// Glass Monitor (Active Theory style)
+// Camera Tilt (Active Theory angle)
+// ============================================
+function CameraTilt() {
+  const { camera } = useThree();
+
+  useFrame(() => {
+    camera.rotation.x = -0.42;
+    camera.rotation.y = 0;
+    camera.rotation.z = 0;
+  });
+
+  return null;
+}
 // ============================================
 function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const meshRef = useRef<THREE.Group>(null);
@@ -174,11 +182,11 @@ export function SpiralBackground() {
       <Canvas 
         camera={{ 
           position: [0, 12, 28], 
-          fov: 35,
-          rotation: { x: -0.42, y: 0, z: 0 }
+          fov: 35
         }} 
         gl={{ antialias: true }}
       >
+        <CameraTilt />
         <ScrollControls pages={SECTIONS.length} damping={0.2}>
           <SceneContent />
           <Particles />
