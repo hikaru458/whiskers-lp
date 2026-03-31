@@ -53,13 +53,12 @@ function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
     <group ref={groupRef}>
       {helixCurves.map((curve, i) => (
         <mesh key={i}>
-          <tubeGeometry args={[curve, 800, 0.01, 8, false]} />
-          <meshPhysicalMaterial
-            color="#ffffff"
-            emissive="#ffffff"
-            emissiveIntensity={1.5}
+          {/* 極細の光の糸 */}
+          <tubeGeometry args={[curve, 400, 0.003, 8, false]} />
+          <meshBasicMaterial
+            color="#60a5fa"
             transparent
-            opacity={0.8}
+            opacity={0.3}
           />
         </mesh>
       ))}
@@ -131,17 +130,20 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   return (
     <group ref={meshRef}>
       <Float speed={isActive ? 2 : 0} rotationIntensity={0.1} floatIntensity={0.2}>
-        {/* 厚み(0.2)を持たせてクリスタル感を出す */}
-        <RoundedBox args={[5, 3, 0.2]} radius={0.05} smoothness={4}>
+        {/* クリスタル質感のモニター */}
+        <RoundedBox args={[5, 3, 0.3]} radius={0.08} smoothness={8}>
           <meshPhysicalMaterial 
-            transmission={1.0} 
-            thickness={2.0} // 屈折の深さ
-            ior={2.4}       // ダイヤモンドに近い屈折率
-            roughness={0.01}
+            color="#ffffff"
+            emissive={color}
+            emissiveIntensity={isActive ? 2.0 : 0.3}
+            transmission={0.9}
+            thickness={3}
+            ior={2.0}
+            roughness={0}
             clearcoat={1}
+            clearcoatRoughness={0}
             transparent
-            opacity={isActive ? 0.9 : 0.1}
-            envMapIntensity={3} // 映り込みを強く
+            opacity={isActive ? 0.95 : 0.15}
           />
         </RoundedBox>
         <mesh position={[0, 0, 0.11]}>
