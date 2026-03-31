@@ -172,8 +172,8 @@ export default function GlassMonitor({
           color="#ffffff"
           roughness={0.02}
           metalness={0.1}
-          transmission={0.85}
-          thickness={3.0}
+          transmission={0.78}
+          thickness={1.6}
           ior={1.5}
           envMapIntensity={3.0}
           clearcoat={1.0}
@@ -236,7 +236,7 @@ export default function GlassMonitor({
           roughness={0.05}
           envMapIntensity={6.0}
           transparent
-          opacity={0.06}
+          opacity={0.05}
         />
       </mesh>
 
