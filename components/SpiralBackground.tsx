@@ -26,7 +26,7 @@ function useResponsiveSettings() {
   const [settings, setSettings] = useState({
     panelWidth: 6,
     panelHeight: 4,
-    spacing: 8,
+    spacing: 9,
     cameraZ: 12,
     labelSize: 0.5,
     isMobile: false,
@@ -37,31 +37,24 @@ function useResponsiveSettings() {
       const w = window.innerWidth;
 
       if (w < 640) {
-        // スマホ（縦長パネル）
+        // スマホ：9:16 の縦長ガラスモニター
+        const width = 2.4;
+        const height = width * (16 / 9);
+
         setSettings({
-          panelWidth: 2.6,
-          panelHeight: 4.2,
-          spacing: 4.2,
-          cameraZ: 12,
+          panelWidth: width,
+          panelHeight: height,
+          spacing: 5.0,
+          cameraZ: 13.5, // 上下に余白を作る
           labelSize: 0.32,
           isMobile: true,
-        });
-      } else if (w < 1024) {
-        // タブレット
-        setSettings({
-          panelWidth: 5,
-          panelHeight: 3.2,
-          spacing: 6.5,
-          cameraZ: 10,
-          labelSize: 0.45,
-          isMobile: false,
         });
       } else {
         // PC
         setSettings({
           panelWidth: 6,
           panelHeight: 4,
-          spacing: 8,
+          spacing: 9,
           cameraZ: 12,
           labelSize: 0.5,
           isMobile: false,
@@ -122,18 +115,16 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
     if (!ref.current) return;
 
     const targetX = (index - activeIndex) * settings.spacing + offset;
-    const targetScale = index === activeIndex ? 1.2 : 0.7;
+
+    // ★ アクティブパネルを大きく強調（1.5）
+    const targetScale = index === activeIndex ? 1.5 : 0.75;
 
     damp(ref.current.position, "x", targetX, 0.15, delta);
     damp(ref.current.scale, "x", targetScale, 0.2, delta);
     damp(ref.current.scale, "y", targetScale, 0.2, delta);
 
     // スマホではパネルを縦向きに回転
-    if (settings.isMobile) {
-      ref.current.rotation.z = Math.PI / 2;
-    } else {
-      ref.current.rotation.z = 0;
-    }
+    ref.current.rotation.z = settings.isMobile ? Math.PI / 2 : 0;
   });
 
   return (
@@ -227,7 +218,7 @@ export function SpiralBackground() {
     };
   }, []);
 
-  // スマホ：横スワイプのみ
+  // スマホ：横フリックのみ（操作性改善）
   const handlers = useSwipeable({
     onSwipedLeft: () => setActive((a) => Math.min(a + 1, PANELS.length - 1)),
     onSwipedRight: () => setActive((a) => Math.max(a - 1, 0)),
@@ -235,7 +226,10 @@ export function SpiralBackground() {
   });
 
   return (
-    <div {...handlers} className="fixed inset-0 bg-black">
+    <div
+      {...handlers}
+      className="fixed inset-0 bg-black flex items-center justify-center"
+    >
       <Canvas camera={{ position: [0, 0, settings.cameraZ], fov: 32 }}>
         {PANELS.map((p, i) => (
           <GlassPanel
