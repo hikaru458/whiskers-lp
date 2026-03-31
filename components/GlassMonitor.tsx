@@ -1,5 +1,6 @@
 "use client";
 
+// Mobile-first glass monitor - aspect ratio 4.2 x 6.8
 import { RoundedBox, Text, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
