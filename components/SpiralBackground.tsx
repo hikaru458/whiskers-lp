@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   ScrollControls,
@@ -28,138 +28,124 @@ const SECTIONS = [
 ];
 
 // ============================================
-// Crystal Helix Core（虹色螺旋クリスタル）
+// Crystal Ribbon Core（極細光の糸・薄膜干渉）
 // ============================================
-function CrystalHelixCore() {
+function CrystalRibbonCore() {
   const coreRef = useRef<THREE.Group>(null);
-  const innerRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
 
-  const { viewport } = useThree();
-
   useFrame((state, delta) => {
-    if (!coreRef.current || !innerRef.current || !glowRef.current) return;
+    if (!coreRef.current || !glowRef.current) return;
 
     const time = state.clock.elapsedTime;
-    const mouseX = state.pointer.x * 0.5;
-    const mouseY = state.pointer.y * 0.5;
+    const mouseX = state.pointer.x * 0.3;
+    const mouseY = state.pointer.y * 0.3;
 
     // 優雅な泳ぎ
     dampE(
       coreRef.current.rotation,
       new THREE.Euler(
-        mouseY * 0.3 + Math.sin(time * 0.2) * 0.1,
-        time * 0.1 + mouseX * 0.3,
-        Math.cos(time * 0.15) * 0.05
+        mouseY * 0.2 + Math.sin(time * 0.3) * 0.08,
+        time * 0.15 + mouseX * 0.2,
+        Math.cos(time * 0.2) * 0.05
       ),
-      0.03,
-      delta
-    );
-
-    // 内側逆回転
-    dampE(
-      innerRef.current.rotation,
-      new THREE.Euler(
-        -mouseY * 0.2,
-        -time * 0.15,
-        0
-      ),
-      0.03,
+      0.02,
       delta
     );
 
     // 脈動
-    const pulse = 1 + Math.sin(time * 0.8) * 0.02;
+    const pulse = 1 + Math.sin(time * 0.8) * 0.03;
     glowRef.current.scale.setScalar(pulse);
   });
 
   return (
     <group ref={coreRef}>
-      {/* メイン螺旋 - ガラスリボン */}
+      {/* メインリボン - 極細光の糸 [1.5, 0.02, 800, 64, 2, 3] */}
       <mesh>
-        <torusKnotGeometry args={[3, 0.08, 200, 32, 3, 5]} />
+        <torusKnotGeometry args={[1.5, 0.02, 800, 64, 2, 3]} />
         <meshPhysicalMaterial
-          color="#f0f9ff"
+          color="#ffffff"
           metalness={0}
-          roughness={0}
+          roughness={0.02}
           transmission={1.0}
-          thickness={3}
-          ior={1.7}
+          thickness={1.0}
+          ior={1.5}
           iridescence={1.0}
-          iridescenceIOR={1.3}
+          iridescenceIOR={1.8}
           iridescenceThicknessRange={[100, 400]}
+          reflectivity={1.0}
           clearcoat={1}
           clearcoatRoughness={0}
-          envMapIntensity={2}
+          envMapIntensity={3}
           attenuationColor="#e0f2fe"
-          attenuationDistance={1}
+          attenuationDistance={0.5}
         />
       </mesh>
 
-      {/* 内側螺旋 - 逆方向 */}
-      <mesh ref={innerRef}>
-        <torusKnotGeometry args={[2.2, 0.06, 150, 24, 2, 4]} />
+      {/* 内側リボン - 逆方向回転 */}
+      <mesh rotation={[Math.PI / 3, 0, 0]}>
+        <torusKnotGeometry args={[1.2, 0.015, 600, 48, 3, 2]} />
         <meshPhysicalMaterial
           color="#e0f2fe"
           metalness={0}
           roughness={0.02}
-          transmission={0.95}
-          thickness={2}
-          ior={1.6}
-          iridescence={0.9}
-          iridescenceIOR={1.25}
+          transmission={1.0}
+          thickness={0.8}
+          ior={1.5}
+          iridescence={1.0}
+          iridescenceIOR={1.7}
+          reflectivity={1.0}
           emissive="#60a5fa"
-          emissiveIntensity={0.15}
+          emissiveIntensity={0.1}
           clearcoat={1}
         />
       </mesh>
 
-      {/* 外側フレームリング */}
-      <mesh rotation={[Math.PI / 6, 0, 0]}>
-        <torusKnotGeometry args={[4, 0.04, 120, 20, 4, 3]} />
+      {/* 外側フレーム */}
+      <mesh rotation={[0, Math.PI / 4, 0]}>
+        <torusKnotGeometry args={[2, 0.01, 400, 32, 2, 5]} />
         <meshPhysicalMaterial
           color="#ffffff"
           metalness={0}
           roughness={0}
           transmission={1.0}
-          thickness={2.5}
-          ior={1.8}
+          thickness={0.5}
+          ior={1.5}
           iridescence={1.0}
-          iridescenceIOR={1.35}
+          iridescenceIOR={1.8}
+          reflectivity={1.0}
           clearcoat={1}
-          envMapIntensity={1.5}
+          envMapIntensity={2}
         />
       </mesh>
 
-      {/* 中央白い発光花 */}
+      {/* 中央発光コア */}
       <mesh>
-        <sphereGeometry args={[0.6, 64, 64]} />
+        <sphereGeometry args={[0.25, 64, 64]} />
         <meshPhysicalMaterial
           color="#ffffff"
           emissive="#ffffff"
-          emissiveIntensity={5}
+          emissiveIntensity={8}
           metalness={0}
           roughness={0}
-          transmission={0.3}
-          thickness={1}
         />
       </mesh>
 
       {/* グロー */}
       <mesh ref={glowRef}>
-        <sphereGeometry args={[1.2, 32, 32]} />
+        <sphereGeometry args={[0.8, 32, 32]} />
         <meshBasicMaterial
           color="#60a5fa"
           transparent
-          opacity={0.12}
+          opacity={0.15}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
       {/* ライティング */}
-      <pointLight color="#ffffff" intensity={10} distance={20} decay={0.5} position={[0, 0, 0]} />
-      <pointLight color="#60a5fa" intensity={5} distance={15} decay={0.7} position={[3, 3, 3]} />
-      <pointLight color="#c084fc" intensity={4} distance={15} decay={0.7} position={[-3, -3, 3]} />
+      <pointLight color="#ffffff" intensity={12} distance={20} decay={0.5} position={[0, 0, 0]} />
+      <pointLight color="#60a5fa" intensity={5} distance={15} decay={0.7} position={[2, 2, 2]} />
+      <pointLight color="#c084fc" intensity={4} distance={15} decay={0.7} position={[-2, -2, 2]} />
     </group>
   );
 }
@@ -252,8 +238,9 @@ function GlassMonitor({
     return tex;
   }, [label, color, index]);
 
-  const targetScale = useMemo(() => (isActive ? 1.1 : 0.85), [isActive]);
-  const targetGlow = useMemo(() => (isActive ? 0.9 : 0.15), [isActive]);
+  const targetScale = useMemo(() => (isActive ? 1.1 : 0.8), [isActive]);
+  const targetGlow = useMemo(() => (isActive ? 0.9 : 0.2), [isActive]);
+  const targetOpacity = useMemo(() => (isActive ? 0.98 : 0.2), [isActive]);
 
   useFrame((state, delta) => {
     if (!meshRef.current || !edgeRef.current || !screenRef.current) return;
@@ -271,11 +258,23 @@ function GlassMonitor({
     damp(meshRef.current.position, "y", targetY, 0.05, delta);
     damp(meshRef.current.position, "z", targetZ, 0.05, delta);
 
-    // カメラに向く
-    const dummy = new THREE.Object3D();
-    dummy.position.copy(meshRef.current.position);
-    dummy.lookAt(camera.position);
-    dampE(meshRef.current.rotation, dummy.rotation, 0.06, delta);
+    // Governance: アクティブ時のみカメラに正対、非アクティブは螺旋カーブに沿って回転
+    if (isActive) {
+      const dummy = new THREE.Object3D();
+      dummy.position.copy(meshRef.current.position);
+      dummy.lookAt(camera.position);
+      dampE(meshRef.current.rotation, dummy.rotation, 0.04, delta);
+    } else {
+      // 非アクティブ: 螺旋のカーブに沿った傾き（浮遊感）
+      const spiralTilt = new THREE.Euler(
+        Math.sin(currentAngle) * 0.15,
+        -currentAngle + Math.PI / 2,
+        Math.cos(currentAngle) * 0.1
+      );
+      const dummy = new THREE.Object3D();
+      dummy.rotation.copy(spiralTilt);
+      dampE(meshRef.current.rotation, dummy.rotation, 0.08, delta);
+    }
 
     // スケール
     damp(meshRef.current.scale, "x", targetScale, 0.08, delta);
@@ -285,6 +284,10 @@ function GlassMonitor({
     // エッジ発光
     const edgeMat = edgeRef.current.material as THREE.MeshBasicMaterial;
     damp(edgeMat, "opacity", targetGlow, 0.08, delta);
+
+    // スクリーンopacity - 非アクティブ時は0.2
+    const screenMat = screenRef.current.material as THREE.MeshBasicMaterial;
+    damp(screenMat, "opacity", targetOpacity, 0.06, delta);
   });
 
   return (
@@ -294,19 +297,19 @@ function GlassMonitor({
         <meshBasicMaterial color={color} transparent opacity={0.2} />
       </RoundedBox>
 
-      {/* ガラスフレーム */}
-      <RoundedBox args={[2.7, 1.7, 0.1]} radius={0.03} smoothness={4}>
+      {/* ガラスフレーム - 背景が屈折して透けるプリズム */}
+      <RoundedBox args={[2.7, 1.7, 0.12]} radius={0.03} smoothness={4}>
         <meshPhysicalMaterial
           color="#020617"
-          metalness={0.1}
-          roughness={0.05}
+          metalness={0}
+          roughness={0.1}
           envMapIntensity={3}
           transparent
-          opacity={0.2}
-          transmission={0.92}
-          thickness={0.6}
-          ior={1.7}
-          iridescence={0.8}
+          opacity={0.15}
+          transmission={0.95}
+          thickness={2.5}
+          ior={1.6}
+          iridescence={0.6}
           iridescenceIOR={1.3}
           clearcoat={1}
           clearcoatRoughness={0}
@@ -358,15 +361,15 @@ function HelixScene() {
       <color attach="background" args={["#000106"]} />
       <fogExp2 attach="fog" args={["#000106", 0.03]} />
 
-      {/* トップライト */}
+      {/* トップスポットライト - 一筋の光 */}
       <spotLight
-        color="#e0f2fe"
-        intensity={10}
-        distance={50}
-        angle={Math.PI / 4}
-        penumbra={0.6}
-        decay={0.4}
-        position={[0, 25, 5]}
+        color="#ffffff"
+        intensity={15}
+        distance={60}
+        angle={Math.PI / 6}
+        penumbra={0.4}
+        decay={0.3}
+        position={[0, 20, 8]}
         target-position={[0, 0, 0]}
       />
 
@@ -374,12 +377,12 @@ function HelixScene() {
       <spotLight color="#60a5fa" intensity={4} distance={40} angle={Math.PI / 5} penumbra={0.7} decay={0.5} position={[12, 5, 8]} target-position={[0, 0, 0]} />
       <spotLight color="#c084fc" intensity={3} distance={40} angle={Math.PI / 5} penumbra={0.7} decay={0.5} position={[-12, -5, 8]} target-position={[0, 0, 0]} />
 
-      {/* 環境光 */}
-      <ambientLight intensity={0.02} color="#0f172a" />
+      {/* 環境光 - 暗め */}
+      <ambientLight intensity={0.05} color="#0f172a" />
       <pointLight color="#94a3b8" intensity={0.5} distance={30} position={[0, -15, 10]} />
 
-      {/* クリスタル螺旋コア */}
-      <CrystalHelixCore />
+      {/* クリスタルリボンコア */}
+      <CrystalRibbonCore />
 
       {/* ガラスモニター群 */}
       {SECTIONS.map((section, index) => (
@@ -408,7 +411,7 @@ function HelixScene() {
 function PostProcessing() {
   return (
     <EffectComposer>
-      <Bloom intensity={2} luminanceThreshold={0.8} luminanceSmoothing={0.5} height={500} mipmapBlur />
+      <Bloom intensity={2.0} luminanceThreshold={1.2} luminanceSmoothing={0.4} height={500} mipmapBlur />
       <ChromaticAberration offset={[0.002, 0.0015]} />
       <Vignette eskil={false} offset={0.3} darkness={0.8} />
     </EffectComposer>
