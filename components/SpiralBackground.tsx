@@ -1,77 +1,21 @@
 "use client";
 
-import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { RoundedBox, Text } from "@react-three/drei";
 import * as THREE from "three";
-import { damp } from "maath/easing";
-import { useSwipeable } from "react-swipeable";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // =============================
-// パネルデータ
+// ガラスモニター用データ
 // =============================
 const PANELS = [
-  { label: "Gallery", color: "#60a5fa" },
-  { label: "Creator", color: "#22d3ee" },
-  { label: "Contest", color: "#a78bfa" },
-  { label: "Product", color: "#fbbf24" },
-  { label: "FAQ", color: "#34d399" },
-  { label: "Contact", color: "#f87171" },
+  { label: "Gallery", z: 0 },
+  { label: "Creator", z: -0.3 },
+  { label: "Contest", z: -0.6 },
 ];
 
 // =============================
-// レスポンシブ設定 + スマホ判定
-// =============================
-function useResponsiveSettings() {
-  const [settings, setSettings] = useState({
-    panelWidth: 6,
-    panelHeight: 4,
-    spacing: 9,
-    cameraZ: 12,
-    labelSize: 0.5,
-    isMobile: false,
-  });
-
-  useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth;
-
-      if (w < 640) {
-        // スマホ：9:16 の縦長ガラスモニター
-        const width = 2.4;
-        const height = width * (16 / 9);
-
-        setSettings({
-          panelWidth: width,
-          panelHeight: height,
-          spacing: 5.0,
-          cameraZ: 13.5,
-          labelSize: 0.32,
-          isMobile: true,
-        });
-      } else {
-        // PC
-        setSettings({
-          panelWidth: 6,
-          panelHeight: 4,
-          spacing: 9,
-          cameraZ: 12,
-          labelSize: 0.5,
-          isMobile: false,
-        });
-      }
-    };
-
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  return settings;
-}
-
-// =============================
-// Fresnel Material
+// Fresnel マテリアル（白系ガラス用）
 // =============================
 function useFresnel(color: string) {
   return useMemo(
@@ -93,8 +37,8 @@ function useFresnel(color: string) {
           varying float vEdge;
           uniform vec3 uColor;
           void main() {
-            float fres = pow(vEdge, 2.5);
-            gl_FragColor = vec4(uColor * fres * 1.4, fres);
+            float fres = pow(vEdge, 2.0);
+            gl_FragColor = vec4(uColor * fres * 1.8, fres);
           }
         `,
         transparent: true,
@@ -105,61 +49,86 @@ function useFresnel(color: string) {
 }
 
 // =============================
-// Glass Panel
+// ガラスモニター本体（9:16 / 画面の 70〜80%）
 // =============================
-function GlassPanel({ index, activeIndex, offset, color, label, settings }: any) {
-  const ref = useRef<THREE.Group>(null);
-  const fresnel = useFresnel(color);
+function GlassMonitor({
+  label,
+  z,
+  scrollFactor,
+}: {
+  label: string;
+  z: number;
+  scrollFactor: number;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const fresnel = useFresnel("#ffffff");
 
-  useFrame((_, delta) => {
-    if (!ref.current) return;
+  // 9:16 比率（縦長）をベースにサイズ調整
+  const baseHeight = 6; // 全体スケール
+  const baseWidth = (9 / 16) * baseHeight;
 
-    const targetX = (index - activeIndex) * settings.spacing + offset;
-
-    // ★ アクティブパネルを大きく強調（1.3）
-    const targetScale = index === activeIndex ? 1.3 : 0.75;
-
-    damp(ref.current.position, "x", targetX, 0.15, delta);
-    damp(ref.current.scale, "x", targetScale, 0.2, delta);
-    damp(ref.current.scale, "y", targetScale, 0.2, delta);
-
-    // スマホではパネルを縦向きに回転
-    ref.current.rotation.z = settings.isMobile ? Math.PI / 2 : 0;
+  useFrame(() => {
+    if (!groupRef.current) return;
+    // 軽量パララックス：スクロールに応じてわずかに上下
+    groupRef.current.position.y = scrollFactor * 0.2;
   });
 
   return (
-    <group ref={ref}>
+    <group ref={groupRef} position={[0, 0, z]}>
+      {/* ガラス本体 */}
       <RoundedBox
-        args={[settings.panelWidth, settings.panelHeight, 0.12]}
-        radius={0.2}
-        smoothness={10}
+        args={[baseWidth, baseHeight, 0.12]}
+        radius={0.3}
+        smoothness={12}
       >
         <meshPhysicalMaterial
-          color={color}
+          color="#ffffff"
           transparent
-          opacity={0.25}
+          opacity={0.22}
           roughness={0.1}
           metalness={0.2}
           transmission={0.9}
           thickness={1.5}
-          envMapIntensity={2.0}
+          envMapIntensity={1.8}
         />
       </RoundedBox>
 
+      {/* Fresnel エッジ */}
       <mesh>
-        <planeGeometry
-          args={[settings.panelWidth + 0.2, settings.panelHeight + 0.2]}
-        />
+        <planeGeometry args={[baseWidth + 0.25, baseHeight + 0.25]} />
         <primitive object={fresnel} />
       </mesh>
 
+      {/* 擬似シャドウ（下に薄い影） */}
+      <mesh position={[0, -baseHeight / 2 - 0.4, 0]}>
+        <planeGeometry args={[baseWidth * 0.7, baseHeight * 0.12]} />
+        <meshBasicMaterial
+          color="black"
+          transparent
+          opacity={0.14}
+        />
+      </mesh>
+
+      {/* アイコン（R3F 内：太めライン 2.5px 相当のシンプル形状） */}
+      <group position={[-baseWidth * 0.18, 0.1, 0.08]}>
+        {/* 角丸っぽい枠（Gallery などに合う汎用ラベルアイコン） */}
+        <RoundedBox args={[0.9, 0.9, 0.02]} radius={0.18} smoothness={8}>
+          <meshBasicMaterial
+            color="#e5e7eb"
+            transparent
+            opacity={0.9}
+            wireframe
+          />
+        </RoundedBox>
+      </group>
+
+      {/* テキスト */}
       <Text
-        position={[0, 0, 0.2]}
-        fontSize={settings.labelSize}
-        color="white"
-        anchorX="center"
+        position={[0.3, 0, 0.1]}
+        fontSize={0.6}
+        color="#ffffff"
+        anchorX="left"
         anchorY="middle"
-        rotation={[0, 0, settings.isMobile ? -Math.PI / 2 : 0]}
       >
         {label}
       </Text>
@@ -168,82 +137,97 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
 }
 
 // =============================
-// Main Scene
+// セクションごとの R3F ラッパー
 // =============================
-export function SpiralBackground() {
-  // ★ 初期アクティブを Creator（index=1）にする
-  const [active, setActive] = useState(1);
-
-  const settings = useResponsiveSettings();
-  const [offset, setOffset] = useState(0);
+function GlassSection({
+  panel,
+  index,
+}: {
+  panel: (typeof PANELS)[number];
+  index: number;
+}) {
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    setOffset(-active * settings.spacing);
-  }, [active, settings.spacing]);
-
-  // PC：ホイール + ドラッグ
-  useEffect(() => {
-    let isDragging = false;
-    let lastX = 0;
-
-    const handleWheel = (e: WheelEvent) => {
-      setOffset((o) => o - e.deltaY * 0.01);
-    };
-
-    const handleDown = (e: MouseEvent) => {
-      isDragging = true;
-      lastX = e.clientX;
-    };
-
-    const handleMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      const delta = e.clientX - lastX;
-      lastX = e.clientX;
-      setOffset((o) => o + delta * 0.02);
-    };
-
-    const handleUp = () => {
-      isDragging = false;
-    };
-
-    window.addEventListener("wheel", handleWheel);
-    window.addEventListener("mousedown", handleDown);
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mouseup", handleUp);
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("mousedown", handleDown);
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mouseup", handleUp);
-    };
+    const onScroll = () => setScrollY(window.scrollY);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // スマホ：横フリックのみ
-  const handlers = useSwipeable({
-    onSwipedLeft: () => setActive((a) => Math.min(a + 1, PANELS.length - 1)),
-    onSwipedRight: () => setActive((a) => Math.max(a - 1, 0)),
-    trackMouse: false,
-  });
+  // セクションごとに少しずつスクロール係数を変える
+  const scrollFactor = scrollY * 0.01 * (index + 1);
 
   return (
-    <div
-      {...handlers}
-      className="fixed inset-0 bg-black flex items-center justify-center"
-    >
-      <Canvas camera={{ position: [0, 0, settings.cameraZ], fov: 32 }}>
-        {PANELS.map((p, i) => (
-          <GlassPanel
-            key={i}
-            index={i}
-            activeIndex={active}
-            offset={offset}
-            color={p.color}
-            label={p.label}
-            settings={settings}
+    <section className="h-[120vh] flex items-center justify-center">
+      <div className="w-full max-w-5xl h-[70vh]">
+        <Canvas
+          camera={{ position: [0, 0, 10], fov: 32 }}
+          gl={{ antialias: true }}
+        >
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[4, 6, 8]} intensity={1.2} />
+          <GlassMonitor
+            label={panel.label}
+            z={panel.z}
+            scrollFactor={scrollFactor}
           />
-        ))}
-      </Canvas>
-    </div>
+        </Canvas>
+      </div>
+    </section>
+  );
+}
+
+// =============================
+// ページ全体レイアウト
+// =============================
+export default function SpiralBackground() {
+  return (
+    <main className="min-h-screen bg-[#050814] text-white">
+      {/* 背景：ミストグラデーション + ノイズっぽい質感 */}
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.06),transparent_55%),radial-gradient(circle_at_0%_80%,rgba(56,189,248,0.12),transparent_55%),radial-gradient(circle_at_100%_80%,rgba(129,140,248,0.16),transparent_55%)] opacity-90" />
+      <div className="fixed inset-0 -z-10 mix-blend-soft-light bg-[url('/noise.png')]" style={{ opacity: 0.18 }} />
+
+      {/* ヘッダー */}
+      <header className="w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div className="text-sm tracking-[0.25em] uppercase text-slate-300">
+          Whiskers
+        </div>
+        <nav className="flex gap-6 text-xs text-slate-300">
+          <span>Gallery</span>
+          <span>Creator</span>
+          <span>Contest</span>
+        </nav>
+      </header>
+
+      {/* ハローページ / Hero */}
+      <section className="min-h-[80vh] flex items-center justify-center px-6">
+        <div className="w-full max-w-3xl space-y-6">
+          <p className="text-xs tracking-[0.3em] uppercase text-slate-400">
+            Hello, Creator
+          </p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light leading-tight text-slate-50">
+            Glass-like vertical monitors
+            <br />
+            for a misty, cinematic interface.
+          </h1>
+          <p className="text-sm text-slate-300 max-w-xl">
+            9:16 white glass panels, floating in a soft midnight mist.
+            Vertical scroll, minimal motion, maximum depth.
+          </p>
+        </div>
+      </section>
+
+      {/* ガラスモニターセクション（縦に積む / 120vh 間隔） */}
+      {PANELS.map((panel, i) => (
+        <GlassSection key={panel.label} panel={panel} index={i} />
+      ))}
+
+      {/* フッター */}
+      <footer className="w-full max-w-5xl mx-auto px-6 py-10 text-xs text-slate-500 flex justify-between">
+        <span>© {new Date().getFullYear()} Whiskers</span>
+        <span>Designed for vertical glass narratives.</span>
+      </footer>
+    </main>
   );
 }
