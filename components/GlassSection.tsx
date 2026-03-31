@@ -4,7 +4,13 @@ import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import GlassMonitor from "./GlassMonitor";
 
-export default function GlassSection({ panel, index }: { panel: { label: string; z: number }; index: number }) {
+export default function GlassSection({
+  panel,
+  index,
+}: {
+  panel: { label: string; z: number };
+  index: number;
+}) {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -17,9 +23,9 @@ export default function GlassSection({ panel, index }: { panel: { label: string;
 
   return (
     <section className="h-[150vh] flex items-center justify-center relative z-30">
-      <div className="w-full max-w-7xl h-[85vh]">
+      <div className="w-full max-w-7xl h-[90vh]">
         <Canvas
-          camera={{ position: [0, 0, 10], fov: 32 }}
+          camera={{ position: [0, 0, 11], fov: 32 }}
           gl={{ antialias: true }}
         >
           <ambientLight intensity={0.75} />
