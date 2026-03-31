@@ -130,9 +130,9 @@ export default function GlassMonitor({
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  // 元のサイズに戻す
-  const baseHeight = isPC ? 3.5 : (isMobile ? 3.0 : 3.0);
-  const baseWidth = isPC ? 5.6 : (isMobile ? 5.3 : 4.8);
+  // サイズを半分にして左寄せ
+  const baseHeight = isPC ? 1.75 : (isMobile ? 1.5 : 1.5);
+  const baseWidth = isPC ? 2.8 : (isMobile ? 2.65 : 2.4);
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -141,7 +141,7 @@ export default function GlassMonitor({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, z]} rotation={isMobile ? [0.1, -0.2, Math.PI / 2] : [0.15, -0.25, 0]}>
+    <group ref={groupRef} position={[-2, 0, z]} rotation={isMobile ? [0.1, -0.2, Math.PI / 2] : [0.15, -0.25, 0]}>
 
       {/* === ① 画像（前面） === */}
       {images.length > 0 && (
