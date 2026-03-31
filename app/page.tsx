@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import SpiralBackground from "@/components/SpiralBackground";
 import GlassSection from "@/components/GlassSection";
+import HelloGlassMonitor from "@/components/HelloGlassMonitor";
 
 const PANELS = [
   { label: "Gallery", z: 0 },
@@ -88,8 +89,8 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="min-h-[80vh] flex items-center justify-center px-6 relative z-30">
-        <div className="w-full max-w-3xl space-y-6">
+      <section className="min-h-[100vh] flex flex-col items-center justify-center px-6 relative z-30">
+        <div className="w-full max-w-3xl space-y-6 text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-slate-400">
             Hello, Creator
           </p>
@@ -98,9 +99,14 @@ export default function Home() {
             <br />
             in a midnight mist.
           </h1>
-          <p className="text-sm text-slate-300 max-w-xl">
+          <p className="text-sm text-slate-300 max-w-xl mx-auto">
             Deep navy, soft gradients, and floating glass panels with cinematic depth.
           </p>
+        </div>
+        
+        {/* Hello Glass Monitor - Active only on hero section */}
+        <div className="w-full max-w-2xl mt-8">
+          <HelloGlassMonitor images={IMAGES[0]} isActive={activeSection === -1} />
         </div>
       </section>
 
