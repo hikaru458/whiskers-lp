@@ -2,9 +2,9 @@
 
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ScrollControls, useScroll, RoundedBox, Environment, Float } from "@react-three/drei";
+import { ScrollControls, useScroll, RoundedBox, Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { damp, dampE } from "maath/easing";
+import { damp } from "maath/easing";
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
 
 const SECTIONS = [
@@ -19,9 +19,9 @@ const SECTIONS = [
 const SPACING = 22;
 const FLOW_SPEED = 60;
 
-// ============================================
-// Particle Background (Active Theory style)
-// ============================================
+// =============================
+// Particle Background
+// =============================
 function Particles() {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const count = 200;
@@ -38,7 +38,6 @@ function Particles() {
 
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
-  // 初期配置
   useEffect(() => {
     if (!meshRef.current) return;
     for (let i = 0; i < count; i++) {
@@ -60,16 +59,16 @@ function Particles() {
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]} renderOrder={10}>
       <sphereGeometry args={[0.08, 8, 8]} />
       <meshBasicMaterial color="#bbbbff" transparent opacity={0.25} depthWrite={false} />
     </instancedMesh>
   );
 }
 
-// ============================================
-// Background Noise (Active Theory style gradient + noise)
-// ============================================
+// =============================
+// Background Noise
+// =============================
 function BackgroundNoise() {
   const material = useMemo(() => {
     return new THREE.ShaderMaterial({
@@ -114,16 +113,20 @@ function BackgroundNoise() {
   });
 
   return (
-    <mesh scale={[2, 2, 1]} position={[0, 0, -50]}>
+    <mesh
+      scale={[2, 2, 1]}
+      position={[0, 0, -50]}
+      renderOrder={0}
+    >
       <planeGeometry args={[50, 50]} />
       <primitive object={material} />
     </mesh>
   );
 }
 
-// ============================================
-// Camera Tilt (Active Theory angle)
-// ============================================
+// =============================
+// Camera Tilt
+// =============================
 function CameraTilt() {
   const { camera } = useThree();
 
@@ -135,23 +138,53 @@ function CameraTilt() {
 
   return null;
 }
-// ============================================
+
+// =============================
+// Fresnel Material Helper
+// =============================
+function createFresnelMaterial(color: string) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uColor: { value: new THREE.Color(color) },
+    },
+    vertexShader: `
+      varying float vEdge;
+      void main() {
+        vec3 worldNormal = normalize(normalMatrix * normal);
+        vec3 viewDir = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
+        vEdge = 1.0 - max(dot(worldNormal, viewDir), 0.0);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying float vEdge;
+      uniform vec3 uColor;
+      void main() {
+        float fres = pow(vEdge, 3.0);
+        gl_FragColor = vec4(uColor * fres * 1.5, fres);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+  });
+}
+
+// =============================
+// Glass Monitor
+// =============================
 function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
   const meshRef = useRef<THREE.Group>(null);
-  const { camera } = useThree();
 
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1024; canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, 1024, 512);
-    
-    // Glass edge border
+
     ctx.strokeStyle = color;
     ctx.lineWidth = 12;
     ctx.strokeRect(30, 30, 964, 452);
 
-    // Text with glow
     ctx.fillStyle = "#ffffff";
     ctx.font = "lighter 100px 'Playfair Display', serif";
     ctx.textAlign = "center";
@@ -159,59 +192,51 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     ctx.shadowColor = color;
     ctx.shadowBlur = 40;
     ctx.fillText(label.toUpperCase(), 512, 256);
-    
+
     return new THREE.CanvasTexture(canvas);
   }, [label, color]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!meshRef.current) return;
 
-    // Current position based on scroll
     const currentPos = scrollOffset * (SECTIONS.length - 1);
     const distance = index - currentPos;
 
-    // 1. Horizontal movement (Active Theory style)
     const targetX = index * SPACING - scrollOffset * FLOW_SPEED;
-    
-    // 2. Fixed Y position
     const targetY = 0;
-    
-    // 3. Non-linear Z depth
+
     const depth = Math.abs(distance);
     const targetZ = -Math.pow(depth, 1.8) * 14;
 
-    // Apply positions with damping
     damp(meshRef.current.position, "x", targetX, 0.15, delta);
     damp(meshRef.current.position, "y", targetY, 0.15, delta);
     damp(meshRef.current.position, "z", targetZ, 0.15, delta);
 
-    // 4. Rotation removed - using fixed rotation on group instead
-
-    // 5. Scale based on distance
     const s = isActive ? 1.0 : 0.5;
     damp(meshRef.current.scale, "x", s, 0.2, delta);
     damp(meshRef.current.scale, "y", s, 0.2, delta);
 
-    // 6. Visibility culling
     meshRef.current.visible = Math.abs(distance) < 3;
   });
 
-  // Calculate opacity based on distance
   const currentPos = scrollOffset * (SECTIONS.length - 1);
   const distance = Math.abs(index - currentPos);
   const opacity = THREE.MathUtils.mapLinear(distance, 0, 2, 1.0, 0.05);
+
+  const fresnelMat = useMemo(() => createFresnelMaterial(color), [color]);
 
   return (
     <group
       ref={meshRef}
       frustumCulled={false}
       rotation={[-0.18, 0.32, 0]}
+      renderOrder={100}
     >
       <RoundedBox
         args={[9, 5, 0.15]}
         radius={0.2}
         smoothness={12}
-        renderOrder={5}
+        renderOrder={101}
       >
         <meshPhysicalMaterial
           color="#ffffff"
@@ -228,12 +253,10 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
           side={THREE.DoubleSide}
           attenuationColor={new THREE.Color(color)}
           attenuationDistance={0.6}
-          emissive={new THREE.Color(color)}
-          emissiveIntensity={0.08}
         />
       </RoundedBox>
 
-      <mesh position={[0, 0, 0.11]} renderOrder={10}>
+      <mesh position={[0, 0, 0.11]} renderOrder={102}>
         <planeGeometry args={[8.4, 4.6]} />
         <meshBasicMaterial
           map={texture}
@@ -244,57 +267,30 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
         />
       </mesh>
 
-      {/* Fresnel edge glow - Vision Pro style */}
-      <mesh renderOrder={8}>
+      <mesh renderOrder={103}>
         <planeGeometry args={[9.2, 5.2]} />
-        <primitive
-          object={new THREE.ShaderMaterial({
-            uniforms: {
-              uColor: { value: new THREE.Color(color) },
-            },
-            vertexShader: `
-              varying float vEdge;
-              void main() {
-                vec3 worldNormal = normalize(normalMatrix * normal);
-                vec3 viewDir = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
-                vEdge = 1.0 - max(dot(worldNormal, viewDir), 0.0);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-              }
-            `,
-            fragmentShader: `
-              varying float vEdge;
-              uniform vec3 uColor;
-              void main() {
-                float fres = pow(vEdge, 3.0);
-                gl_FragColor = vec4(uColor * fres * 1.5, fres);
-              }
-            `,
-            transparent: true,
-            depthWrite: false,
-          })}
-        />
+        <primitive object={fresnelMat} />
       </mesh>
     </group>
   );
 }
 
-// ============================================
-// Main Component (Active Theory Camera Style)
-// ============================================
+// =============================
+// Main
+// =============================
 export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0 bg-[#000000]">
-      {/* Hide scrollbar */}
       <style jsx global>{`
         body::-webkit-scrollbar { display: none; }
         body { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      
-      <Canvas 
-        camera={{ 
-          position: [0, 12, 28], 
-          fov: 35
-        }} 
+
+      <Canvas
+        camera={{
+          position: [0, 12, 28],
+          fov: 35,
+        }}
         gl={{ antialias: true }}
       >
         <CameraTilt />
@@ -337,7 +333,7 @@ function SceneContent() {
 function PostProcessing() {
   return (
     <EffectComposer multisampling={8}>
-      <Bloom 
+      <Bloom
         intensity={0.8}
         luminanceThreshold={0.92}
         luminanceSmoothing={0.25}
