@@ -142,15 +142,29 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
           <meshPhysicalMaterial
             color="#ffffff"
             transmission={1.0}
-            thickness={3.0}
-            ior={2.4}
-            roughness={0.01}
+            thickness={5.0}
+            ior={2.1}
+            roughness={0.04}
             clearcoat={1}
-            envMapIntensity={4}
+            clearcoatRoughness={0.1}
+            envMapIntensity={6}
             transparent
             opacity={opacity}
+            attenuationColor={new THREE.Color(color)}
+            attenuationDistance={0.8}
           />
         </RoundedBox>
+        
+        {/* Fresnel edge glow - Vision Pro style */}
+        <mesh>
+          <planeGeometry args={[6.7, 4.0]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={isActive ? 0.15 : 0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
         
         {/* Label slightly in front */}
         <mesh position={[0, 0, 0.21]}>
@@ -225,7 +239,12 @@ function SceneContent() {
 function PostProcessing() {
   return (
     <EffectComposer multisampling={8}>
-      <Bloom intensity={1.5} luminanceThreshold={1.2} mipmapBlur />
+      <Bloom 
+        intensity={1.4} 
+        luminanceThreshold={0.85}
+        luminanceSmoothing={0.2}
+        mipmapBlur 
+      />
       <ChromaticAberration offset={new THREE.Vector2(0.0015, 0.0015)} />
       <Vignette darkness={0.75} />
     </EffectComposer>
