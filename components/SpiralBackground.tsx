@@ -172,7 +172,7 @@ export function SpiralBackground() {
   const settings = useResponsiveSettings();
 
   // 初期 offset を activeIndex に同期（Gallery だけ大きくなる問題の解消）
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(() => -PANELS.length * 0.5);
 
   useEffect(() => {
     setOffset(-active * settings.spacing);
