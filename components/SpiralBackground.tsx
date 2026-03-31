@@ -2,7 +2,7 @@
 
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
+import { RoundedBox, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { damp } from "maath/easing";
 import { useSwipeable } from "react-swipeable";
@@ -151,12 +151,15 @@ function GlassPanel({ index, activeIndex, offset, color, label, settings }: any)
         <primitive object={fresnel} />
       </mesh>
 
-      <mesh position={[0, 0, 0.2]}>
-        <textGeometry
-          args={[label, { size: settings.labelSize, height: 0 }]}
-        />
-        <meshBasicMaterial color="white" />
-      </mesh>
+      <Text
+        position={[0, 0, 0.2]}
+        fontSize={settings.labelSize}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {label}
+      </Text>
     </group>
   );
 }
