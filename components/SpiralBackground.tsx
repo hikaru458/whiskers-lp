@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useState, useCallback } from "react";
+import { useRef, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   ScrollControls,
@@ -28,243 +28,223 @@ const SECTIONS = [
 ];
 
 // ============================================
-// Crystal Ribbon Core（虹色光輝のクリスタルリボン）
+// Crystal Helix Core（虹色螺旋クリスタル）
 // ============================================
-function CrystalRibbonCore() {
+function CrystalHelixCore() {
   const coreRef = useRef<THREE.Group>(null);
+  const innerRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
-  const innerGlowRef = useRef<THREE.Mesh>(null);
 
   const { viewport } = useThree();
 
   useFrame((state, delta) => {
-    if (!coreRef.current || !glowRef.current || !innerGlowRef.current) return;
+    if (!coreRef.current || !innerRef.current || !glowRef.current) return;
 
     const time = state.clock.elapsedTime;
-    const mouseX = (state.pointer.x * viewport.width) / 2;
-    const mouseY = (state.pointer.y * viewport.height) / 2;
+    const mouseX = state.pointer.x * 0.5;
+    const mouseY = state.pointer.y * 0.5;
 
     // 優雅な泳ぎ
-    const targetRotationX = mouseY * 0.08 + Math.sin(time * 0.1) * 0.05;
-    const targetRotationY = mouseX * 0.08 + time * 0.02;
-
     dampE(
       coreRef.current.rotation,
-      new THREE.Euler(targetRotationX, targetRotationY, time * 0.01),
-      0.015,
+      new THREE.Euler(
+        mouseY * 0.3 + Math.sin(time * 0.2) * 0.1,
+        time * 0.1 + mouseX * 0.3,
+        Math.cos(time * 0.15) * 0.05
+      ),
+      0.03,
+      delta
+    );
+
+    // 内側逆回転
+    dampE(
+      innerRef.current.rotation,
+      new THREE.Euler(
+        -mouseY * 0.2,
+        -time * 0.15,
+        0
+      ),
+      0.03,
       delta
     );
 
     // 脈動
-    const pulse = 1 + Math.sin(time * 0.5) * 0.015;
+    const pulse = 1 + Math.sin(time * 0.8) * 0.02;
     glowRef.current.scale.setScalar(pulse);
-    innerGlowRef.current.scale.setScalar(pulse * 0.8);
   });
 
   return (
     <group ref={coreRef}>
-      {/* メインクリスタルリボン - 極細の虹色リボン (p=2, q=3) */}
+      {/* メイン螺旋 - ガラスリボン */}
       <mesh>
-        <torusKnotGeometry args={[2.5, 0.03, 200, 32, 2, 3]} />
-        <meshPhysicalMaterial
-          color="#ffffff"
-          metalness={0}
-          roughness={0}
-          transmission={1.0}
-          thickness={2.0}
-          ior={1.5}
-          iridescence={1.0}
-          iridescenceIOR={1.3}
-          iridescenceThickness={400}
-          clearcoat={1}
-          clearcoatRoughness={0}
-          envMapIntensity={3}
-        />
-      </mesh>
-
-      {/* 内側レイヤー - 逆方向にゆったり回転 */}
-      <mesh rotation={[Math.PI / 3, 0, 0]}>
-        <torusKnotGeometry args={[1.8, 0.025, 150, 24, 3, 2]} />
-        <meshPhysicalMaterial
-          color="#e0f2fe"
-          metalness={0}
-          roughness={0.02}
-          transmission={0.95}
-          thickness={1.5}
-          ior={1.4}
-          iridescence={0.8}
-          iridescenceIOR={1.2}
-          iridescenceThickness={300}
-          emissive="#60a5fa"
-          emissiveIntensity={0.2}
-          clearcoat={1}
-        />
-      </mesh>
-
-      {/* 外側フレーム - より大きなリボン */}
-      <mesh rotation={[0, Math.PI / 4, 0]}>
-        <torusKnotGeometry args={[3.2, 0.02, 180, 28, 2, 5]} />
+        <torusKnotGeometry args={[3, 0.08, 200, 32, 3, 5]} />
         <meshPhysicalMaterial
           color="#f0f9ff"
           metalness={0}
           roughness={0}
           transmission={1.0}
-          thickness={1.8}
-          ior={1.45}
+          thickness={3}
+          ior={1.7}
           iridescence={1.0}
+          iridescenceIOR={1.3}
+          iridescenceThicknessRange={[100, 400]}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          envMapIntensity={2}
+          attenuationColor="#e0f2fe"
+          attenuationDistance={1}
+        />
+      </mesh>
+
+      {/* 内側螺旋 - 逆方向 */}
+      <mesh ref={innerRef}>
+        <torusKnotGeometry args={[2.2, 0.06, 150, 24, 2, 4]} />
+        <meshPhysicalMaterial
+          color="#e0f2fe"
+          metalness={0}
+          roughness={0.02}
+          transmission={0.95}
+          thickness={2}
+          ior={1.6}
+          iridescence={0.9}
           iridescenceIOR={1.25}
-          iridescenceThickness={500}
+          emissive="#60a5fa"
+          emissiveIntensity={0.15}
           clearcoat={1}
         />
       </mesh>
 
-      {/* 中央発光コア - 白い花のような光 */}
+      {/* 外側フレームリング */}
+      <mesh rotation={[Math.PI / 6, 0, 0]}>
+        <torusKnotGeometry args={[4, 0.04, 120, 20, 4, 3]} />
+        <meshPhysicalMaterial
+          color="#ffffff"
+          metalness={0}
+          roughness={0}
+          transmission={1.0}
+          thickness={2.5}
+          ior={1.8}
+          iridescence={1.0}
+          iridescenceIOR={1.35}
+          clearcoat={1}
+          envMapIntensity={1.5}
+        />
+      </mesh>
+
+      {/* 中央白い発光花 */}
       <mesh>
-        <sphereGeometry args={[0.3, 64, 64]} />
+        <sphereGeometry args={[0.6, 64, 64]} />
         <meshPhysicalMaterial
           color="#ffffff"
           emissive="#ffffff"
-          emissiveIntensity={8}
+          emissiveIntensity={5}
           metalness={0}
           roughness={0}
+          transmission={0.3}
+          thickness={1}
         />
       </mesh>
 
-      {/* 内側グロー */}
-      <mesh ref={innerGlowRef}>
-        <sphereGeometry args={[0.5, 32, 32]} />
-        <meshBasicMaterial
-          color="#ffffff"
-          transparent
-          opacity={0.2}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* 外側グロー */}
+      {/* グロー */}
       <mesh ref={glowRef}>
-        <sphereGeometry args={[0.8, 32, 32]} />
+        <sphereGeometry args={[1.2, 32, 32]} />
         <meshBasicMaterial
           color="#60a5fa"
           transparent
-          opacity={0.08}
+          opacity={0.12}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
       {/* ライティング */}
-      <pointLight color="#ffffff" intensity={15} distance={30} decay={0.5} position={[0, 0, 0]} />
-      <pointLight color="#60a5fa" intensity={6} distance={25} decay={0.7} position={[4, 4, 4]} />
-      <pointLight color="#c084fc" intensity={4} distance={25} decay={0.7} position={[-4, -4, 4]} />
+      <pointLight color="#ffffff" intensity={10} distance={20} decay={0.5} position={[0, 0, 0]} />
+      <pointLight color="#60a5fa" intensity={5} distance={15} decay={0.7} position={[3, 3, 3]} />
+      <pointLight color="#c084fc" intensity={4} distance={15} decay={0.7} position={[-3, -3, 3]} />
     </group>
   );
 }
 
 // ============================================
-// ノイズテクスチャ生成
+// Glass Monitor（虹色縁取りガラスパネル）
 // ============================================
-function createNoiseTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d")!;
-
-  const imageData = ctx.createImageData(512, 512);
-  for (let i = 0; i < imageData.data.length; i += 4) {
-    const noise = Math.random() * 255;
-    imageData.data[i] = noise;
-    imageData.data[i + 1] = noise;
-    imageData.data[i + 2] = noise;
-    imageData.data[i + 3] = 30;
-  }
-  ctx.putImageData(imageData, 0, 0);
-
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.wrapS = THREE.RepeatWrapping;
-  tex.wrapT = THREE.RepeatWrapping;
-  return tex;
-}
-
-// ============================================
-// Prism Glass Monitor（虹色縁取りガラス）
-// ============================================
-interface PrismMonitorProps {
+interface GlassMonitorProps {
   index: number;
   label: string;
   color: string;
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: number;
+  radius: number;
+  heightStep: number;
+  total: number;
   isActive: boolean;
   onActivate: () => void;
+  scrollOffset: number;
 }
 
-function PrismMonitor({
+function GlassMonitor({
   index,
   label,
   color,
-  position,
-  rotation,
-  scale,
+  radius,
+  heightStep,
+  total,
   isActive,
   onActivate,
-}: PrismMonitorProps) {
+  scrollOffset,
+}: GlassMonitorProps) {
   const meshRef = useRef<THREE.Group>(null);
   const edgeRef = useRef<THREE.Mesh>(null);
-  const glowRef = useRef<THREE.Mesh>(null);
-  const noiseRef = useRef<THREE.Mesh>(null);
+  const screenRef = useRef<THREE.Mesh>(null);
 
   const { camera } = useThree();
-  const noiseTexture = useMemo(() => createNoiseTexture(), []);
 
-  // CanvasTexture生成
+  const baseAngle = useMemo(() => (index / total) * Math.PI * 2, [index, total]);
+  const baseY = useMemo(
+    () => index * heightStep - (total * heightStep) / 2,
+    [index, total, heightStep]
+  );
+
+  // CanvasTexture with data
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 1024;
     canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
 
-    ctx.fillStyle = "rgba(2, 4, 8, 0.9)";
+    // 背景
+    ctx.fillStyle = "rgba(2, 6, 15, 0.85)";
     ctx.fillRect(0, 0, 1024, 512);
 
-    // ノイズ背景
-    ctx.fillStyle = "rgba(100, 149, 237, 0.03)";
-    for (let i = 0; i < 100; i++) {
-      ctx.fillRect(Math.random() * 1024, Math.random() * 512, 2, 2);
-    }
-
-    // データ装飾
-    ctx.fillStyle = "rgba(148, 163, 184, 0.6)";
-    ctx.font = "12px 'Courier New', monospace";
-    ctx.fillText(`TC:00:${String(index * 14).padStart(2, "0")}:52`, 25, 25);
-    ctx.fillText(`ID:${label.substring(0, 3).toUpperCase()}-${1000 + index * 111}`, 920, 25);
-    ctx.fillText(`X:${(Math.random() * 999).toFixed(3)} Y:${(Math.random() * 999).toFixed(3)}`, 25, 490);
+    // データ表示
+    ctx.fillStyle = "rgba(148, 163, 184, 0.7)";
+    ctx.font = "11px 'Courier New', monospace";
+    ctx.fillText(`TC 00:${String(index * 14 + 52).padStart(2, "0")}`, 20, 25);
+    ctx.fillText(`ID:${label.substring(0, 3).toUpperCase()}-${1000 + index * 111}`, 900, 25);
+    ctx.fillText(`X:${(Math.random() * 1000).toFixed(3)} Y:${(Math.random() * 1000).toFixed(3)}`, 20, 495);
 
     // 虹色ボーダー
-    const gradient = ctx.createLinearGradient(0, 0, 1024, 512);
-    gradient.addColorStop(0, color);
-    gradient.addColorStop(0.3, "#ffffff");
-    gradient.addColorStop(0.5, "#60a5fa");
-    gradient.addColorStop(0.7, "#c084fc");
-    gradient.addColorStop(1, color);
-    ctx.strokeStyle = gradient;
-    ctx.lineWidth = 3;
-    ctx.strokeRect(10, 10, 1004, 492);
+    const grad = ctx.createLinearGradient(0, 0, 1024, 512);
+    grad.addColorStop(0, color);
+    grad.addColorStop(0.3, "#ffffff");
+    grad.addColorStop(0.5, "#60a5fa");
+    grad.addColorStop(0.7, "#c084fc");
+    grad.addColorStop(1, color);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(8, 8, 1008, 496);
 
     // メインテキスト
     ctx.fillStyle = "#f8fafc";
-    ctx.font = "bold 64px 'Playfair Display', 'Georgia', serif";
+    ctx.font = "bold 52px 'Playfair Display', Georgia, serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.shadowColor = color;
-    ctx.shadowBlur = 60;
+    ctx.shadowBlur = 50;
     ctx.fillText(label.toUpperCase(), 512, 256);
     ctx.shadowBlur = 0;
 
     // サブテキスト
     ctx.fillStyle = color;
-    ctx.font = "16px 'Segoe UI', sans-serif";
-    ctx.fillText("SECTOR", 512, 340);
+    ctx.font = "14px 'Segoe UI', sans-serif";
+    ctx.fillText("SECTOR", 512, 330);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.needsUpdate = true;
@@ -272,133 +252,87 @@ function PrismMonitor({
     return tex;
   }, [label, color, index]);
 
-  const targetScale = useMemo(() => (isActive ? scale * 1.15 : scale * 0.85), [isActive, scale]);
-  const targetGlow = useMemo(() => (isActive ? 0.8 : 0.1), [isActive]);
+  const targetScale = useMemo(() => (isActive ? 1.1 : 0.85), [isActive]);
+  const targetGlow = useMemo(() => (isActive ? 0.9 : 0.15), [isActive]);
 
   useFrame((state, delta) => {
-    if (!meshRef.current || !edgeRef.current || !glowRef.current || !noiseRef.current) return;
+    if (!meshRef.current || !edgeRef.current || !screenRef.current) return;
 
-    // アクティブ時のみカメラに正対
-    if (isActive) {
-      const dummy = new THREE.Object3D();
-      dummy.position.copy(meshRef.current.position);
-      dummy.lookAt(camera.position);
-      dampE(meshRef.current.rotation, dummy.rotation, 0.04, delta);
-    }
+    const spiralRotation = scrollOffset * Math.PI * 3;
+    const currentAngle = baseAngle + spiralRotation;
 
-    // スケール補完
-    damp(meshRef.current.scale, "x", targetScale, 0.05, delta);
-    damp(meshRef.current.scale, "y", targetScale, 0.05, delta);
-    damp(meshRef.current.scale, "z", targetScale, 0.05, delta);
+    // 螺旋配置
+    const targetX = Math.cos(currentAngle) * radius;
+    const targetZ = Math.sin(currentAngle) * radius * 0.6;
+    const scrollY = scrollOffset * total * heightStep * 0.7;
+    const targetY = baseY - scrollY;
 
-    // 虹色エッジ発光
-    const edgeMaterial = edgeRef.current.material as THREE.MeshBasicMaterial;
-    damp(edgeMaterial, "opacity", isActive ? 1.0 : 0.3, 0.06, delta);
+    damp(meshRef.current.position, "x", targetX, 0.05, delta);
+    damp(meshRef.current.position, "y", targetY, 0.05, delta);
+    damp(meshRef.current.position, "z", targetZ, 0.05, delta);
 
-    // グロー
-    const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
-    damp(glowMaterial, "opacity", targetGlow, 0.06, delta);
+    // カメラに向く
+    const dummy = new THREE.Object3D();
+    dummy.position.copy(meshRef.current.position);
+    dummy.lookAt(camera.position);
+    dampE(meshRef.current.rotation, dummy.rotation, 0.06, delta);
 
-    // ノイズアニメーション
-    noiseTexture.offset.x += delta * 0.02;
-    noiseTexture.offset.y += delta * 0.01;
+    // スケール
+    damp(meshRef.current.scale, "x", targetScale, 0.08, delta);
+    damp(meshRef.current.scale, "y", targetScale, 0.08, delta);
+    damp(meshRef.current.scale, "z", targetScale, 0.08, delta);
+
+    // エッジ発光
+    const edgeMat = edgeRef.current.material as THREE.MeshBasicMaterial;
+    damp(edgeMat, "opacity", targetGlow, 0.08, delta);
   });
 
   return (
-    <group
-      ref={meshRef}
-      position={position}
-      rotation={rotation}
-      onClick={onActivate}
-    >
-      {/* 虹色縁取り - エミッシブ */}
+    <group ref={meshRef} onClick={onActivate}>
+      {/* 虹色エッジ */}
       <mesh ref={edgeRef} position={[0, 0, 0.12]}>
-        <roundedBoxGeometry args={[2.7, 1.7, 0.02, 4, 0.02]} />
-        <meshBasicMaterial
-          color={color}
-          transparent
-          opacity={0.3}
-        />
+        <roundedBoxGeometry args={[2.8, 1.8, 0.02, 4, 0.02]} />
+        <meshBasicMaterial color={color} transparent opacity={0.2} />
       </mesh>
 
-      {/* 虹色縁取りライン */}
-      <mesh position={[0, 0, 0.13]}>
-        <roundedBoxGeometry args={[2.65, 1.65, 0.01, 4, 0.01]} />
+      {/* ガラスフレーム */}
+      <RoundedBox args={[2.7, 1.7, 0.1]} radius={0.03} smoothness={4}>
         <meshPhysicalMaterial
-          color="#ffffff"
-          emissive={color}
-          emissiveIntensity={0.5}
-          metalness={0}
-          roughness={0}
-          transmission={0.5}
-          thickness={0.1}
-          iridescence={1.0}
-          iridescenceIOR={1.3}
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-
-      {/* ガラスパネル - プリズムエフェクト */}
-      <RoundedBox args={[2.6, 1.6, 0.12]} radius={0.02} smoothness={4}>
-        <meshPhysicalMaterial
-          color="#020408"
+          color="#020617"
           metalness={0.1}
-          roughness={0.1}
-          envMapIntensity={4}
+          roughness={0.05}
+          envMapIntensity={3}
           transparent
-          opacity={0.15}
-          transmission={0.9}
-          thickness={0.8}
-          ior={1.6}
-          iridescence={0.5}
-          iridescenceIOR={1.2}
+          opacity={0.2}
+          transmission={0.92}
+          thickness={0.6}
+          ior={1.7}
+          iridescence={0.8}
+          iridescenceIOR={1.3}
           clearcoat={1}
           clearcoatRoughness={0}
         />
       </RoundedBox>
 
-      {/* ノイズテクスチャ背景 */}
-      <mesh ref={noiseRef} position={[0, 0, 0.08]}>
-        <planeGeometry args={[2.4, 1.4]} />
-        <meshBasicMaterial
-          map={noiseTexture}
-          transparent
-          opacity={0.15}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* メインコンテンツ */}
-      <mesh position={[0, 0, 0.1]}>
-        <planeGeometry args={[2.4, 1.4]} />
-        <meshBasicMaterial
-          map={texture}
-          toneMapped={false}
-          transparent
-          opacity={0.98}
-        />
+      {/* スクリーン */}
+      <mesh ref={screenRef} position={[0, 0, 0.06]}>
+        <planeGeometry args={[2.5, 1.5]} />
+        <meshBasicMaterial map={texture} toneMapped={false} transparent opacity={0.98} />
       </mesh>
 
       {/* エミッシブグロー */}
-      <mesh ref={glowRef} position={[0, 0, 0.11]}>
-        <planeGeometry args={[2.6, 1.6]} />
+      <mesh position={[0, 0, 0.08]}>
+        <planeGeometry args={[2.7, 1.7]} />
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.05}
+          opacity={0.08}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* ポイントライト */}
-      <pointLight
-        color={color}
-        intensity={isActive ? 5 : 0.5}
-        distance={8}
-        decay={1}
-        position={[0, 0, -1]}
-      />
+      {/* ライト */}
+      <pointLight color={color} intensity={isActive ? 4 : 1} distance={6} decay={1.2} position={[0, 0, -0.5]} />
     </group>
   );
 }
@@ -410,118 +344,57 @@ function HelixScene() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scroll = useScroll();
 
-  // スクロールに応じたアクティブインデックス
   useFrame(() => {
     if (!scroll) return;
-    const scrollOffset = scroll.offset;
-    const newIndex = Math.round(scrollOffset * (SECTIONS.length - 1));
-    if (newIndex !== activeIndex && newIndex >= 0 && newIndex < SECTIONS.length) {
-      setActiveIndex(newIndex);
-    }
+    const idx = Math.round(scroll.offset * (SECTIONS.length - 1));
+    if (idx !== activeIndex) setActiveIndex(idx);
   });
 
-  // 各モニターの位置と回転を定義（中央大、周囲斜め・横向き・ランダム）
-  const monitorConfigs = useMemo(() => [
-    // Gallery - 中央・大きく・正面
-    {
-      position: [0, 0, 4] as [number, number, number],
-      rotation: [0, 0, 0] as [number, number, number],
-      scale: 1.3,
-    },
-    // Creator - 左上・斜め
-    {
-      position: [-6, 3.5, 1] as [number, number, number],
-      rotation: [0.2, 0.4, -0.1] as [number, number, number],
-      scale: 0.9,
-    },
-    // Contest - 右上・横向き
-    {
-      position: [6, 2.5, 0] as [number, number, number],
-      rotation: [0.1, -0.5, 0.05] as [number, number, number],
-      scale: 0.85,
-    },
-    // Product - 左下・斜め下向き
-    {
-      position: [-5, -3, 2] as [number, number, number],
-      rotation: [-0.15, 0.3, 0.08] as [number, number, number],
-      scale: 0.9,
-    },
-    // FAQ - 右下・横向き
-    {
-      position: [5.5, -3.5, -1] as [number, number, number],
-      rotation: [-0.1, -0.6, -0.05] as [number, number, number],
-      scale: 0.85,
-    },
-    // Contact - 奥・小さく
-    {
-      position: [0, -5, -3] as [number, number, number],
-      rotation: [-0.2, 0, 0] as [number, number, number],
-      scale: 0.75,
-    },
-  ], []);
+  const radius = 6;
+  const heightStep = 3.5;
 
   return (
     <>
-      {/* 背景 - 青白いトップライト演出 */}
-      <color attach="background" args={["#000208"]} />
-      <fogExp2 attach="fog" args={["#000208", 0.025]} />
+      {/* 背景 */}
+      <color attach="background" args={["#000106"]} />
+      <fogExp2 attach="fog" args={["#000106", 0.03]} />
 
-      {/* シネマティックライティング */}
-      <ambientLight intensity={0.015} color="#0f172a" />
-
-      {/* トップスポットライト（青白い光） */}
+      {/* トップライト */}
       <spotLight
         color="#e0f2fe"
-        intensity={8}
+        intensity={10}
         distance={50}
-        angle={Math.PI / 3}
-        penumbra={0.7}
-        decay={0.5}
-        position={[0, 20, 10]}
-        target-position={[0, 0, 0]}
-      />
-
-      {/* リムライト（横からの光） */}
-      <spotLight
-        color="#60a5fa"
-        intensity={4}
-        distance={40}
         angle={Math.PI / 4}
-        penumbra={0.8}
-        decay={0.6}
-        position={[15, 5, 5]}
+        penumbra={0.6}
+        decay={0.4}
+        position={[0, 25, 5]}
         target-position={[0, 0, 0]}
       />
 
-      <spotLight
-        color="#c084fc"
-        intensity={3}
-        distance={40}
-        angle={Math.PI / 4}
-        penumbra={0.8}
-        decay={0.6}
-        position={[-15, -5, 5]}
-        target-position={[0, 0, 0]}
-      />
+      {/* リムライト */}
+      <spotLight color="#60a5fa" intensity={4} distance={40} angle={Math.PI / 5} penumbra={0.7} decay={0.5} position={[12, 5, 8]} target-position={[0, 0, 0]} />
+      <spotLight color="#c084fc" intensity={3} distance={40} angle={Math.PI / 5} penumbra={0.7} decay={0.5} position={[-12, -5, 8]} target-position={[0, 0, 0]} />
 
-      {/* フィルライト（柔らかな補光） */}
-      <pointLight color="#94a3b8" intensity={0.8} distance={30} position={[0, -10, 10]} />
+      {/* 環境光 */}
+      <ambientLight intensity={0.02} color="#0f172a" />
+      <pointLight color="#94a3b8" intensity={0.5} distance={30} position={[0, -15, 10]} />
 
-      {/* Crystal Ribbon Core */}
-      <CrystalRibbonCore />
+      {/* クリスタル螺旋コア */}
+      <CrystalHelixCore />
 
-      {/* レイアウト - 中央大・周囲斜め・ランダム */}
+      {/* ガラスモニター群 */}
       {SECTIONS.map((section, index) => (
-        <PrismMonitor
+        <GlassMonitor
           key={section.id}
           index={index}
           label={section.label}
           color={section.color}
-          position={monitorConfigs[index].position}
-          rotation={monitorConfigs[index].rotation}
-          scale={monitorConfigs[index].scale}
+          radius={radius}
+          heightStep={heightStep}
+          total={SECTIONS.length}
           isActive={index === activeIndex}
           onActivate={() => setActiveIndex(index)}
+          scrollOffset={scroll?.offset || 0}
         />
       ))}
 
@@ -531,42 +404,36 @@ function HelixScene() {
 }
 
 // ============================================
-// Post-processing（エッジのみ光るBloom）
+// Post-processing
 // ============================================
 function PostProcessing() {
   return (
     <EffectComposer>
-      <Bloom
-        intensity={2.5}
-        luminanceThreshold={1.0}
-        luminanceSmoothing={0.4}
-        height={600}
-        mipmapBlur
-      />
-      <ChromaticAberration offset={[0.003, 0.002]} />
-      <Vignette eskil={false} offset={0.25} darkness={0.85} />
+      <Bloom intensity={2} luminanceThreshold={0.8} luminanceSmoothing={0.5} height={500} mipmapBlur />
+      <ChromaticAberration offset={[0.002, 0.0015]} />
+      <Vignette eskil={false} offset={0.3} darkness={0.8} />
     </EffectComposer>
   );
 }
 
 // ============================================
-// メインコンポーネント
+// メインエクスポート
 // ============================================
 export function SpiralBackground() {
   return (
     <div className="fixed inset-0 z-0">
       <Canvas
-        camera={{ position: [0, 0, 12], fov: 28, near: 0.1, far: 100 }}
+        camera={{ position: [0, 0, 13], fov: 32, near: 0.1, far: 100 }}
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: "high-performance",
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.4,
+          toneMappingExposure: 1.3,
         }}
         dpr={[1, 2]}
       >
-        <ScrollControls pages={6} damping={0.04}>
+        <ScrollControls pages={6} damping={0.05}>
           <HelixScene />
           <PostProcessing />
         </ScrollControls>
