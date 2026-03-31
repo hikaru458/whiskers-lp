@@ -7,9 +7,11 @@ import GlassMonitor from "./GlassMonitor";
 export default function GlassSection({
   panel,
   index,
+  images = [],
 }: {
   panel: { label: string; z: number };
   index: number;
+  images?: string[];
 }) {
   const [scrollY, setScrollY] = useState(0);
 
@@ -31,7 +33,7 @@ export default function GlassSection({
         >
           <ambientLight intensity={0.75} />
           <directionalLight position={[4, 6, 8]} intensity={1.5} />
-          <GlassMonitor label={panel.label} z={panel.z} scrollFactor={scrollFactor} />
+          <GlassMonitor label={panel.label} z={panel.z} scrollFactor={scrollFactor} images={images} />
         </Canvas>
       </div>
     </section>

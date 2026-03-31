@@ -13,6 +13,22 @@ const PANELS = [
   { label: "Contact", z: 0 },
 ];
 
+// 画像を6パネルに分配（3-4枚ずつ）
+const IMAGES = [
+  // Gallery: image_fx 0-2 (3枚)
+  ["/images/image_fx_0.jpg", "/images/image_fx_1.jpg", "/images/image_fx_2.jpg"],
+  // Creator: image_fx 3-5 (3枚)
+  ["/images/image_fx_3.jpg", "/images/image_fx_4.jpg", "/images/image_fx_5.jpg"],
+  // Contest: image_fx 6-7 + juno_0 (3枚)
+  ["/images/image_fx_6.jpg", "/images/image_fx_7.jpg", "/images/juno_0.png"],
+  // Product: juno 1-2 + Whisk 1枚 (3枚)
+  ["/images/juno_1.png", "/images/juno_2.png", "/images/Whisk_183ee3fd14.jpg"],
+  // FAQ: Whisk 4枚
+  ["/images/Whisk_3013699a43.jpg", "/images/Whisk_4a53114df4.jpg", "/images/Whisk_c4c5e10064.jpg", "/images/Whisk_cab3f11229.jpg"],
+  // Contact: Whisk 残り4枚
+  ["/images/Whisk_ccf674b333.jpg", "/images/Whisk_d6ef45a2de.jpg", "/images/Whisk_d869a0da19.jpg", "/images/Whisk_edb0a6bb60.jpg"],
+];
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState(0);
 
@@ -90,7 +106,7 @@ export default function Home() {
 
       {/* Glass Sections */}
       {PANELS.map((panel, i) => (
-        <GlassSection key={panel.label} panel={panel} index={i} />
+        <GlassSection key={panel.label} panel={panel} index={i} images={IMAGES[i]} />
       ))}
 
       {/* Footer */}

@@ -104,6 +104,17 @@ export default function GlassMonitor({
         />
       </RoundedBox>
 
+      {/* 白いフレーム枠 - フォトフレーム風 */}
+      <RoundedBox args={[baseWidth + 0.1, baseHeight + 0.1, 0.05]} radius={0.18} smoothness={10} position={[0, 0, 0.21]}>
+        <meshPhysicalMaterial
+          color="#ffffff"
+          roughness={0.1}
+          metalness={0.0}
+          transmission={0.0}
+          envMapIntensity={1.0}
+        />
+      </RoundedBox>
+
       {/* 画像/コンテンツレイヤー */}
       {images.length > 0 && (
         <mesh position={[0, 0, 0.05]}>
@@ -131,10 +142,25 @@ export default function GlassMonitor({
         <primitive object={fresnel} />
       </mesh>
 
+      {/* ガラスカバー - 保護フィルム風 */}
+      <RoundedBox args={[baseWidth - 0.2, baseHeight - 0.2, 0.02]} radius={0.12} smoothness={8} position={[0, 0, 0.06]}>
+        <meshPhysicalMaterial
+          color="#ffffff"
+          roughness={0.01}
+          metalness={0.0}
+          transmission={0.95}
+          thickness={0.5}
+          ior={1.4}
+          envMapIntensity={2.0}
+          clearcoat={1.0}
+          clearcoatRoughness={0.01}
+        />
+      </RoundedBox>
+
       {/* 擬似シャドウ */}
       <mesh position={[0, -baseHeight / 2 - 0.3, 0]}>
         <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.12]} />
-        <meshBasicMaterial color="black" transparent opacity={0.08} />
+        <meshBasicMaterial color="black" transparent opacity={0.15} />
       </mesh>
 
       {/* アイコン枠 */}
