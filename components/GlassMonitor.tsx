@@ -5,6 +5,60 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useMemo, useRef, useState, useEffect } from "react";
 
+// ガラス内部のミストパーティクル
+function GlassMist({ baseWidth, baseHeight }: { baseWidth: number; baseHeight: number }) {
+  const particlesRef = useRef<THREE.Points>(null);
+  
+  const { positions, speeds } = useMemo(() => {
+    const count = 30;
+    const positions = new Float32Array(count * 3);
+    const speeds = new Float32Array(count);
+    
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * (baseWidth - 0.5);
+      positions[i * 3 + 1] = (Math.random() - 0.5) * (baseHeight - 0.5);
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 0.3;
+      speeds[i] = 0.0005 + Math.random() * 0.001;
+    }
+    
+    return { positions, speeds };
+  }, [baseWidth, baseHeight]);
+  
+  useFrame(() => {
+    if (!particlesRef.current) return;
+    const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+    
+    for (let i = 0; i < 30; i++) {
+      positions[i * 3 + 1] += speeds[i];
+      if (positions[i * 3 + 1] > baseHeight / 2 - 0.2) {
+        positions[i * 3 + 1] = -baseHeight / 2 + 0.2;
+      }
+    }
+    
+    particlesRef.current.geometry.attributes.position.needsUpdate = true;
+  });
+  
+  return (
+    <points ref={particlesRef} position={[0, 0, 0]}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={30}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        color="#a5f3fc"
+        size={0.08}
+        transparent
+        opacity={0.4}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
 // Fresnel エッジ発光シェーダー
 function useFresnel(color: string, intensity = 2.5) {
   return useMemo(
@@ -102,10 +156,17 @@ export default function GlassMonitor({
       </RoundedBox>
 
       {/* === ⑤ コンテンツ（画像・動画）- ガラスの中 === */}
+      {/* 彩度・コントラスト強調した画像 */}
       {images.length > 0 && (
-        <mesh position={[0, 0, -0.08]}>
-          <planeGeometry args={[baseWidth - 0.4, baseHeight - 0.4]} />
-          <meshBasicMaterial map={texture} toneMapped={false} />
+        <mesh position={[0, 0, -0.06]}>
+          <planeGeometry args={[baseWidth - 0.35, baseHeight - 0.35]} />
+          <meshStandardMaterial 
+            map={texture} 
+            toneMapped={false}
+            emissive={0xffffff}
+            emissiveIntensity={0.15}
+            roughness={0.4}
+          />
         </mesh>
       )}
 
@@ -130,6 +191,9 @@ export default function GlassMonitor({
           attenuationDistance={2.0}
         />
       </RoundedBox>
+
+      {/* === ミストエフェクト - ガラス内部を漂う霧 === */}
+      <GlassMist baseWidth={baseWidth} baseHeight={baseHeight} />
 
       {/* === ③ 中間層（内部反射フェイク層）- 超重要 === */}
       <mesh position={[0, 0, 0]}>
@@ -161,7 +225,7 @@ export default function GlassMonitor({
           color="#ffffff"
           roughness={0.02}
           metalness={0.05}
-          transmission={0.92}
+          transmission={0.65}
           thickness={0.3}
           ior={1.45}
           envMapIntensity={2.0}
