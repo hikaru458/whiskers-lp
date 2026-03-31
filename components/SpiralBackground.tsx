@@ -151,46 +151,44 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
     <group
       ref={meshRef}
       frustumCulled={false}
-      rotation={[-0.2, 0, 0]}
+      rotation={[-0.18, 0.32, 0]}
     >
-      {/* Float temporarily disabled for stability */}
       <RoundedBox
-        args={[6.5, 3.8, 0.4]}
-        radius={0.15}
-        smoothness={8}
+        args={[9, 5, 0.15]}
+        radius={0.2}
+        smoothness={12}
         renderOrder={5}
       >
-          <meshPhysicalMaterial
-            color="#ffffff"
-            transmission={1.0}
-            thickness={5.0}
-            ior={2.1}
-            roughness={0.04}
-            clearcoat={1}
-            clearcoatRoughness={0.1}
-            envMapIntensity={1.2}
-            transparent
-            opacity={opacity}
-            depthWrite={false}
-            side={THREE.DoubleSide}
-            attenuationColor={new THREE.Color(color)}
-            attenuationDistance={0.8}
-            emissive={new THREE.Color(color)}
-            emissiveIntensity={0.08}
-          />
-        </RoundedBox>
+        <meshPhysicalMaterial
+          color="#ffffff"
+          transmission={1.0}
+          thickness={5.0}
+          ior={2.1}
+          roughness={0.04}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          envMapIntensity={1.2}
+          transparent
+          opacity={opacity}
+          depthWrite={false}
+          side={THREE.DoubleSide}
+          attenuationColor={new THREE.Color(color)}
+          attenuationDistance={0.8}
+          emissive={new THREE.Color(color)}
+          emissiveIntensity={0.08}
+        />
+      </RoundedBox>
 
-        <mesh position={[0, 0, 0.21]} renderOrder={10}>
-          <planeGeometry args={[6.1, 3.4]} />
-          <meshBasicMaterial
-            map={texture}
-            transparent
-            opacity={isActive ? 1 : opacity * 0.5}
-            toneMapped={false}
-            depthWrite={false}
-          />
-        </mesh>
-      {/* </Float> */}
+      <mesh position={[0, 0, 0.11]} renderOrder={10}>
+        <planeGeometry args={[8.4, 4.6]} />
+        <meshBasicMaterial
+          map={texture}
+          transparent
+          opacity={isActive ? 1 : opacity * 0.5}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
     </group>
   );
 }
