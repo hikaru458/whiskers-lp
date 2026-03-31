@@ -47,10 +47,10 @@ function GlassMist({ baseWidth, baseHeight }: { baseWidth: number; baseHeight: n
         />
       </bufferGeometry>
       <pointsMaterial
-        color="#a5f3fc"
-        size={0.08}
+        color="#7dd3fc"
+        size={0.15}
         transparent
-        opacity={0.4}
+        opacity={0.6}
         sizeAttenuation
       />
     </points>
@@ -153,22 +153,15 @@ export default function GlassMonitor({
         />
       </RoundedBox>
 
-      {/* === ⑤ コンテンツ（画像・動画）- ガラスの中 === */}
-      {/* 彩度・コントラスト強調した画像 */}
+      {/* === ⑤ コンテンツ（画像・動画）- ガラスの前面に配置 === */}
       {images.length > 0 && (
-        <mesh position={[0, 0, -0.06]}>
-          <planeGeometry args={[baseWidth - 0.35, baseHeight - 0.35]} />
-          <meshStandardMaterial 
-            map={texture} 
-            toneMapped={false}
-            emissive={0xffffff}
-            emissiveIntensity={0.15}
-            roughness={0.4}
-          />
+        <mesh position={[0, 0, 0.2]}>
+          <planeGeometry args={[baseWidth - 0.4, baseHeight - 0.4]} />
+          <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
 
-      {/* === ④ メインガラス本体（厚みのある屈折層） === */}
+      {/* === ④ メインガラス本体（透明にして画像が見える） === */}
       <RoundedBox 
         args={[baseWidth, baseHeight, 0.5]} 
         radius={0.15} 
@@ -177,16 +170,16 @@ export default function GlassMonitor({
       >
         <meshPhysicalMaterial
           color="#ffffff"
-          roughness={0.05}
-          metalness={0.08}
-          transmission={0.25}
-          thickness={4.0}
-          ior={1.52}
-          envMapIntensity={2.5}
+          roughness={0.02}
+          metalness={0.1}
+          transmission={0.85}
+          thickness={3.0}
+          ior={1.5}
+          envMapIntensity={3.0}
           clearcoat={1.0}
-          clearcoatRoughness={0.02}
-          attenuationColor="#7dd3fc"
-          attenuationDistance={2.0}
+          clearcoatRoughness={0.01}
+          transparent
+          opacity={0.3}
         />
       </RoundedBox>
 
@@ -221,14 +214,14 @@ export default function GlassMonitor({
       >
         <meshPhysicalMaterial
           color="#ffffff"
-          roughness={0.02}
+          roughness={0.01}
           metalness={0.05}
-          transmission={0.65}
-          thickness={0.3}
+          transmission={0.95}
+          thickness={0.2}
           ior={1.45}
-          envMapIntensity={2.0}
+          envMapIntensity={4.0}
           clearcoat={1.0}
-          clearcoatRoughness={0.01}
+          clearcoatRoughness={0.005}
         />
       </RoundedBox>
 
