@@ -22,17 +22,18 @@ const HEIGHT_STEP = 4.5;  // 垂直の間隔（ゆったりとした昇降）
 const SPIRAL_TURNS = 1.4; // 回転数を落として「線」を強調
 
 // ============================================
-// Crystal Helix Core（繊細な光の繊維）
+// Crystal Helix Core（繊細な光の繊維）- Scroll連動回転
 // ============================================
-function CrystalHelix() {
-  const count = 2; // 本数を絞り、重なりを上品にする
+function CrystalHelix({ scrollOffset }: { scrollOffset: number }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const count = 2;
   const points = 1000;
   
   const helixCurves = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => {
       const pts = [];
-      const phase = (i * Math.PI); // 180度対角に配置
-      const rOffset = i * 2;       // 各線の半径をわずかに変えて奥行きを出す
+      const phase = (i * Math.PI);
+      const rOffset = i * 2;
       
       for (let j = 0; j <= points; j++) {
         const t = (j / points) * Math.PI * 2 * SPIRAL_TURNS;
@@ -45,11 +46,18 @@ function CrystalHelix() {
     });
   }, []);
 
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      // スクロールに応じて螺旋を回転
+      const rotation = scrollOffset * Math.PI * 2;
+      damp(groupRef.current.rotation, "y", rotation, 0.05, delta);
+    }
+  });
+
   return (
-    <group>
+    <group ref={groupRef}>
       {helixCurves.map((curve, i) => (
         <mesh key={i}>
-          {/* 極細の 0.005 で「光の糸」を再現 */}
           <tubeGeometry args={[curve, 800, 0.005, 12, false]} />
           <meshPhysicalMaterial
             color="#ffffff"
@@ -57,10 +65,10 @@ function CrystalHelix() {
             ior={1.8}
             thickness={0.5}
             roughness={0.05}
-            iridescence={1.0}        // 虹色の干渉を最大化
+            iridescence={1.0}
             iridescenceIOR={1.9}
             emissive="#ffffff"
-            emissiveIntensity={0.5}  // 自発光を強めて鋭い光に
+            emissiveIntensity={0.5}
             transparent
           />
         </mesh>
@@ -151,13 +159,13 @@ function GlassMonitor({ index, label, color, isActive, scrollOffset }: any) {
 // ============================================
 export function SpiralBackground() {
   return (
-    <div className="fixed inset-0 z-0 bg-[#000000]"> {/* 完全な黒背景 */}
+    <div className="fixed inset-0 z-0 bg-[#000000] overflow-hidden"> {/* スクロールバー非表示 */}
       <Canvas camera={{ position: [0, 0, 28], fov: 30 }}>
-        <ScrollControls pages={6} damping={0.15}>
+        <ScrollControls pages={6} damping={0.15} style={{ display: 'none' }}>
           <ambientLight intensity={0.05} />
           <pointLight position={[10, 10, 10]} intensity={15} color="#fff" />
           
-          <CrystalHelix />
+          <CrystalHelix scrollOffset={0} />
           <SceneContent />
           
           <Environment preset="night" />
@@ -182,6 +190,7 @@ function SceneContent() {
       {SECTIONS.map((s, i) => (
         <GlassMonitor key={s.id} index={i} {...s} isActive={i === active} scrollOffset={scroll.offset} />
       ))}
+      <CrystalHelix scrollOffset={scroll?.offset || 0} />
     </>
   );
 }
