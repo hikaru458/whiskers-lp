@@ -1,9 +1,9 @@
 "use client";
 
-import { RoundedBox, Text, useVideoTexture } from "@react-three/drei";
+import { RoundedBox, Text, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 
 function useFresnel(color: string) {
   return useMemo(
@@ -38,18 +38,29 @@ export default function GlassMonitor({
   label,
   z,
   scrollFactor,
-  videoUrl = null,
+  images = [],
+  slideInterval = 3000,
 }: {
   label: string;
   z: number;
   scrollFactor: number;
-  videoUrl?: string | null;
+  images?: string[];
+  slideInterval?: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const fresnel = useFresnel("#7dd3fc");
 
-  // 動画テクスチャ（任意）
-  const videoTexture = videoUrl ? useVideoTexture(videoUrl, { start: true, muted: true, loop: true }) : null;
+  // 画像スライドショー
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const texture = useTexture(images[currentImageIndex] || "/placeholder.png");
+  
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, slideInterval);
+    return () => clearInterval(interval);
+  }, [images, slideInterval]);
 
   const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -93,11 +104,11 @@ export default function GlassMonitor({
         />
       </RoundedBox>
 
-      {/* 動画/コンテンツレイヤー */}
-      {videoTexture && (
+      {/* 画像/コンテンツレイヤー */}
+      {images.length > 0 && (
         <mesh position={[0, 0, 0.05]}>
           <planeGeometry args={[baseWidth - 0.3, baseHeight - 0.3]} />
-          <meshBasicMaterial map={videoTexture} toneMapped={false} />
+          <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
 
