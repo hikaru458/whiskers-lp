@@ -1,15 +1,43 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, Suspense } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useTexture } from "@react-three/drei";
+import { useTexture, Text } from "@react-three/drei";
+
+function LogoPlane() {
+  try {
+    const logoTexture = useTexture("/whiskers-logo.png");
+    return (
+      <mesh position={[0, 0, -1]}>
+        <planeGeometry args={[3, 1]} />
+        <meshBasicMaterial
+          map={logoTexture}
+          transparent
+          opacity={0.9}
+          toneMapped={false}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    );
+  } catch {
+    // ロゴ画像がない場合はテキスト表示
+    return (
+      <Text
+        position={[0, 0, -1]}
+        fontSize={1}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Whiskers
+      </Text>
+    );
+  }
+}
 
 export default function Scene() {
   const groupRef = useRef<THREE.Group>(null);
-
-  // ロゴテクスチャ
-  const logoTexture = useTexture("/whiskers-logo.png");
 
   // キューブ1のジオメトリ
   const cube1Geometry = useMemo(() => {
@@ -57,17 +85,10 @@ export default function Scene() {
         <lineBasicMaterial color="#c7baff" transparent opacity={0.2} />
       </lineSegments>
 
-      {/* ロゴ平面 - キューブの中心に浮かせる */}
-      <mesh position={[0, 0, -1]}>
-        <planeGeometry args={[3, 1]} />
-        <meshBasicMaterial
-          map={logoTexture}
-          transparent
-          opacity={0.9}
-          toneMapped={false}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {/* ロゴまたはテキスト */}
+      <Suspense fallback={null}>
+        <LogoPlane />
+      </Suspense>
     </group>
   );
 }
