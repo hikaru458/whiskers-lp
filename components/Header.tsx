@@ -41,12 +41,15 @@ export default function Header() {
         });
       }
     } else {
-      // モバイル: scrollIntoViewを使用（確実に動作）
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-      // ヘッダー分を追加でスクロール
-      setTimeout(() => {
-        window.scrollBy(0, -headerHeight);
-      }, 100);
+      // スマホ版: window.scrollTo を使用
+      const rect = element.getBoundingClientRect();
+      const scrollY = window.scrollY;
+      const targetY = rect.top + scrollY - headerHeight;
+      
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth",
+      });
     }
   };
 
