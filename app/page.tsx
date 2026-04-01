@@ -1,47 +1,15 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import Scene from "@/components/Scene";
 import { useEffect, useState } from "react";
 
-// 全20枚の画像を1つの配列にまとめる
-const ALL_IMAGES = [
-  // image_fx 0-7 (8枚)
-  "/images/image_fx_0.jpg",
-  "/images/image_fx_1.jpg",
-  "/images/image_fx_2.jpg",
-  "/images/image_fx_3.jpg",
-  "/images/image_fx_4.jpg",
-  "/images/image_fx_5.jpg",
-  "/images/image_fx_6.jpg",
-  "/images/image_fx_7.jpg",
-  // juno 0-2 (3枚)
-  "/images/juno_0.png",
-  "/images/juno_1.png",
-  "/images/juno_2.png",
-  // Whisk 9枚
-  "/images/Whisk_183ee3fd14.jpg",
-  "/images/Whisk_3013699a43.jpg",
-  "/images/Whisk_4a53114df4.jpg",
-  "/images/Whisk_c4c5e10064.jpg",
-  "/images/Whisk_cab3f11229.jpg",
-  "/images/Whisk_ccf674b333.jpg",
-  "/images/Whisk_d6ef45a2de.jpg",
-  "/images/Whisk_d869a0da19.jpg",
-  "/images/Whisk_edb0a6bb60.jpg",
-];
-
 export default function Home() {
-  const [isActive, setIsActive] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setIsActive(y < 200); // ハローページ範囲だけ動作
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    setMounted(true);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <main className="min-h-screen bg-[#050814] text-white relative">
@@ -52,23 +20,24 @@ export default function Home() {
         </span>
       </header>
 
-      {/* Hero - Canvas with Scene */}
-      <section className="h-[100vh] relative z-30">
-        <Canvas
-          camera={{ position: [0, 0, 13.5], fov: 45 }}
-          dpr={[1, 1.5]}
-          style={{ width: "100%", height: "100%" }}
-        >
-          <ambientLight intensity={0.75} />
-          <directionalLight position={[4, 6, 8]} intensity={1.5} />
-          <Scene isActive={isActive} images={ALL_IMAGES} />
-        </Canvas>
+      {/* Hero */}
+      <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 relative z-30">
+        <div className="w-full max-w-3xl space-y-6 text-center">
+          <p className="text-xs tracking-[0.3em] uppercase text-slate-400">
+            Hello, Creator
+          </p>
+          <h1 className="text-5xl md:text-6xl font-light leading-[1.1] tracking-wide font-serif text-slate-50">
+            Whiskers
+          </h1>
+          <p className="text-sm text-slate-300 max-w-xl mx-auto">
+            A fresh start. New design coming soon.
+          </p>
+        </div>
       </section>
 
       {/* Footer */}
       <footer className="w-full max-w-5xl mx-auto px-6 py-10 text-xs text-slate-500 flex justify-between relative z-40">
         <span>© {new Date().getFullYear()} Whiskers</span>
-        <span>Designed for vertical glass narratives.</span>
       </footer>
     </main>
   );
