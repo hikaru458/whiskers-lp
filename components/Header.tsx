@@ -17,38 +17,23 @@ export default function Header() {
     e.preventDefault();
     setMenuOpen(false);
     
-    // 少し遅延させてメニューが閉じるのを待つ
     setTimeout(() => {
       const targetId = href.replace("#", "");
       const element = document.getElementById(targetId);
       
       if (element) {
         const headerHeight = 80;
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = rect.top + scrollTop - headerHeight;
         
-        // まずPCコンテナを探す
-        const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
-        const isPcVisible = pcContainer && window.getComputedStyle(pcContainer).display !== 'none';
-        
-        if (pcContainer && isPcVisible) {
-          // PC: コンテナ内スクロール
-          const elementTop = element.offsetTop;
-          pcContainer.scrollTo({
-            top: Math.max(0, elementTop - headerHeight),
-            behavior: "smooth",
-          });
-        } else {
-          // スマホ: windowスクロール
-          const rect = element.getBoundingClientRect();
-          const currentScrollY = window.scrollY || window.pageYOffset;
-          const targetPosition = rect.top + currentScrollY - headerHeight;
-          
-          window.scrollTo({
-            top: Math.max(0, targetPosition),
-            behavior: "smooth",
-          });
-        }
+        // スムーズスクロール
+        window.scrollTo({
+          top: Math.max(0, targetY),
+          behavior: "smooth",
+        });
       }
-    }, 100);
+    }, 150);
   };
 
   return (
