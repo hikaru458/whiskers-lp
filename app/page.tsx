@@ -74,11 +74,6 @@ export default function Home() {
 
       {/* Heroセクション */}
       <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-        <div className="text-center space-y-6">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-[0.1em] text-white">
-            Whiskers
-          </h1>
-        </div>
       </section>
 
       {/* 6セクション - PCでは左右交互 */}
