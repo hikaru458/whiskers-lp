@@ -46,6 +46,12 @@ function Particles({ count = 200, size = 0.015, depth = -5 }) {
     return arr;
   }, [count]);
 
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    return geo;
+  }, [positions]);
+
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (points.current) {
@@ -54,15 +60,7 @@ function Particles({ count = 200, size = 0.015, depth = -5 }) {
   });
 
   return (
-    <points ref={points} position={[0, 0, depth]}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
+    <points ref={points} position={[0, 0, depth]} geometry={geometry}>
       <pointsMaterial
         size={size}
         color="#ffffff"
