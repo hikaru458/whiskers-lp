@@ -23,26 +23,27 @@ export default function Header() {
     if (element) {
       const headerHeight = 80;
       
-      // PC版: スクロールコンテナを探す
+      // PC版: スクロールコンテナを探す (hidden md:block h-screen overflow-y-scroll)
       const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll');
       
       if (pcContainer) {
-        // PC: コンテナ内スクロール
+        // PC: コンテナ内スクロール - offsetTopを使用
         const container = pcContainer as HTMLElement;
         const elementTop = element.offsetTop;
         container.scrollTo({
-          top: elementTop - headerHeight,
+          top: Math.max(0, elementTop - headerHeight),
           behavior: "smooth",
         });
       } else {
         // スマホ: 通常のwindowスクロール
-        const rect = element.getBoundingClientRect();
-        const scrollY = window.scrollY || window.pageYOffset;
-        const elementPosition = rect.top + scrollY;
-        const offsetPosition = elementPosition - headerHeight;
+        // まず要素の位置を取得
+        const elementRect = element.getBoundingClientRect();
+        const currentScrollY = window.scrollY || window.pageYOffset;
+        const elementAbsoluteTop = elementRect.top + currentScrollY;
+        const targetScrollY = Math.max(0, elementAbsoluteTop - headerHeight);
         
         window.scrollTo({
-          top: offsetPosition,
+          top: targetScrollY,
           behavior: "smooth",
         });
       }
