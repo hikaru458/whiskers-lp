@@ -28,22 +28,13 @@ export default function Header() {
     if (!element) return;
     
     if (isPc) {
-      // PC: スクロール可能な親コンテナを見つける
-      let parent = element.parentElement;
-      let scrollContainer: HTMLElement | null = null;
-      
-      while (parent) {
-        const style = window.getComputedStyle(parent);
-        if (style.overflowY === 'scroll' || style.overflowY === 'auto') {
-          scrollContainer = parent;
-          break;
-        }
-        parent = parent.parentElement;
-      }
-      
-      if (scrollContainer) {
-        scrollContainer.scrollTo({
-          top: Math.max(0, element.offsetTop - headerHeight),
+      // PC: pc-scroll-container 内でスクロール
+      const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
+      if (pcContainer) {
+        // コンテナ基準の位置を計算
+        const elementTop = element.offsetTop - pcContainer.offsetTop;
+        pcContainer.scrollTo({
+          top: Math.max(0, elementTop - headerHeight),
           behavior: "smooth",
         });
       }
