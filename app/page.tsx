@@ -7,8 +7,6 @@ import Header from "@/components/Header";
 import PhotoPanel from "@/components/PhotoPanel";
 import Scene from "@/components/Scene";
 import FadeInSection from "@/components/FadeInSection";
-import WhiskersLogo from "@/components/WhiskersLogo";
-import ScrollFog from "@/components/ScrollFog";
 
 // 6セクションのデータ
 const SECTIONS = [
@@ -16,37 +14,31 @@ const SECTIONS = [
     image: "/images/image_fx_0.jpg",
     title: "Gallery",
     description: "クリエイターの作品が集まる場所。あなたの感性に触れる一枚を見つけてください。",
-    bgGradient: "from-[#0a0f1f]/40 via-[#0f1528]/30 to-[#1a1f3a]/40",
   },
   {
     image: "/images/image_fx_1.jpg",
     title: "Creator",
     description: "個性豊かなクリエイターたちが活躍する舞台。新しい才能との出会いが待っています。",
-    bgGradient: "from-[#1a0f1f]/40 via-[#251525]/30 to-[#3a1f4a]/40",
   },
   {
     image: "/images/image_fx_2.jpg",
     title: "Contest",
     description: "コンテストで才能を競い合う。賞金と名誉を手に入れよう。",
-    bgGradient: "from-[#0f1f1a]/40 via-[#152520]/30 to-[#1f4a3a]/40",
   },
   {
     image: "/images/juno_0.png",
     title: "Product",
     description: "クリエイターに寄り添うツールとサービス。創作をもっと自由に。",
-    bgGradient: "from-[#1f1a0f]/40 via-[#282015]/30 to-[#4a3a1f]/40",
   },
   {
     image: "/images/juno_1.png",
     title: "FAQ",
     description: "よくある質問と回答。ご不明点があればお気軽にお問い合わせください。",
-    bgGradient: "from-[#1f0f0f]/40 via-[#251515]/30 to-[#4a1f1f]/40",
   },
   {
     image: "/images/juno_2.png",
     title: "Contact",
     description: "お問い合わせはこちらから。クリエイターとユーザー、双方の声をお待ちしています。",
-    bgGradient: "from-[#0f1f2f]/40 via-[#152535]/30 to-[#1f3a4a]/40",
   },
 ];
 
@@ -81,14 +73,10 @@ export default function Home() {
         </Canvas>
       </div>
 
-      {/* スクロール濃度効果 */}
-      <ScrollFog />
-
       {/* 6セクション - PCでは左右交互 */}
       <div className="pc-scroll-container hidden md:block h-screen overflow-y-scroll snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
         {/* Heroセクション */}
-        <section id="hero-pc" className="relative z-10 h-screen flex flex-col items-center justify-center px-6 snap-start bg-gradient-to-b from-[#0a0f1f]/30 via-[#0f1528]/20 to-[#1a1f3a]/30">
-          <WhiskersLogo size="lg" />
+        <section id="hero-pc" className="relative z-10 h-screen flex flex-col items-center justify-center px-6 snap-start">
         </section>
 
         {SECTIONS.map((section, index) => {
@@ -99,7 +87,7 @@ export default function Home() {
             <section
               key={`pc-${section.title}`}
               id={`${section.title.toLowerCase()}-pc`}
-              className={`relative z-10 h-screen flex items-center py-20 px-6 snap-start bg-gradient-to-b ${section.bgGradient} transition-colors duration-700`}
+              className="relative z-10 h-screen flex items-center py-20 px-6 snap-start"
             >
               <div className="max-w-6xl mx-auto w-full">
                 <FadeInSection delay={index * 100}>
@@ -118,9 +106,8 @@ export default function Home() {
 
       {/* スマホ版: 通常スクロール */}
       <div className="md:hidden">
-        {/* Heroセクション - 新しいWhiskersLogoを使用 */}
-        <section id="hero" className="relative z-10 min-h-[100svh] flex flex-col items-center justify-center px-6 bg-gradient-to-b from-[#0a0f1f]/30 via-[#0f1528]/20 to-[#1a1f3a]/30">
-          <WhiskersLogo size="lg" />
+        {/* Heroセクション */}
+        <section id="hero" className="relative z-10 min-h-[100svh] flex flex-col items-center justify-center px-6">
         </section>
 
         {SECTIONS.map((section, index) => {
@@ -131,7 +118,7 @@ export default function Home() {
             <section
               key={`mobile-${section.title}`}
               id={section.title.toLowerCase()}
-              className={`relative z-10 min-h-[100svh] flex items-center py-20 px-6 bg-gradient-to-b ${section.bgGradient} transition-colors duration-700`}
+              className="relative z-10 min-h-[100svh] flex items-center py-20 px-6"
             >
               <div className="max-w-6xl mx-auto w-full">
                 <FadeInSection delay={index * 100}>
