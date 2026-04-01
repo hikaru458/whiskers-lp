@@ -45,9 +45,6 @@ export default function PhotoPanel({
           }}
         >
           <div className="space-y-4">
-            <span className="text-xs tracking-[0.3em] text-sky-300/60 uppercase">
-              {title}
-            </span>
             <h2 className="text-3xl font-light text-white tracking-wide">{title}</h2>
             <p className="text-base text-white/80 leading-relaxed">{description}</p>
             <a
