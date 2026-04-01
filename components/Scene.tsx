@@ -54,31 +54,38 @@ export default function Scene() {
         <lineBasicMaterial color="#c7baff" transparent opacity={0.2} />
       </lineSegments>
 
-      {/* ロゴ - 2段構成のブロックスタイル */}
+      {/* ロゴ - 透明キューブ内の2段テキスト */}
       <group position={[0, 0, -1]}>
+        {/* 透明キューブ（ワイヤーフレーム） */}
+        <mesh>
+          <boxGeometry args={[3.5, 2.5, 2]} />
+          <meshBasicMaterial color="#7fd4ff" transparent opacity={0.15} wireframe />
+        </mesh>
+        
         {/* WHIS - 上段 */}
         <Text
-          position={[0, 0.45, 0]}
-          fontSize={0.9}
+          position={[0, 0.5, 0.1]}
+          fontSize={0.85}
           color="#f7f8ff"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.08}
         >
           WHIS
-          <meshBasicMaterial color="#f7f8ff" transparent opacity={0.95} />
+          <meshBasicMaterial color="#f7f8ff" transparent opacity={0.9} />
         </Text>
+        
         {/* KERS - 下段 */}
         <Text
-          position={[0, -0.45, 0]}
-          fontSize={0.9}
+          position={[0, -0.5, 0.1]}
+          fontSize={0.85}
           color="#f7f8ff"
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.08}
         >
           KERS
-          <meshBasicMaterial color="#f7f8ff" transparent opacity={0.95} />
+          <meshBasicMaterial color="#f7f8ff" transparent opacity={0.9} />
         </Text>
       </group>
     </group>
