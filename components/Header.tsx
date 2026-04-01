@@ -47,13 +47,19 @@ export default function Header() {
 
       {/* メニュー - PC/スマホ共通 */}
       {menuOpen && (
-        <nav className="absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-6">
-          <div className="flex flex-col gap-4">
+        <nav
+          className="absolute top-full left-0 right-0 py-4 px-6"
+          style={{
+            background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.40) 100%)",
+            backdropFilter: "blur(20px)",
+          }}
+        >
+          <div className="flex flex-col gap-4 max-w-7xl mx-auto">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm text-white/80 hover:text-white transition-colors py-2"
+                className="text-sm text-white/80 hover:text-white transition-colors py-2 text-right"
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}
