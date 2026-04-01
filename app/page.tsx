@@ -6,6 +6,7 @@ import StarfieldBackground from "@/components/StarfieldBackground";
 import Header from "@/components/Header";
 import PhotoPanel from "@/components/PhotoPanel";
 import Scene from "@/components/Scene";
+import FadeInSection from "@/components/FadeInSection";
 
 // 6セクションのデータ
 const SECTIONS = [
@@ -88,15 +89,15 @@ export default function Home() {
               id={section.title.toLowerCase()}
               className="relative z-10 h-screen flex items-center py-20 px-6 snap-start"
             >
-              <div
-                className="max-w-6xl mx-auto w-full"
-              >
-                <PhotoPanel
-                  imageSrc={section.image}
-                  title={section.title}
-                  description={section.description}
-                  imagePosition={isReversed ? "right" : "left"}
-                />
+              <div className="max-w-6xl mx-auto w-full">
+                <FadeInSection delay={index * 100}>
+                  <PhotoPanel
+                    imageSrc={section.image}
+                    title={section.title}
+                    description={section.description}
+                    imagePosition={isReversed ? "right" : "left"}
+                  />
+                </FadeInSection>
               </div>
             </section>
           );
@@ -119,15 +120,15 @@ export default function Home() {
               id={section.title.toLowerCase()}
               className="relative z-10 min-h-screen flex items-center py-20 px-6"
             >
-              <div
-                className="max-w-6xl mx-auto w-full"
-              >
-                <PhotoPanel
-                  imageSrc={section.image}
-                  title={section.title}
-                  description={section.description}
-                  imagePosition={isReversed ? "right" : "left"}
-                />
+              <div className="max-w-6xl mx-auto w-full">
+                <FadeInSection delay={index * 100}>
+                  <PhotoPanel
+                    imageSrc={section.image}
+                    title={section.title}
+                    description={section.description}
+                    imagePosition={isReversed ? "right" : "left"}
+                  />
+                </FadeInSection>
               </div>
             </section>
           );
