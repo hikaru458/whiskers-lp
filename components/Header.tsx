@@ -43,37 +43,29 @@ export default function Header() {
       return;
     }
     
-    // PC の場合は遅延なしで即スクロール（セクションを画面中央に）
+    // PC の場合は遅延なしで即スクロール（pcContainer.scrollToを使用）
     if (isPc) {
-      const header = document.querySelector("header");
-      const headerHeight = header?.offsetHeight ?? 80;
-      const rect = element.getBoundingClientRect();
-      const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      const elementHeight = rect.height;
-      
-      // セクション中央が画面中央に来るように計算
-      const targetY = rect.top + scrollY - (viewportHeight / 2) + (elementHeight / 2) - headerHeight;
-
-      window.scrollTo({
-        top: Math.max(0, targetY),
-        behavior: "smooth",
-      });
+      const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
+      if (pcContainer) {
+        const elementTop = element.offsetTop - pcContainer.offsetTop;
+        const header = document.querySelector("header");
+        const headerHeight = header?.offsetHeight ?? 80;
+        pcContainer.scrollTo({
+          top: Math.max(0, elementTop - headerHeight),
+          behavior: "smooth",
+        });
+      }
       return; // 遅延スクロールを発火させない
     }
 
-    // スマホだけ遅延スクロール（セクションを画面中央に）
+    // スマホだけ遅延スクロール
     setTimeout(() => {
       const header = document.querySelector("header");
       const headerHeight = header?.offsetHeight ?? 80;
 
       const rect = element.getBoundingClientRect();
       const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      const elementHeight = rect.height;
-      
-      // セクション中央が画面中央に来るように計算
-      const targetY = rect.top + scrollY - (viewportHeight / 2) + (elementHeight / 2) - headerHeight;
+      const targetY = rect.top + scrollY - headerHeight;
 
       window.scrollTo({
         top: Math.max(0, targetY),
