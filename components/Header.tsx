@@ -48,13 +48,14 @@ export default function Header() {
       {/* メニュー - PC/スマホ共通 */}
       {menuOpen && (
         <nav
-          className="absolute top-full left-0 right-0 py-4 px-6"
+          className="absolute top-full right-0 py-4 px-6"
           style={{
             background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.40) 100%)",
             backdropFilter: "blur(20px)",
+            minWidth: "160px",
           }}
         >
-          <div className="flex flex-col gap-4 max-w-7xl mx-auto">
+          <div className="flex flex-col gap-4">
             {navItems.map((item) => (
               <a
                 key={item.label}
