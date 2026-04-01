@@ -13,7 +13,8 @@ function MovingMist() {
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (mistRef.current) {
-      mistRef.current.material.opacity = 0.12 + Math.sin(t * 0.1) * 0.03;
+      const material = mistRef.current.material as THREE.MeshBasicMaterial;
+      material.opacity = 0.12 + Math.sin(t * 0.1) * 0.03;
       mistRef.current.position.x = Math.sin(t * 0.05) * 0.3;
       mistRef.current.position.y = Math.cos(t * 0.04) * 0.2;
     }
