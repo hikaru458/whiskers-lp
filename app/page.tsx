@@ -8,6 +8,7 @@ import PhotoPanel from "@/components/PhotoPanel";
 import Scene from "@/components/Scene";
 import FadeInSection from "@/components/FadeInSection";
 import ScrollFog from "@/components/ScrollFog";
+import GlassPhotoPanel from "@/components/GlassPhotoPanel";
 
 // 6セクションのデータ
 const SECTIONS = [
@@ -95,7 +96,7 @@ export default function Home() {
             >
               <div className="max-w-6xl mx-auto w-full">
                 <FadeInSection delay={index * 100}>
-                  <PhotoPanel
+                  <GlassPhotoPanel
                     imageSrc={section.image}
                     title={section.title}
                     description={section.description}
