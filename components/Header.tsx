@@ -22,13 +22,30 @@ export default function Header() {
     
     if (element) {
       const headerHeight = 80;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - headerHeight;
       
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
+      // PC版: スクロールコンテナを探す
+      const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll');
+      
+      if (pcContainer) {
+        // PC: コンテナ内スクロール
+        const container = pcContainer as HTMLElement;
+        const elementTop = element.offsetTop;
+        container.scrollTo({
+          top: elementTop - headerHeight,
+          behavior: "smooth",
+        });
+      } else {
+        // スマホ: 通常のwindowスクロール
+        const rect = element.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset;
+        const elementPosition = rect.top + scrollY;
+        const offsetPosition = elementPosition - headerHeight;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
     }
   };
 
