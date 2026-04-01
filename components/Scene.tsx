@@ -57,7 +57,7 @@ export default function Scene() {
       {/* ロゴ */}
       <Text
         position={[0, 0, -1]}
-        fontSize={1}
+        fontSize={0.6}
         color="white"
         anchorX="center"
         anchorY="middle"
