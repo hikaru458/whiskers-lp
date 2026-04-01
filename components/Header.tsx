@@ -43,19 +43,28 @@ export default function Header() {
       return;
     }
     
-    // PC の場合は遅延なしで即スクロール（pcContainer.scrollToを使用）
+    // PC の場合は遅延なしで即スクロール（pcContainer.scrollToを使用、セクション中央揃え）
     if (isPc) {
       const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
       if (pcContainer) {
-        const elementTop = element.offsetTop - pcContainer.offsetTop;
         const header = document.querySelector("header");
         const headerHeight = header?.offsetHeight ?? 80;
+
+        // セクションの中央位置
+        const sectionCenter = element.offsetTop + element.offsetHeight / 2;
+
+        // コンテナの中央位置（ヘッダー分を引く）
+        const containerCenter = (pcContainer.clientHeight - headerHeight) / 2;
+
+        // スクロール位置 = セクション中央 - コンテナ中央
+        const targetTop = sectionCenter - containerCenter;
+
         pcContainer.scrollTo({
-          top: Math.max(0, elementTop - headerHeight),
+          top: Math.max(0, targetTop),
           behavior: "smooth",
         });
       }
-      return; // 遅延スクロールを発火させない
+      return;
     }
 
     // スマホだけ遅延スクロール
