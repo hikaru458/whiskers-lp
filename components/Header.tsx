@@ -43,13 +43,17 @@ export default function Header() {
       return;
     }
     
-    // PC の場合は遅延なしで即スクロール（window.scrollToを使用）
+    // PC の場合は遅延なしで即スクロール（セクションを画面中央に）
     if (isPc) {
       const header = document.querySelector("header");
       const headerHeight = header?.offsetHeight ?? 80;
       const rect = element.getBoundingClientRect();
       const scrollY = window.scrollY;
-      const targetY = rect.top + scrollY - headerHeight;
+      const viewportHeight = window.innerHeight;
+      const elementHeight = rect.height;
+      
+      // セクション中央が画面中央に来るように計算
+      const targetY = rect.top + scrollY - (viewportHeight / 2) + (elementHeight / 2) - headerHeight;
 
       window.scrollTo({
         top: Math.max(0, targetY),
@@ -58,14 +62,18 @@ export default function Header() {
       return; // 遅延スクロールを発火させない
     }
 
-    // スマホだけ遅延スクロール（メニュー閉じるアニメーション待ち）
+    // スマホだけ遅延スクロール（セクションを画面中央に）
     setTimeout(() => {
       const header = document.querySelector("header");
       const headerHeight = header?.offsetHeight ?? 80;
 
       const rect = element.getBoundingClientRect();
       const scrollY = window.scrollY;
-      const targetY = rect.top + scrollY - headerHeight;
+      const viewportHeight = window.innerHeight;
+      const elementHeight = rect.height;
+      
+      // セクション中央が画面中央に来るように計算
+      const targetY = rect.top + scrollY - (viewportHeight / 2) + (elementHeight / 2) - headerHeight;
 
       window.scrollTo({
         top: Math.max(0, targetY),
