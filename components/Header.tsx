@@ -48,19 +48,23 @@ export default function Header() {
       {/* メニュー - PC/スマホ共通 */}
       {menuOpen && (
         <nav
-          className="absolute top-full right-0 py-4 px-6"
+          className="absolute top-full right-0 py-4 px-6 overflow-hidden"
           style={{
             background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.40) 100%)",
             backdropFilter: "blur(20px)",
             minWidth: "160px",
           }}
         >
-          <div className="flex flex-col gap-4">
-            {navItems.map((item) => (
+          <div className="flex flex-col">
+            {navItems.map((item, index) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm text-white/80 hover:text-white transition-colors py-2 text-right"
+                className="text-sm text-white/80 hover:text-white transition-colors py-3 text-right opacity-0 animate-slideIn"
+                style={{
+                  animationDelay: `${index * 0.05}s`,
+                  animationFillMode: "forwards",
+                }}
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}

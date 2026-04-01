@@ -83,6 +83,22 @@ body {
   animation: paw-walk-reverse linear infinite;
 }
 
+/* Stagger slide-in animation for navigation menu */
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 /* Font Optimization for Japanese Text */
 .font-heading {
   font-feature-settings: "palt" 1;
