@@ -50,7 +50,7 @@ export default function FadeInSection({
       className={`transition-all duration-700 ease-out ${className}`}
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "translateY(0)" : "translateY(30px)",
+        filter: isVisible ? "blur(0)" : "blur(4px)",
         transitionDelay: `${delay}ms`,
       }}
     >
