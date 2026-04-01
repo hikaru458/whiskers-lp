@@ -72,40 +72,91 @@ export default function Home() {
         </Canvas>
       </div>
 
-      {/* Heroセクション */}
-      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-      </section>
-
       {/* 6セクション - PCでは左右交互 */}
-      {SECTIONS.map((section, index) => {
-        const isEven = index % 2 === 0;
-        const isReversed = !isEven;
+      <div className="hidden md:block h-screen overflow-y-scroll snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
+        {/* Heroセクション */}
+        <section id="hero" className="relative z-10 h-screen flex flex-col items-center justify-center px-6 snap-start">
+        </section>
 
-        return (
-          <section
-            key={section.title}
-            className="relative z-10 min-h-screen flex items-center py-20 px-6"
-          >
-            <div
-              className="max-w-6xl mx-auto w-full"
+        {SECTIONS.map((section, index) => {
+          const isEven = index % 2 === 0;
+          const isReversed = !isEven;
+
+          return (
+            <section
+              key={section.title}
+              id={section.title.toLowerCase()}
+              className="relative z-10 h-screen flex items-center py-20 px-6 snap-start"
             >
-              {/* PhotoPanel now handles both photo and text for PC */}
-              <PhotoPanel
-                imageSrc={section.image}
-                title={section.title}
-                description={section.description}
-                imagePosition={isReversed ? "right" : "left"}
-              />
-            </div>
-          </section>
-        );
-      })}
+              <div
+                className="max-w-6xl mx-auto w-full"
+              >
+                <PhotoPanel
+                  imageSrc={section.image}
+                  title={section.title}
+                  description={section.description}
+                  imagePosition={isReversed ? "right" : "left"}
+                />
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      {/* スマホ版: 通常スクロール */}
+      <div className="md:hidden">
+        {/* Heroセクション */}
+        <section id="hero" className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+        </section>
+
+        {SECTIONS.map((section, index) => {
+          const isEven = index % 2 === 0;
+          const isReversed = !isEven;
+
+          return (
+            <section
+              key={section.title}
+              id={section.title.toLowerCase()}
+              className="relative z-10 min-h-screen flex items-center py-20 px-6"
+            >
+              <div
+                className="max-w-6xl mx-auto w-full"
+              >
+                <PhotoPanel
+                  imageSrc={section.image}
+                  title={section.title}
+                  description={section.description}
+                  imagePosition={isReversed ? "right" : "left"}
+                />
+              </div>
+            </section>
+          );
+        })}
+      </div>
 
       {/* Footer */}
       <footer className="relative z-10 py-10 px-6 border-t border-white/10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
-          <span>© {new Date().getFullYear()} Whiskers</span>
-          <span>Designed for creators.</span>
+        <div className="max-w-6xl mx-auto">
+          {/* フッターリンク */}
+          <div className="flex flex-wrap justify-center gap-6 mb-6 text-sm">
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
+              X
+            </a>
+            <a href="#terms" className="text-white/60 hover:text-white transition-colors">
+              利用規約
+            </a>
+            <a href="#privacy" className="text-white/60 hover:text-white transition-colors">
+              プライバシーポリシー
+            </a>
+            <a href="#contact" className="text-white/60 hover:text-white transition-colors">
+              お問い合わせ
+            </a>
+          </div>
+          {/* コピーライト */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
+            <span>© {new Date().getFullYear()} Whiskers</span>
+            <span>Designed for creators.</span>
+          </div>
         </div>
       </footer>
     </main>
