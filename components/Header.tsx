@@ -21,22 +21,9 @@ export default function Header() {
           Whiskers
         </span>
 
-        {/* PCナビ - 横並び */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="text-sm text-white/80 hover:text-white transition-colors"
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* スマホハンバーガー - 猫ヒゲ3本線 */}
+        {/* ハンバーガーメニュー - PC/スマホ共通 */}
         <button
-          className="md:hidden relative w-8 h-6 flex flex-col justify-between"
+          className="relative w-8 h-6 flex flex-col justify-between"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="メニュー"
         >
@@ -58,9 +45,9 @@ export default function Header() {
         </button>
       </div>
 
-      {/* スマホメニュー */}
+      {/* メニュー - PC/スマホ共通 */}
       {menuOpen && (
-        <nav className="md:hidden absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-6">
+        <nav className="absolute top-full left-0 right-0 bg-black/80 backdrop-blur-md py-4 px-6">
           <div className="flex flex-col gap-4">
             {navItems.map((item) => (
               <a
