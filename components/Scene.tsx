@@ -3,10 +3,11 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { Text } from "@react-three/drei";
+import { Text3D, Center } from "@react-three/drei";
 
 export default function Scene() {
   const groupRef = useRef<THREE.Group>(null);
+  const logoRef = useRef<THREE.Group>(null);
 
   // キューブ1のジオメトリ
   const cube1Geometry = useMemo(() => {
@@ -40,6 +41,12 @@ export default function Scene() {
       cube2.rotation.y = -t * 0.25;
       cube2.rotation.x = Math.cos(t * 0.1) * 0.2;
     }
+
+    // ロゴの浮遊アニメーション
+    if (logoRef.current) {
+      logoRef.current.position.y = Math.sin(t * 0.5) * 0.1;
+      logoRef.current.rotation.y = Math.sin(t * 0.3) * 0.05;
+    }
   });
 
   return (
@@ -54,16 +61,40 @@ export default function Scene() {
         <lineBasicMaterial color="#c7baff" transparent opacity={0.2} />
       </lineSegments>
 
-      {/* 3Dテキストロゴ */}
-      <Text
-        position={[0, 0, -1]}
-        fontSize={1}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Whiskers
-      </Text>
+      {/* 3D立体ワイヤーフレームロゴ */}
+      <Center position={[0, 0, -1]}>
+        <group ref={logoRef}>
+          <Text3D
+            font="/fonts/helvetiker_bold.typeface.json"
+            size={0.8}
+            height={0.2}
+            curveSegments={12}
+            bevelEnabled
+            bevelThickness={0.02}
+            bevelSize={0.02}
+            bevelOffset={0}
+            bevelSegments={5}
+          >
+            WHISKERS
+            <meshBasicMaterial color="#a8c5ff" transparent opacity={0.6} />
+          </Text3D>
+          {/* ワイヤーフレームエッジ */}
+          <Text3D
+            font="/fonts/helvetiker_bold.typeface.json"
+            size={0.8}
+            height={0.2}
+            curveSegments={12}
+            bevelEnabled
+            bevelThickness={0.02}
+            bevelSize={0.02}
+            bevelOffset={0}
+            bevelSegments={5}
+          >
+            WHISKERS
+            <meshBasicMaterial color="#7fd4ff" transparent opacity={0.8} wireframe />
+          </Text3D>
+        </group>
+      </Center>
     </group>
   );
 }
