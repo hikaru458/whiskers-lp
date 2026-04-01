@@ -75,15 +75,9 @@ export default function Home() {
       {/* Heroセクション */}
       <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
         <div className="text-center space-y-6">
-          <p className="text-xs tracking-[0.3em] uppercase text-sky-300/80">
-            Welcome to
-          </p>
           <h1 className="text-6xl md:text-8xl font-bold tracking-[0.1em] text-white">
             Whiskers
           </h1>
-          <p className="text-sm text-white/60 max-w-md mx-auto">
-            クリエイターのための創作プラットフォーム
-          </p>
         </div>
       </section>
 
