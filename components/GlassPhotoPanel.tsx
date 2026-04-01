@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -15,18 +16,21 @@ interface GlassPhotoPanelProps {
 }
 
 /* -------------------------------------------------------
-   Layer 1: Photo（揺らぎなし・シンプル）
+   Layer 1: Photo（auto-fit・シンプル）
 ------------------------------------------------------- */
-function PhotoLayer({
-  imageSrc,
-  width,
-  height,
-}: {
-  imageSrc: string;
-  width: number;
-  height: number;
-}) {
+function PhotoLayer({ imageSrc }: { imageSrc: string }) {
   const texture = useTexture(imageSrc);
+
+  const { width, height } = useMemo(() => {
+    const img = texture.image as HTMLImageElement;
+    if (!img || !img.width || !img.height) {
+      return { width: 1, height: 1 };
+    }
+    const aspect = img.height / img.width;
+    // 横幅を1.8程度に固定し、アスペクト比に応じて高さを調整
+    const baseWidth = 1.8;
+    return { width: baseWidth, height: baseWidth * aspect };
+  }, [texture]);
 
   return (
     <mesh position={[0, 0, 0]} renderOrder={1}>
@@ -39,18 +43,30 @@ function PhotoLayer({
 /* -------------------------------------------------------
    Layer 2: Front Glass（透明グレーパネル）
 ------------------------------------------------------- */
-function FrontGlass({ width, height }: { width: number; height: number }) {
+function FrontGlass({ imageSrc }: { imageSrc: string }) {
+  const texture = useTexture(imageSrc);
+
+  const { width, height } = useMemo(() => {
+    const img = texture.image as HTMLImageElement;
+    if (!img || !img.width || !img.height) {
+      return { width: 1, height: 1 };
+    }
+    const aspect = img.height / img.width;
+    const baseWidth = 1.8;
+    return { width: baseWidth, height: baseWidth * aspect };
+  }, [texture]);
+
   return (
     <mesh position={[0, 0, 0.05]} renderOrder={2}>
       <planeGeometry args={[width, height]} />
       <meshPhysicalMaterial
         color="#ffffff"
         transparent
-        opacity={0.15}        // ← 透明グレー
+        opacity={0.15}
         roughness={0.2}
         metalness={0}
-        transmission={0}       // ← 屈折なし
-        thickness={0}          // ← 厚みなし
+        transmission={0}
+        thickness={0}
         side={THREE.DoubleSide}
       />
     </mesh>
@@ -58,19 +74,14 @@ function FrontGlass({ width, height }: { width: number; height: number }) {
 }
 
 /* -------------------------------------------------------
-   Combined Scene（2レイヤーのみ）
+   Combined Scene（2レイヤー・auto-fit）
 ------------------------------------------------------- */
 function GlassPanelScene({ imageSrc }: { imageSrc: string }) {
-  const { viewport } = useThree();
-  const aspect = 4 / 5;
-  const width = Math.min(viewport.width * 0.9, 4);
-  const height = width / aspect;
-
   return (
     <>
       <ambientLight intensity={0.8} />
-      <PhotoLayer imageSrc={imageSrc} width={width} height={height} />
-      <FrontGlass width={width} height={height} />
+      <PhotoLayer imageSrc={imageSrc} />
+      <FrontGlass imageSrc={imageSrc} />
     </>
   );
 }
@@ -89,16 +100,17 @@ export default function GlassPhotoPanel({
     <div className="w-full max-w-4xl mx-auto">
       {/* PC版 */}
       <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
-        {/* 写真（Three.js） */}
+        {/* 写真（Three.js・auto-fit） */}
         <div
-          className={`relative aspect-[4/5] overflow-hidden ${
+          className={`relative w-full h-auto ${
             isImageLeft ? "order-1" : "order-2"
           }`}
         >
           <Canvas
-            camera={{ position: [0, 0, 5], fov: 45 }}
+            camera={{ position: [0, 0, 2], fov: 45 }}
             gl={{ antialias: true, alpha: true }}
-            className="absolute inset-0"
+            className="w-full h-auto"
+            style={{ height: "auto" }}
           >
             <GlassPanelScene imageSrc={imageSrc} />
           </Canvas>
