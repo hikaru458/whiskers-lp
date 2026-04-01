@@ -17,46 +17,28 @@ export default function Header() {
     e.preventDefault();
     setMenuOpen(false);
     
-    setTimeout(() => {
-      const baseId = href.replace("#", "");
-      const headerHeight = 80;
-      const isPc = window.innerWidth >= 768;
-      
-      // PC版は -pc 接尾辞を追加、モバイルはそのまま
-      const targetId = isPc ? `${baseId}-pc` : baseId;
-      const element = document.getElementById(targetId);
-      
-      if (!element) {
-        // フォールバック: 接尾辞なしで検索
-        const fallbackElement = document.getElementById(baseId);
-        if (!fallbackElement) return;
-      }
-      
-      const targetElement = element || document.getElementById(baseId);
-      if (!targetElement) return;
-      
-      if (isPc) {
-        // PC: コンテナ内スクロール
-        const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
-        if (pcContainer) {
-          const elementTop = targetElement.offsetTop;
-          pcContainer.scrollTo({
-            top: Math.max(0, elementTop - headerHeight),
-            behavior: "smooth",
-          });
-        }
-      } else {
-        // モバイル: windowスクロール
-        const elementRect = targetElement.getBoundingClientRect();
-        const currentScrollY = window.scrollY || window.pageYOffset;
-        const targetY = elementRect.top + currentScrollY - headerHeight;
-        
-        window.scrollTo({
-          top: Math.max(0, targetY),
+    const targetId = href.replace("#", "");
+    const headerHeight = 80;
+    const isPc = window.innerWidth >= 768;
+    
+    // PC版は -pc 接尾辞、モバイルはそのまま
+    const fullId = isPc ? `${targetId}-pc` : targetId;
+    const element = document.getElementById(fullId) || document.getElementById(targetId);
+    
+    if (!element) return;
+    
+    if (isPc) {
+      const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
+      if (pcContainer) {
+        pcContainer.scrollTo({
+          top: Math.max(0, element.offsetTop - headerHeight),
           behavior: "smooth",
         });
       }
-    }, 150);
+    } else {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollBy(0, -headerHeight);
+    }
   };
 
   return (
