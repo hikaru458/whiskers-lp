@@ -28,16 +28,34 @@ export default function Header() {
     if (!element) return;
     
     if (isPc) {
-      const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
-      if (pcContainer) {
-        pcContainer.scrollTo({
+      // PC: スクロール可能な親コンテナを見つける
+      let parent = element.parentElement;
+      let scrollContainer: HTMLElement | null = null;
+      
+      while (parent) {
+        const style = window.getComputedStyle(parent);
+        if (style.overflowY === 'scroll' || style.overflowY === 'auto') {
+          scrollContainer = parent;
+          break;
+        }
+        parent = parent.parentElement;
+      }
+      
+      if (scrollContainer) {
+        scrollContainer.scrollTo({
           top: Math.max(0, element.offsetTop - headerHeight),
           behavior: "smooth",
         });
       }
     } else {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.scrollBy(0, -headerHeight);
+      // モバイル: windowスクロール
+      const rect = element.getBoundingClientRect();
+      const targetY = rect.top + window.scrollY - headerHeight;
+      
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth",
+      });
     }
   };
 
