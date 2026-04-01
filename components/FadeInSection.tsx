@@ -6,17 +6,24 @@ interface FadeInSectionProps {
   children: ReactNode;
   className?: string;
   delay?: number;
+  disableAnimation?: boolean;
 }
 
 export default function FadeInSection({ 
   children, 
   className = "", 
-  delay = 0 
+  delay = 0,
+  disableAnimation = false,
 }: FadeInSectionProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(disableAnimation);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (disableAnimation) {
+      setIsVisible(true);
+      return;
+    }
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -35,7 +42,7 @@ export default function FadeInSection({
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [disableAnimation]);
 
   return (
     <div
