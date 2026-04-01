@@ -20,14 +20,29 @@ export default function Header() {
     setTimeout(() => {
       const targetId = href.replace("#", "");
       const element = document.getElementById(targetId);
+      if (!element) return;
       
-      if (element) {
-        const headerHeight = 80;
-        const rect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetY = rect.top + scrollTop - headerHeight;
+      const headerHeight = 80;
+      
+      // PC版かどうかを判定（mdブレークポイント以上かつPCコンテナが存在）
+      const isPc = window.innerWidth >= 768;
+      
+      if (isPc) {
+        // PC: コンテナ内スクロール
+        const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
+        if (pcContainer) {
+          const elementTop = element.offsetTop;
+          pcContainer.scrollTo({
+            top: Math.max(0, elementTop - headerHeight),
+            behavior: "smooth",
+          });
+        }
+      } else {
+        // モバイル: windowスクロール
+        const elementRect = element.getBoundingClientRect();
+        const currentScrollY = window.scrollY || window.pageYOffset;
+        const targetY = elementRect.top + currentScrollY - headerHeight;
         
-        // スムーズスクロール
         window.scrollTo({
           top: Math.max(0, targetY),
           behavior: "smooth",
