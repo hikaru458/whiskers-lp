@@ -87,33 +87,15 @@ export default function Home() {
             className="relative z-10 min-h-screen flex items-center py-20 px-6"
           >
             <div
-              className={`max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center ${
-                isReversed ? "md:direction-rtl" : ""
-              }`}
+              className="max-w-6xl mx-auto w-full"
             >
-              {/* 写真パネル */}
-              <div className={`${isReversed ? "md:order-2" : "md:order-1"}`}>
-                <PhotoPanel
-                  imageSrc={section.image}
-                  title={section.title}
-                  description={section.description}
-                />
-              </div>
-
-              {/* PC用テキストエリア */}
-              <div
-                className={`hidden md:block space-y-4 ${
-                  isReversed ? "md:order-1 md:text-right" : "md:order-2 md:text-left"
-                }`}
-              >
-                <span className="text-xs tracking-[0.3em] text-sky-300/60 uppercase">
-                  Section {String(index + 1).padStart(2, "0")}
-                </span>
-                <h2 className="text-3xl font-light text-white">{section.title}</h2>
-                <p className="text-white/60 max-w-sm">
-                  {section.description}
-                </p>
-              </div>
+              {/* PhotoPanel now handles both photo and text for PC */}
+              <PhotoPanel
+                imageSrc={section.image}
+                title={section.title}
+                description={section.description}
+                imagePosition={isReversed ? "right" : "left"}
+              />
             </div>
           </section>
         );

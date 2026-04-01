@@ -8,6 +8,7 @@ interface PhotoPanelProps {
   description: string;
   linkText?: string;
   linkHref?: string;
+  imagePosition?: "left" | "right";
 }
 
 export default function PhotoPanel({
@@ -16,28 +17,45 @@ export default function PhotoPanel({
   description,
   linkText = "→ 詳細",
   linkHref = "#",
+  imagePosition = "left",
 }: PhotoPanelProps) {
+  const isImageLeft = imagePosition === "left";
+
   return (
-    <div className="w-full max-w-md mx-auto md:max-w-none">
-      {/* PC版: 既存レイアウト（グレーパネル内に写真） */}
-      <div className="hidden md:block">
+    <div className="w-full max-w-4xl mx-auto">
+      {/* PC版: 横並びレイアウト - 写真とグレーパネル（文字入り） */}
+      <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
+        {/* 写真側 */}
+        <div className={`relative aspect-[4/5] overflow-hidden ${isImageLeft ? "order-1" : "order-2"}`}>
+          <Image
+            src={imageSrc}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="420px"
+          />
+        </div>
+
+        {/* グレーパネル側（写真の反対側）- 文字を内包 */}
         <div
-          className="relative rounded-2xl overflow-hidden"
+          className={`relative flex flex-col justify-center p-8 ${isImageLeft ? "order-2" : "order-1"}`}
           style={{
-            background:
-              "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.40) 100%)",
-            backdropFilter: "blur(10px)",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.30) 100%)",
+            backdropFilter: "blur(20px)",
           }}
         >
-          {/* 写真 */}
-          <div className="relative aspect-[4/5] overflow-hidden rounded-xl m-4">
-            <Image
-              src={imageSrc}
-              alt={title}
-              fill
-              className="object-cover"
-              sizes="420px"
-            />
+          <div className="space-y-4">
+            <span className="text-xs tracking-[0.3em] text-sky-300/60 uppercase">
+              {title}
+            </span>
+            <h2 className="text-3xl font-light text-white tracking-wide">{title}</h2>
+            <p className="text-base text-white/80 leading-relaxed">{description}</p>
+            <a
+              href={linkHref}
+              className="inline-block text-sm text-sky-300 hover:text-sky-200 transition-colors"
+            >
+              {linkText}
+            </a>
           </div>
         </div>
       </div>
