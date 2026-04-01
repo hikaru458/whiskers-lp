@@ -36,7 +36,11 @@ export default function StarfieldBackground() {
     <div
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
       style={{
-        background: "linear-gradient(to bottom, #0a1a2f 0%, #050a14 100%)",
+        backgroundImage: `
+          radial-gradient(circle at 20% 30%, rgba(255, 150, 200, 0.10), transparent 60%),
+          radial-gradient(circle at 80% 70%, rgba(180, 120, 255, 0.12), transparent 70%),
+          linear-gradient(to bottom, #0a1a2f, #050a14)
+        `,
       }}
     >
       {stars.map((star) => (
