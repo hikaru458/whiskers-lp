@@ -3,67 +3,125 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { Text } from "@react-three/drei";
 
-export default function Scene() {
-  const groupRef = useRef<THREE.Group>(null);
-
-  // キューブ1のジオメトリ
-  const cube1Geometry = useMemo(() => {
-    const box = new THREE.BoxGeometry(2, 2, 2);
-    return new THREE.EdgesGeometry(box);
-  }, []);
-
-  // キューブ2のジオメトリ
-  const cube2Geometry = useMemo(() => {
-    const box = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-    return new THREE.EdgesGeometry(box);
-  }, []);
+// =========================
+// 1. ミスト（ゆっくり動く）
+// =========================
+function MovingMist() {
+  const mistRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
-    if (!groupRef.current) return;
     const t = state.clock.getElapsedTime();
-
-    // グループ全体をゆっくり回転
-    groupRef.current.rotation.y = t * 0.1;
-    groupRef.current.rotation.x = Math.sin(t * 0.05) * 0.1;
-
-    // 個別の回転も追加
-    const cube1 = groupRef.current.children[0] as THREE.LineSegments;
-    const cube2 = groupRef.current.children[1] as THREE.LineSegments;
-
-    if (cube1) {
-      cube1.rotation.x = t * 0.2;
-      cube1.rotation.z = t * 0.15;
-    }
-    if (cube2) {
-      cube2.rotation.y = -t * 0.25;
-      cube2.rotation.x = Math.cos(t * 0.1) * 0.2;
+    if (mistRef.current) {
+      mistRef.current.material.opacity = 0.12 + Math.sin(t * 0.1) * 0.03;
+      mistRef.current.position.x = Math.sin(t * 0.05) * 0.3;
+      mistRef.current.position.y = Math.cos(t * 0.04) * 0.2;
     }
   });
 
   return (
-    <group ref={groupRef}>
-      {/* キューブ1 - 大きい方 */}
-      <lineSegments geometry={cube1Geometry} position={[-2, 0, -3]}>
-        <lineBasicMaterial color="#7fd4ff" transparent opacity={0.25} />
-      </lineSegments>
+    <mesh ref={mistRef} position={[0, 0, -8]}>
+      <planeGeometry args={[20, 12]} />
+      <meshBasicMaterial
+        color="#c7baff"
+        transparent
+        opacity={0.12}
+      />
+    </mesh>
+  );
+}
 
-      {/* キューブ2 - 小さい方 */}
-      <lineSegments geometry={cube2Geometry} position={[2, 1, -4]}>
-        <lineBasicMaterial color="#c7baff" transparent opacity={0.2} />
-      </lineSegments>
+// =========================
+// 2. 粒子（前景・背景）
+// =========================
+function Particles({ count = 200, size = 0.015, depth = -5 }) {
+  const points = useRef<THREE.Points>(null);
 
-      {/* 3Dテキストロゴ */}
-      <Text
-        position={[0, 0, -1]}
-        fontSize={1}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Whiskers
-      </Text>
-    </group>
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) {
+      arr[i] = (Math.random() - 0.5) * 12;
+    }
+    return arr;
+  }, [count]);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (points.current) {
+      points.current.rotation.y = t * 0.02;
+    }
+  });
+
+  return (
+    <points ref={points} position={[0, 0, depth]}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={size}
+        color="#ffffff"
+        transparent
+        opacity={0.4}
+      />
+    </points>
+  );
+}
+
+// =========================
+// 3. メイン Scene
+// =========================
+export default function Scene() {
+  const cubeRef = useRef<THREE.Group>(null);
+
+  // キューブのワイヤーフレーム
+  const cubeGeometry = useMemo(() => {
+    const box = new THREE.BoxGeometry(2.5, 2.5, 2.5);
+    return new THREE.EdgesGeometry(box);
+  }, []);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (cubeRef.current) {
+      cubeRef.current.rotation.y = t * 0.15;
+      cubeRef.current.rotation.x = Math.sin(t * 0.1) * 0.1;
+    }
+  });
+
+  return (
+    <>
+      {/* ========================= */}
+      {/* Fog（空気の厚み） */}
+      {/* ========================= */}
+      <fog attach="fog" args={["#0a1a2f", 5, 15]} />
+
+      {/* ========================= */}
+      {/* 背景粒子（奥） */}
+      {/* ========================= */}
+      <Particles count={150} size={0.02} depth={-10} />
+
+      {/* ========================= */}
+      {/* ゆっくり動くミスト */}
+      {/* ========================= */}
+      <MovingMist />
+
+      {/* ========================= */}
+      {/* 前景粒子（手前） */}
+      {/* ========================= */}
+      <Particles count={80} size={0.03} depth={-3} />
+
+      {/* ========================= */}
+      {/* 回転キューブ */}
+      {/* ========================= */}
+      <group ref={cubeRef} position={[0, 0, -5]}>
+        <lineSegments geometry={cubeGeometry}>
+          <lineBasicMaterial color="#7fd4ff" transparent opacity={0.2} />
+        </lineSegments>
+      </group>
+    </>
   );
 }
