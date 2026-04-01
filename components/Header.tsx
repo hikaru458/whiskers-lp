@@ -43,40 +43,35 @@ export default function Header() {
       return;
     }
     
-    // 少し遅延してスクロール（メニュー閉じるアニメーション後）
-    setTimeout(() => {
-      // ヘッダー高さを動的に取得
-      const header = document.querySelector("header");
-      const headerHeight = header?.offsetHeight ?? 80;
-      
-      console.log(`[Nav] Header height: ${headerHeight}`);
-      
-      if (isPc) {
-        // PC: pc-scroll-container 内でスクロール
-        const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
-        if (pcContainer) {
-          const elementTop = element.offsetTop - pcContainer.offsetTop;
-          console.log(`[Nav] PC scroll: ${elementTop - headerHeight}`);
-          pcContainer.scrollTo({
-            top: Math.max(0, elementTop - headerHeight),
-            behavior: "smooth",
-          });
-        }
-      } else {
-        // スマホ版: window.scrollTo を使用
-        const rect = element.getBoundingClientRect();
-        const scrollY = window.scrollY;
-        const targetY = rect.top + scrollY - headerHeight;
-        
-        console.log(`[Nav] Mobile scroll target: ${targetY}`);
-        console.log(`[Nav] rect.top: ${rect.top}, scrollY: ${scrollY}`);
-        
-        window.scrollTo({
-          top: Math.max(0, targetY),
+    // PC の場合は遅延なしで即スクロール
+    if (isPc) {
+      const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
+      if (pcContainer) {
+        const elementTop = element.offsetTop - pcContainer.offsetTop;
+        const header = document.querySelector("header");
+        const headerHeight = header?.offsetHeight ?? 80;
+        pcContainer.scrollTo({
+          top: Math.max(0, elementTop - headerHeight),
           behavior: "smooth",
         });
       }
-    }, 300); // メニュー閉じるアニメーション待機
+      return; // 遅延スクロールを発火させない
+    }
+
+    // スマホだけ遅延スクロール（メニュー閉じるアニメーション待ち）
+    setTimeout(() => {
+      const header = document.querySelector("header");
+      const headerHeight = header?.offsetHeight ?? 80;
+
+      const rect = element.getBoundingClientRect();
+      const scrollY = window.scrollY;
+      const targetY = rect.top + scrollY - headerHeight;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth",
+      });
+    }, 300);
   };
 
   return (
