@@ -52,7 +52,7 @@ export default function PhotoPanel({
             <p className="text-base text-white/80 leading-relaxed">{description}</p>
             <a
               href={linkHref}
-              className="inline-block text-sm text-sky-300 hover:text-sky-200 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-2"
             >
               {linkText}
             </a>
@@ -86,7 +86,7 @@ export default function PhotoPanel({
             <p className="text-sm text-white leading-relaxed">{description}</p>
             <a
               href={linkHref}
-              className="inline-block text-sm text-sky-300 hover:text-sky-200 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-1"
             >
               {linkText}
             </a>
