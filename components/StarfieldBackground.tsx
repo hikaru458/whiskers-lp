@@ -38,7 +38,8 @@ export default function StarfieldBackground() {
       style={{
         backgroundImage: `
           radial-gradient(circle at 20% 30%, rgba(255, 150, 200, 0.10), transparent 60%),
-          radial-gradient(circle at 80% 70%, rgba(180, 120, 255, 0.12), transparent 70%),
+          radial-gradient(circle at 70% 80%, rgba(180, 120, 255, 0.12), transparent 70%),
+          radial-gradient(circle at 50% 50%, rgba(100, 120, 255, 0.08), transparent 80%),
           linear-gradient(to bottom, #0a1a2f, #050a14)
         `,
       }}
