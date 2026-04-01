@@ -5,257 +5,221 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
 
-// 猫の顔ワイヤーフレーム（1匹目 - 丸顔でかわいい系）
-function createCatFaceGeometry1(): THREE.BufferGeometry {
+// 3D立体猫ワイヤーフレーム（薄紫色）
+function create3DCatGeometry(): THREE.BufferGeometry {
   const points: THREE.Vector3[] = [];
+  const depth = 0.25; // 奥行き（厚み）
 
+  // === 前面の猫顔 ===
   // 顔の輪郭（楕円）
-  const faceRadiusX = 0.8;
-  const faceRadiusY = 0.7;
-  const segments = 24;
+  const faceRadiusX = 0.9;
+  const faceRadiusY = 0.8;
+  const segments = 32;
+  const frontFacePoints: THREE.Vector3[] = [];
+  const backFacePoints: THREE.Vector3[] = [];
+
   for (let i = 0; i <= segments; i++) {
     const angle = (i / segments) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        Math.cos(angle) * faceRadiusX,
-        Math.sin(angle) * faceRadiusY,
-        0
-      )
-    );
+    const x = Math.cos(angle) * faceRadiusX;
+    const y = Math.sin(angle) * faceRadiusY;
+    frontFacePoints.push(new THREE.Vector3(x, y, depth));
+    backFacePoints.push(new THREE.Vector3(x * 0.85, y * 0.85, -depth));
   }
 
-  // 左耳（丸みを帯びた三角形）
-  points.push(new THREE.Vector3(-0.5, 0.5, 0));
-  points.push(new THREE.Vector3(-0.7, 0.8, 0));
-  points.push(new THREE.Vector3(-0.3, 0.75, 0));
-  points.push(new THREE.Vector3(-0.5, 0.5, 0));
+  // 前面の輪郭線
+  for (let i = 0; i < frontFacePoints.length - 1; i++) {
+    points.push(frontFacePoints[i], frontFacePoints[i + 1]);
+  }
 
-  // 右耳（丸みを帯びた三角形）
-  points.push(new THREE.Vector3(0.5, 0.5, 0));
-  points.push(new THREE.Vector3(0.7, 0.8, 0));
-  points.push(new THREE.Vector3(0.3, 0.75, 0));
-  points.push(new THREE.Vector3(0.5, 0.5, 0));
+  // 後面の輪郭線
+  for (let i = 0; i < backFacePoints.length - 1; i++) {
+    points.push(backFacePoints[i], backFacePoints[i + 1]);
+  }
 
-  // 目（大きな丸）- 左目
-  const eyeRadius = 0.12;
-  const eyeSegments = 12;
+  // 前後をつなぐ線（奥行きの表現）
+  for (let i = 0; i < frontFacePoints.length; i += 4) {
+    points.push(frontFacePoints[i], backFacePoints[i]);
+  }
+
+  // === 左耳（立体）===
+  const leftEarFront = [
+    new THREE.Vector3(-0.6, 0.5, depth),
+    new THREE.Vector3(-0.85, 0.95, depth * 0.5),
+    new THREE.Vector3(-0.35, 0.8, depth),
+    new THREE.Vector3(-0.6, 0.5, depth),
+  ];
+  const leftEarBack = [
+    new THREE.Vector3(-0.55, 0.5, -depth),
+    new THREE.Vector3(-0.75, 0.85, -depth * 0.5),
+    new THREE.Vector3(-0.35, 0.75, -depth),
+    new THREE.Vector3(-0.55, 0.5, -depth),
+  ];
+
+  for (let i = 0; i < leftEarFront.length - 1; i++) {
+    points.push(leftEarFront[i], leftEarFront[i + 1]);
+    points.push(leftEarBack[i], leftEarBack[i + 1]);
+  }
+  // 耳の奥行き
+  for (let i = 0; i < leftEarFront.length; i++) {
+    points.push(leftEarFront[i], leftEarBack[i]);
+  }
+
+  // === 右耳（立体）===
+  const rightEarFront = [
+    new THREE.Vector3(0.6, 0.5, depth),
+    new THREE.Vector3(0.85, 0.95, depth * 0.5),
+    new THREE.Vector3(0.35, 0.8, depth),
+    new THREE.Vector3(0.6, 0.5, depth),
+  ];
+  const rightEarBack = [
+    new THREE.Vector3(0.55, 0.5, -depth),
+    new THREE.Vector3(0.75, 0.85, -depth * 0.5),
+    new THREE.Vector3(0.35, 0.75, -depth),
+    new THREE.Vector3(0.55, 0.5, -depth),
+  ];
+
+  for (let i = 0; i < rightEarFront.length - 1; i++) {
+    points.push(rightEarFront[i], rightEarFront[i + 1]);
+    points.push(rightEarBack[i], rightEarBack[i + 1]);
+  }
+  for (let i = 0; i < rightEarFront.length; i++) {
+    points.push(rightEarFront[i], rightEarBack[i]);
+  }
+
+  // === 目（立体）===
+  const eyeRadius = 0.15;
+  const eyeSegments = 16;
+  const leftEyeCenter = { x: -0.35, y: 0.1 };
+  const rightEyeCenter = { x: 0.35, y: 0.1 };
+
+  // 左目 - 前面と後面
   for (let i = 0; i <= eyeSegments; i++) {
     const angle = (i / eyeSegments) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        -0.3 + Math.cos(angle) * eyeRadius,
-        0.1 + Math.sin(angle) * eyeRadius,
-        0
-      )
-    );
+    const x = leftEyeCenter.x + Math.cos(angle) * eyeRadius;
+    const y = leftEyeCenter.y + Math.sin(angle) * eyeRadius;
+    if (i < eyeSegments) {
+      const nextAngle = ((i + 1) / eyeSegments) * Math.PI * 2;
+      const nextX = leftEyeCenter.x + Math.cos(nextAngle) * eyeRadius;
+      const nextY = leftEyeCenter.y + Math.sin(nextAngle) * eyeRadius;
+      points.push(new THREE.Vector3(x, y, depth), new THREE.Vector3(nextX, nextY, depth));
+      points.push(new THREE.Vector3(x, y, -depth * 0.5), new THREE.Vector3(nextX, nextY, -depth * 0.5));
+    }
   }
 
-  // 目（大きな丸）- 右目
+  // 右目 - 前面と後面
   for (let i = 0; i <= eyeSegments; i++) {
     const angle = (i / eyeSegments) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        0.3 + Math.cos(angle) * eyeRadius,
-        0.1 + Math.sin(angle) * eyeRadius,
-        0
-      )
-    );
+    const x = rightEyeCenter.x + Math.cos(angle) * eyeRadius;
+    const y = rightEyeCenter.y + Math.sin(angle) * eyeRadius;
+    if (i < eyeSegments) {
+      const nextAngle = ((i + 1) / eyeSegments) * Math.PI * 2;
+      const nextX = rightEyeCenter.x + Math.cos(nextAngle) * eyeRadius;
+      const nextY = rightEyeCenter.y + Math.sin(nextAngle) * eyeRadius;
+      points.push(new THREE.Vector3(x, y, depth), new THREE.Vector3(nextX, nextY, depth));
+      points.push(new THREE.Vector3(x, y, -depth * 0.5), new THREE.Vector3(nextX, nextY, -depth * 0.5));
+    }
   }
 
-  // 鼻（小さな三角形）
-  points.push(new THREE.Vector3(0, -0.15, 0));
-  points.push(new THREE.Vector3(-0.08, -0.05, 0));
-  points.push(new THREE.Vector3(0.08, -0.05, 0));
-  points.push(new THREE.Vector3(0, -0.15, 0));
-
-  // 口（Wのような形）
-  points.push(new THREE.Vector3(-0.15, -0.25, 0));
-  points.push(new THREE.Vector3(-0.05, -0.35, 0));
-  points.push(new THREE.Vector3(0, -0.3, 0));
-  points.push(new THREE.Vector3(0.05, -0.35, 0));
-  points.push(new THREE.Vector3(0.15, -0.25, 0));
-
-  // ヒゲ - 左
-  points.push(new THREE.Vector3(-0.5, 0, 0));
-  points.push(new THREE.Vector3(-0.9, 0.1, 0));
-  points.push(new THREE.Vector3(-0.5, -0.1, 0));
-  points.push(new THREE.Vector3(-0.9, -0.1, 0));
-  points.push(new THREE.Vector3(-0.5, -0.2, 0));
-  points.push(new THREE.Vector3(-0.85, -0.3, 0));
-
-  // ヒゲ - 右
-  points.push(new THREE.Vector3(0.5, 0, 0));
-  points.push(new THREE.Vector3(0.9, 0.1, 0));
-  points.push(new THREE.Vector3(0.5, -0.1, 0));
-  points.push(new THREE.Vector3(0.9, -0.1, 0));
-  points.push(new THREE.Vector3(0.5, -0.2, 0));
-  points.push(new THREE.Vector3(0.85, -0.3, 0));
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setFromPoints(points);
-  return geometry;
-}
-
-// 猫の顔ワイヤーフレーム（2匹目 - シャープでクール系）
-function createCatFaceGeometry2(): THREE.BufferGeometry {
-  const points: THREE.Vector3[] = [];
-
-  // 顔の輪郭（少し細長め）
-  const faceRadiusX = 0.7;
-  const faceRadiusY = 0.85;
-  const segments = 24;
-  for (let i = 0; i <= segments; i++) {
-    const angle = (i / segments) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        Math.cos(angle) * faceRadiusX,
-        Math.sin(angle) * faceRadiusY,
-        0
-      )
-    );
+  // === 鼻（立体）===
+  const noseFront = [
+    new THREE.Vector3(0, -0.15, depth),
+    new THREE.Vector3(-0.1, -0.05, depth),
+    new THREE.Vector3(0.1, -0.05, depth),
+    new THREE.Vector3(0, -0.15, depth),
+  ];
+  const noseBack = [
+    new THREE.Vector3(0, -0.12, 0),
+    new THREE.Vector3(-0.08, -0.04, 0),
+    new THREE.Vector3(0.08, -0.04, 0),
+    new THREE.Vector3(0, -0.12, 0),
+  ];
+  for (let i = 0; i < noseFront.length - 1; i++) {
+    points.push(noseFront[i], noseFront[i + 1]);
+    points.push(noseBack[i], noseBack[i + 1]);
+  }
+  for (let i = 0; i < noseFront.length; i++) {
+    points.push(noseFront[i], noseBack[i]);
   }
 
-  // 左耳（尖った三角形）
-  points.push(new THREE.Vector3(-0.4, 0.6, 0));
-  points.push(new THREE.Vector3(-0.65, 0.95, 0));
-  points.push(new THREE.Vector3(-0.2, 0.8, 0));
-  points.push(new THREE.Vector3(-0.4, 0.6, 0));
-
-  // 右耳（尖った三角形）
-  points.push(new THREE.Vector3(0.4, 0.6, 0));
-  points.push(new THREE.Vector3(0.65, 0.95, 0));
-  points.push(new THREE.Vector3(0.2, 0.8, 0));
-  points.push(new THREE.Vector3(0.4, 0.6, 0));
-
-  // 目（細長いアーモンド型）- 左目
-  const eyeCenterX = -0.25;
-  const eyeCenterY = 0.15;
-  const eyeRadiusX = 0.18;
-  const eyeRadiusY = 0.1;
-  for (let i = 0; i <= 16; i++) {
-    const angle = (i / 16) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        eyeCenterX + Math.cos(angle) * eyeRadiusX,
-        eyeCenterY + Math.sin(angle) * eyeRadiusY,
-        0
-      )
-    );
+  // === 口（立体・W型）===
+  const mouthFront = [
+    new THREE.Vector3(-0.18, -0.28, depth),
+    new THREE.Vector3(-0.06, -0.4, depth),
+    new THREE.Vector3(0, -0.32, depth),
+    new THREE.Vector3(0.06, -0.4, depth),
+    new THREE.Vector3(0.18, -0.28, depth),
+  ];
+  const mouthBack = [
+    new THREE.Vector3(-0.15, -0.25, depth * 0.5),
+    new THREE.Vector3(-0.05, -0.35, depth * 0.5),
+    new THREE.Vector3(0, -0.28, depth * 0.5),
+    new THREE.Vector3(0.05, -0.35, depth * 0.5),
+    new THREE.Vector3(0.15, -0.25, depth * 0.5),
+  ];
+  for (let i = 0; i < mouthFront.length - 1; i++) {
+    points.push(mouthFront[i], mouthFront[i + 1]);
+    points.push(mouthBack[i], mouthBack[i + 1]);
+  }
+  for (let i = 0; i < mouthFront.length; i++) {
+    points.push(mouthFront[i], mouthBack[i]);
   }
 
-  // 目（細長いアーモンド型）- 右目
-  for (let i = 0; i <= 16; i++) {
-    const angle = (i / 16) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        -eyeCenterX + Math.cos(angle) * eyeRadiusX,
-        eyeCenterY + Math.sin(angle) * eyeRadiusY,
-        0
-      )
-    );
+  // === ヒゲ（立体）===
+  const whiskersFront = [
+    new THREE.Vector3(-0.6, 0, depth), new THREE.Vector3(-1.1, 0.1, depth),
+    new THREE.Vector3(-0.6, -0.12, depth), new THREE.Vector3(-1.05, -0.12, depth),
+    new THREE.Vector3(-0.6, -0.24, depth), new THREE.Vector3(-1.0, -0.35, depth),
+  ];
+  const whiskersBack = [
+    new THREE.Vector3(-0.55, 0, -depth * 0.5), new THREE.Vector3(-0.95, 0.08, -depth),
+    new THREE.Vector3(-0.55, -0.1, -depth * 0.5), new THREE.Vector3(-0.9, -0.1, -depth),
+    new THREE.Vector3(-0.55, -0.2, -depth * 0.5), new THREE.Vector3(-0.88, -0.3, -depth),
+  ];
+  for (let i = 0; i < whiskersFront.length; i += 2) {
+    points.push(whiskersFront[i], whiskersFront[i + 1]);
+    points.push(whiskersBack[i], whiskersBack[i + 1]);
+    points.push(whiskersFront[i], whiskersBack[i]);
   }
 
-  // 鼻（小さなハート型）
-  points.push(new THREE.Vector3(0, -0.1, 0));
-  points.push(new THREE.Vector3(-0.06, -0.02, 0));
-  points.push(new THREE.Vector3(0, 0.02, 0));
-  points.push(new THREE.Vector3(0.06, -0.02, 0));
-  points.push(new THREE.Vector3(0, -0.1, 0));
+  // 右ヒゲ
+  const rWhiskersFront = [
+    new THREE.Vector3(0.6, 0, depth), new THREE.Vector3(1.1, 0.1, depth),
+    new THREE.Vector3(0.6, -0.12, depth), new THREE.Vector3(1.05, -0.12, depth),
+    new THREE.Vector3(0.6, -0.24, depth), new THREE.Vector3(1.0, -0.35, depth),
+  ];
+  const rWhiskersBack = [
+    new THREE.Vector3(0.55, 0, -depth * 0.5), new THREE.Vector3(0.95, 0.08, -depth),
+    new THREE.Vector3(0.55, -0.1, -depth * 0.5), new THREE.Vector3(0.9, -0.1, -depth),
+    new THREE.Vector3(0.55, -0.2, -depth * 0.5), new THREE.Vector3(0.88, -0.3, -depth),
+  ];
+  for (let i = 0; i < rWhiskersFront.length; i += 2) {
+    points.push(rWhiskersFront[i], rWhiskersFront[i + 1]);
+    points.push(rWhiskersBack[i], rWhiskersBack[i + 1]);
+    points.push(rWhiskersFront[i], rWhiskersBack[i]);
+  }
 
-  // 口（横長の線）
-  points.push(new THREE.Vector3(-0.2, -0.25, 0));
-  points.push(new THREE.Vector3(0.2, -0.25, 0));
+  // === 顔の内側の補助線（より立体的に見せる）===
+  // 中心から顔の輪郭への線（前面）
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    const x = Math.cos(angle) * faceRadiusX * 0.7;
+    const y = Math.sin(angle) * faceRadiusY * 0.7;
+    points.push(new THREE.Vector3(0, 0, depth), new THREE.Vector3(x, y, depth));
+  }
 
-  // ヒゲ - 長め
-  points.push(new THREE.Vector3(-0.45, 0.05, 0));
-  points.push(new THREE.Vector3(-1.0, 0.15, 0));
-  points.push(new THREE.Vector3(-0.45, -0.05, 0));
-  points.push(new THREE.Vector3(-1.0, -0.05, 0));
-  points.push(new THREE.Vector3(-0.45, -0.15, 0));
-  points.push(new THREE.Vector3(-0.95, -0.25, 0));
-
-  points.push(new THREE.Vector3(0.45, 0.05, 0));
-  points.push(new THREE.Vector3(1.0, 0.15, 0));
-  points.push(new THREE.Vector3(0.45, -0.05, 0));
-  points.push(new THREE.Vector3(1.0, -0.05, 0));
-  points.push(new THREE.Vector3(0.45, -0.15, 0));
-  points.push(new THREE.Vector3(0.95, -0.25, 0));
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setFromPoints(points);
-  return geometry;
-}
-
-// 柔らかい桜の花びらジオメトリ
-function createSoftCherryBlossomGeometry(): THREE.BufferGeometry {
-  const points: THREE.Vector3[] = [];
-  const petalCount = 5;
-  const petalLength = 1.0;
-  const petalWidth = 0.6;
-
-  for (let i = 0; i < petalCount; i++) {
-    const angle = (i / petalCount) * Math.PI * 2;
-    const nextAngle = ((i + 1) / petalCount) * Math.PI * 2;
-
-    // 花びらの先端（より柔らかいカーブ）
-    const tipX = Math.cos(angle) * petalLength;
-    const tipY = Math.sin(angle) * petalLength;
-    
-    // 花びらの側面点（ベジェ曲線風）
-    const sideAngle1 = angle - 0.5;
-    const sideAngle2 = angle + 0.5;
-    const sideRadius = petalWidth * 0.8;
-    const sideX1 = Math.cos(angle - 0.25) * sideRadius;
-    const sideY1 = Math.sin(angle - 0.25) * sideRadius;
-    const sideX2 = Math.cos(angle + 0.25) * sideRadius;
-    const sideY2 = Math.sin(angle + 0.25) * sideRadius;
-
-    // 中心
-    const center = new THREE.Vector3(0, 0, 0);
-
-    // 柔らかい花びらの輪郭（ベジェ風カーブ）
-    const tip = new THREE.Vector3(tipX, tipY, 0);
-    const side1 = new THREE.Vector3(sideX1, sideY1, 0);
-    const side2 = new THREE.Vector3(sideX2, sideY2, 0);
-
-    // より滑らかな曲線
-    const mid1 = new THREE.Vector3(
-      center.x + (tip.x - center.x) * 0.3 + (side1.x - center.x) * 0.3,
-      center.y + (tip.y - center.y) * 0.3 + (side1.y - center.y) * 0.3,
-      0
+  // 縦横の補助線（球体メッシュ風）
+  for (let i = -3; i <= 3; i++) {
+    const offset = i * 0.25;
+    // 横線
+    points.push(
+      new THREE.Vector3(-faceRadiusX * 0.8, offset, depth * 0.8),
+      new THREE.Vector3(faceRadiusX * 0.8, offset, depth * 0.8)
     );
-    const mid2 = new THREE.Vector3(
-      center.x + (tip.x - center.x) * 0.7 + (side1.x - center.x) * 0.15,
-      center.y + (tip.y - center.y) * 0.7 + (side1.y - center.y) * 0.15,
-      0
+    // 縦線
+    points.push(
+      new THREE.Vector3(offset, -faceRadiusY * 0.7, depth * 0.8),
+      new THREE.Vector3(offset, faceRadiusY * 0.7, depth * 0.8)
     );
-
-    // 花びらの線
-    points.push(center, side1);
-    points.push(side1, mid1);
-    points.push(mid1, mid2);
-    points.push(mid2, tip);
-
-    // 反対側も同様に
-    const mid3 = new THREE.Vector3(
-      center.x + (tip.x - center.x) * 0.7 + (side2.x - center.x) * 0.15,
-      center.y + (tip.y - center.y) * 0.7 + (side2.y - center.y) * 0.15,
-      0
-    );
-    const mid4 = new THREE.Vector3(
-      center.x + (tip.x - center.x) * 0.3 + (side2.x - center.x) * 0.3,
-      center.y + (tip.y - center.y) * 0.3 + (side2.y - center.y) * 0.3,
-      0
-    );
-
-    points.push(center, side2);
-    points.push(side2, mid4);
-    points.push(mid4, mid3);
-    points.push(mid3, tip);
-
-    // 花びらの内側の筋
-    const innerPoint = new THREE.Vector3(tipX * 0.6, tipY * 0.6, 0);
-    points.push(center, innerPoint);
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -265,64 +229,39 @@ function createSoftCherryBlossomGeometry(): THREE.BufferGeometry {
 
 export default function Scene() {
   const groupRef = useRef<THREE.Group>(null);
+  const catRef = useRef<THREE.LineSegments>(null);
 
-  // 猫の顔1
-  const catFace1Geometry = useMemo(() => createCatFaceGeometry1(), []);
-
-  // 猫の顔2
-  const catFace2Geometry = useMemo(() => createCatFaceGeometry2(), []);
-
-  // 柔らかい桜の花びら
-  const cherryGeometry = useMemo(() => createSoftCherryBlossomGeometry(), []);
+  // 3D立体猫
+  const catGeometry = useMemo(() => create3DCatGeometry(), []);
 
   useFrame((state) => {
-    if (!groupRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    // グループ全体をゆっくり回転
-    groupRef.current.rotation.y = t * 0.1;
-
-    // 個別のアニメーション
-    const cat1 = groupRef.current.children[0] as THREE.LineSegments;
-    const cherry = groupRef.current.children[1] as THREE.LineSegments;
-    const cat2 = groupRef.current.children[2] as THREE.LineSegments;
-
-    if (cat1) {
-      cat1.rotation.y = t * 0.2;
-      cat1.rotation.z = Math.sin(t * 0.3) * 0.05;
+    // 猫をゆっくり回転（立体が見えるように）
+    if (catRef.current) {
+      catRef.current.rotation.y = t * 0.15;
+      catRef.current.rotation.x = Math.sin(t * 0.1) * 0.15;
+      catRef.current.rotation.z = Math.sin(t * 0.05) * 0.05;
     }
-    if (cherry) {
-      cherry.rotation.y = -t * 0.15;
-      cherry.rotation.x = Math.cos(t * 0.2) * 0.05;
-    }
-    if (cat2) {
-      cat2.rotation.y = -t * 0.25;
-      cat2.rotation.x = Math.cos(t * 0.25) * 0.05;
+
+    // テキストも少し動かす
+    if (groupRef.current) {
+      groupRef.current.position.y = Math.sin(t * 0.3) * 0.1;
     }
   });
 
   return (
     <group ref={groupRef}>
-      {/* 1つ目: 猫の顔1（丸顔かわいい系） */}
-      <lineSegments geometry={catFace1Geometry} position={[-3.5, 0, -3]}>
-        <lineBasicMaterial color="#ffffff" transparent opacity={0.7} />
-      </lineSegments>
-
-      {/* 2つ目: 柔らかい桜（ピンク） */}
-      <lineSegments geometry={cherryGeometry} position={[0, 0, -2]}>
-        <lineBasicMaterial color="#ffb7c5" transparent opacity={0.6} />
-      </lineSegments>
-
-      {/* 3つ目: 猫の顔2（シャープクール系） */}
-      <lineSegments geometry={catFace2Geometry} position={[3.5, 0, -3]}>
-        <lineBasicMaterial color="#e8d4ff" transparent opacity={0.7} />
+      {/* 3D立体猫（薄紫色）- 中央配置 */}
+      <lineSegments ref={catRef} geometry={catGeometry} position={[-2, 0, -3]}>
+        <lineBasicMaterial color="#d8c4ff" transparent opacity={0.75} />
       </lineSegments>
 
       {/* 3Dテキストロゴ */}
       <Text
         position={[0, 0, -1]}
         fontSize={0.8}
-        color="white"
+        color="#d8c4ff"
         anchorX="center"
         anchorY="middle"
       >
