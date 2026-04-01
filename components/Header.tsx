@@ -17,14 +17,25 @@ export default function Header() {
     e.preventDefault();
     setMenuOpen(false);
     
-    const targetId = href.replace("#", "");
+    const id = href.replace("#", "");
     const isPc = window.innerWidth >= 768;
     
-    // PC版は -pc 接尾辞、モバイルはそのまま
-    const fullId = isPc ? `${targetId}-pc` : targetId;
-    const element = document.getElementById(fullId) || document.getElementById(targetId);
+    // PC/モバイル両方のIDパターンを生成
+    const pcId = `${id}-pc`;
+    const mobileId = id;
     
-    if (!element) return;
+    // 優先的に現在の画面幅に合ったIDを探す
+    const primaryId = isPc ? pcId : mobileId;
+    const fallbackId = isPc ? mobileId : pcId;
+    
+    // 要素を取得（優先ID → fallbackID の順）
+    let element = document.getElementById(primaryId) || document.getElementById(fallbackId);
+    
+    // 要素が見つからない場合は処理中断
+    if (!element) {
+      console.warn(`Section not found: ${primaryId} or ${fallbackId}`);
+      return;
+    }
     
     // ヘッダー高さを動的に取得
     const header = document.querySelector("header");
@@ -34,6 +45,7 @@ export default function Header() {
       // PC: pc-scroll-container 内でスクロール
       const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
       if (pcContainer) {
+        // 要素がpcContainer内にあるか確認
         const elementTop = element.offsetTop - pcContainer.offsetTop;
         pcContainer.scrollTo({
           top: Math.max(0, elementTop - headerHeight),
