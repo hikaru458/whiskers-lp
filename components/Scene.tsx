@@ -54,16 +54,33 @@ export default function Scene() {
         <lineBasicMaterial color="#c7baff" transparent opacity={0.2} />
       </lineSegments>
 
-      {/* ロゴ */}
-      <Text
-        position={[0, 0, -1]}
-        fontSize={1}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Whiskers
-      </Text>
+      {/* ロゴ - 2段構成のブロックスタイル */}
+      <group position={[0, 0, -1]}>
+        {/* WHIS - 上段 */}
+        <Text
+          position={[0, 0.45, 0]}
+          fontSize={0.9}
+          color="#f7f8ff"
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.08}
+        >
+          WHIS
+          <meshBasicMaterial color="#f7f8ff" transparent opacity={0.95} />
+        </Text>
+        {/* KERS - 下段 */}
+        <Text
+          position={[0, -0.45, 0]}
+          fontSize={0.9}
+          color="#f7f8ff"
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.08}
+        >
+          KERS
+          <meshBasicMaterial color="#f7f8ff" transparent opacity={0.95} />
+        </Text>
+      </group>
     </group>
   );
 }
