@@ -1,154 +1,72 @@
 "use client";
 
-// Mobile-first glass monitor - aspect ratio 4.2 x 6.8
-import { RoundedBox, Text, useTexture } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-import { useRef, useState, useEffect } from "react";
+import { useTexture, RoundedBox } from "@react-three/drei";
+import { useMemo, useState, useEffect } from "react";
 
 export default function GlassMonitor({
-  label,
-  z,
-  scrollFactor,
+  isActive,
   images = [],
-  glassTheme = "blue",
 }: {
-  label: string;
-  z: number;
-  scrollFactor: number;
-  images?: string[];
-  glassTheme?: string;
+  isActive: boolean;
+  images: string[];
 }) {
-  const groupRef = useRef<THREE.Group>(null);
-
-  // 6色テーマ（Active Theory 風）
-  const themes: Record<string, { color: string; attenuationColor: string }> = {
-    blue:   { color: "#d0f4ff", attenuationColor: "#a0e8ff" },
-    red:    { color: "#ffd0d0", attenuationColor: "#ffb3b3" },
-    green:  { color: "#d4ffe7", attenuationColor: "#b2f5ea" },
-    purple: { color: "#f3d9ff", attenuationColor: "#e0b3ff" },
-    yellow: { color: "#fff3b0", attenuationColor: "#ffe08a" },
-    pink:   { color: "#ffd6f5", attenuationColor: "#ffb3eb" },
-  };
-
-  const theme = themes[glassTheme] ?? themes.blue;
-
-  // 画像
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const texture = useTexture(images[currentImageIndex] || "/placeholder.png");
 
+  // デバイス判定
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  // テクスチャ読み込み（アクティブ時のみ）
+  const texture = useTexture(
+    isActive && images.length > 0 ? images[currentImageIndex] : "/placeholder.png"
+  );
+
+  // 画像スライドショー
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (!isActive || images.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % images.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, [images]);
+  }, [isActive, images]);
 
-  const isPC = typeof window !== "undefined" && window.innerWidth > 1024;
-  const isTablet = typeof window !== "undefined" && window.innerWidth >= 768 && window.innerWidth <= 1024;
+  // デバイス別アスペクト比
+  const { w, h } = useMemo(() => {
+    return isMobile
+      ? { w: 4.2, h: 6.8 } // スマホ：縦長
+      : { w: 6.8, h: 4.2 }; // PC：横長
+  }, [isMobile]);
 
-  // モバイルファースト：縦長比率を固定（4.2 x 6.8）
-  const baseWidth = 4.2;
-  const baseHeight = 6.8;
-
-  // スケール制御（モバイル基準 = 1.0）
-  const scale = isPC ? 1.5 : (isTablet ? 1.2 : 1.0);
-
-  // モバイル最適角度（厚みが自然に見える）
-  const rotation = [0.12, -0.22, 0] as [number, number, number];
-
-  useFrame(() => {
-    if (!groupRef.current) return;
-    groupRef.current.position.y = scrollFactor * 0.05;
-  });
+  // スケール
+  const scale = isMobile ? 1 : 1.5;
 
   return (
-    <group ref={groupRef} position={[0, 0, z]} rotation={rotation} scale={scale}>
-
-      {/* === ④ メインガラス（ガラスの塊感） === */}
-      <RoundedBox
-        args={[baseWidth, baseHeight, 0.12]}
-        radius={0.05}
-        smoothness={10}
-        position={[0, 0, 0]}
-      >
+    <group scale={scale}>
+      {/* メインガラス（2レイヤー軽量版） */}
+      <RoundedBox args={[w, h, 0.12]} radius={0.05} smoothness={10}>
         <meshPhysicalMaterial
-          color={theme.color}
-          attenuationColor={theme.attenuationColor}
-          attenuationDistance={3.0}
-          roughness={0.03}
+          color="#a8c8ff"
+          attenuationColor="#a8c8ff"
+          attenuationDistance={1.8}
+          roughness={0.05}
           metalness={0.15}
-          transmission={0.78}
-          thickness={0.3}
+          transmission={isMobile ? 0.5 : 0.78}
+          thickness={0.35}
           ior={1.52}
           envMapIntensity={2.5}
           clearcoat={1.0}
-          clearcoatRoughness={0.01}
+          clearcoatRoughness={0.02}
           transparent
-          opacity={0.22}
+          opacity={0.32}
         />
       </RoundedBox>
 
-      {/* === ③ 前面ガラス（本体より 3% 小さく） === */}
-      <RoundedBox
-        args={[baseWidth * 0.97, baseHeight * 0.97, 0.03]}
-        radius={0.04}
-        smoothness={10}
-        position={[0, 0, 0.05]}
-      >
-        <meshPhysicalMaterial
-          color={theme.color}
-          roughness={0.04}
-          metalness={0.05}
-          transmission={0.82}
-          thickness={0.06}
-          ior={1.45}
-          envMapIntensity={1.8}
-          clearcoat={1.0}
-          clearcoatRoughness={0.005}
-          transparent
-          opacity={0.12}
-        />
-      </RoundedBox>
-
-      {/* === ② 反射レイヤー（残像ゼロ設定） === */}
-      <mesh position={[0, 0, 0.045]}>
-        <planeGeometry args={[baseWidth * 0.97, baseHeight * 0.97]} />
-        <meshPhysicalMaterial
-          color={theme.color}
-          metalness={1.0}
-          roughness={0.03}
-          envMapIntensity={5.0}
-          transparent
-          opacity={0.025}
-        />
-      </mesh>
-
-      {/* === ① 画像（ガラス内部に浮かせる 70% ルール） === */}
-      {images.length > 0 && (
+      {/* 内部の画像（浮かせる） */}
+      {isActive && images.length > 0 && (
         <mesh position={[0, 0, 0.02]}>
-          <planeGeometry args={[baseWidth * 0.7, baseHeight * 0.7]} />
+          <planeGeometry args={[w * 0.7, h * 0.7]} />
           <meshBasicMaterial map={texture} toneMapped={false} />
         </mesh>
       )}
-
-      {/* シャドウ */}
-      <mesh position={[0, -baseHeight / 2 - 0.3, -0.1]}>
-        <planeGeometry args={[baseWidth * 0.8, baseHeight * 0.12]} />
-        <meshBasicMaterial color="black" transparent opacity={0.2} />
-      </mesh>
-
-      {/* ラベルテキスト */}
-      <Text
-        position={[0.4, -baseHeight / 2 - 0.6, 0.15]}
-        fontSize={0.5}
-        color="#e0f2fe"
-        anchorX="left"
-        anchorY="middle"
-      >
-        {label}
-      </Text>
     </group>
   );
 }

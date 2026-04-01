@@ -1,8 +1,8 @@
 "use client";
 
+import { Canvas } from "@react-three/fiber";
+import Scene from "@/components/Scene";
 import { useEffect, useState } from "react";
-import SpiralBackground from "@/components/SpiralBackground";
-import HelloGlassMonitor from "@/components/HelloGlassMonitor";
 
 // 全20枚の画像を1つの配列にまとめる
 const ALL_IMAGES = [
@@ -35,14 +35,16 @@ export default function Home() {
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
-    // ハローページは常にアクティブ
-    setIsActive(true);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setIsActive(y < 200); // ハローページ範囲だけ動作
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <main className="min-h-screen bg-[#050814] text-white relative">
-      <SpiralBackground />
-
       {/* Header */}
       <header className="w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between relative z-40">
         <span className="text-sm tracking-[0.25em] uppercase text-slate-300">
@@ -50,11 +52,17 @@ export default function Home() {
         </span>
       </header>
 
-      {/* Hero - ガラスモニター1枚のみ */}
-      <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 relative z-30">
-        <div className="w-full max-w-2xl">
-          <HelloGlassMonitor images={ALL_IMAGES} isActive={isActive} />
-        </div>
+      {/* Hero - Canvas with Scene */}
+      <section className="h-[100vh] relative z-30">
+        <Canvas
+          camera={{ position: [0, 0, 13.5], fov: 45 }}
+          dpr={[1, 1.5]}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <ambientLight intensity={0.75} />
+          <directionalLight position={[4, 6, 8]} intensity={1.5} />
+          <Scene isActive={isActive} images={ALL_IMAGES} />
+        </Canvas>
       </section>
 
       {/* Footer */}
