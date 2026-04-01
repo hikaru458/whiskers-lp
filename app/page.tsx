@@ -1,6 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import StarfieldBackground from "@/components/StarfieldBackground";
+import Header from "@/components/Header";
+import PhotoPanel from "@/components/PhotoPanel";
+import Scene from "@/components/Scene";
+
+// 6セクションのデータ
+const SECTIONS = [
+  {
+    image: "/images/image_fx_0.jpg",
+    title: "Gallery",
+    description: "クリエイターの作品が集まる場所。あなたの感性に触れる一枚を見つけてください。",
+  },
+  {
+    image: "/images/image_fx_1.jpg",
+    title: "Creator",
+    description: "個性豊かなクリエイターたちが活躍する舞台。新しい才能との出会いが待っています。",
+  },
+  {
+    image: "/images/image_fx_2.jpg",
+    title: "Contest",
+    description: "コンテストで才能を競い合う。賞金と名誉を手に入れよう。",
+  },
+  {
+    image: "/images/juno_0.png",
+    title: "Product",
+    description: "クリエイターに寄り添うツールとサービス。創作をもっと自由に。",
+  },
+  {
+    image: "/images/juno_1.png",
+    title: "FAQ",
+    description: "よくある質問と回答。ご不明点があればお気軽にお問い合わせください。",
+  },
+  {
+    image: "/images/juno_2.png",
+    title: "Contact",
+    description: "お問い合わせはこちらから。クリエイターとユーザー、双方の声をお待ちしています。",
+  },
+];
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -12,32 +51,91 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <main className="min-h-screen bg-[#050814] text-white relative">
-      {/* Header */}
-      <header className="w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between relative z-40">
-        <span className="text-sm tracking-[0.25em] uppercase text-slate-300">
-          Whiskers
-        </span>
-      </header>
+    <main className="min-h-screen text-white relative">
+      {/* 背景 */}
+      <StarfieldBackground />
 
-      {/* Hero */}
-      <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 relative z-30">
-        <div className="w-full max-w-3xl space-y-6 text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-slate-400">
-            Hello, Creator
+      {/* ヘッダー */}
+      <Header />
+
+      {/* 3D背景シーン */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Canvas
+          camera={{ position: [0, 0, 8], fov: 45 }}
+          dpr={[1, 1.5]}
+          gl={{ antialias: false }}
+        >
+          <ambientLight intensity={0.5} />
+          <Suspense fallback={null}>
+            <Scene />
+          </Suspense>
+        </Canvas>
+      </div>
+
+      {/* Heroセクション */}
+      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+        <div className="text-center space-y-6">
+          <p className="text-xs tracking-[0.3em] uppercase text-sky-300/80">
+            Welcome to
           </p>
-          <h1 className="text-5xl md:text-6xl font-light leading-[1.1] tracking-wide font-serif text-slate-50">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-[0.1em] text-white">
             Whiskers
           </h1>
-          <p className="text-sm text-slate-300 max-w-xl mx-auto">
-            A fresh start. New design coming soon.
+          <p className="text-sm text-white/60 max-w-md mx-auto">
+            クリエイターのための創作プラットフォーム
           </p>
         </div>
       </section>
 
+      {/* 6セクション - PCでは左右交互 */}
+      {SECTIONS.map((section, index) => {
+        const isEven = index % 2 === 0;
+        const isReversed = !isEven;
+
+        return (
+          <section
+            key={section.title}
+            className="relative z-10 min-h-screen flex items-center py-20 px-6"
+          >
+            <div
+              className={`max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center ${
+                isReversed ? "md:direction-rtl" : ""
+              }`}
+            >
+              {/* 写真パネル */}
+              <div className={`${isReversed ? "md:order-2" : "md:order-1"}`}>
+                <PhotoPanel
+                  imageSrc={section.image}
+                  title={section.title}
+                  description={section.description}
+                />
+              </div>
+
+              {/* PC用テキストエリア */}
+              <div
+                className={`hidden md:block space-y-4 ${
+                  isReversed ? "md:order-1 md:text-right" : "md:order-2 md:text-left"
+                }`}
+              >
+                <span className="text-xs tracking-[0.3em] text-sky-300/60 uppercase">
+                  Section {String(index + 1).padStart(2, "0")}
+                </span>
+                <h2 className="text-3xl font-light text-white">{section.title}</h2>
+                <p className="text-white/60 max-w-sm">
+                  {section.description}
+                </p>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
       {/* Footer */}
-      <footer className="w-full max-w-5xl mx-auto px-6 py-10 text-xs text-slate-500 flex justify-between relative z-40">
-        <span>© {new Date().getFullYear()} Whiskers</span>
+      <footer className="relative z-10 py-10 px-6 border-t border-white/10">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
+          <span>© {new Date().getFullYear()} Whiskers</span>
+          <span>Designed for creators.</span>
+        </div>
       </footer>
     </main>
   );
