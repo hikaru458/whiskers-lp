@@ -76,7 +76,7 @@ export default function Home() {
       {/* 6セクション - PCでは左右交互 */}
       <div className="hidden md:block h-screen overflow-y-scroll snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
         {/* Heroセクション */}
-        <section id="hero" className="relative z-10 h-screen flex flex-col items-center justify-center px-6 snap-start">
+        <section id="hero-pc" className="relative z-10 h-screen flex flex-col items-center justify-center px-6 snap-start">
         </section>
 
         {SECTIONS.map((section, index) => {
@@ -85,8 +85,8 @@ export default function Home() {
 
           return (
             <section
-              key={section.title}
-              id={section.title.toLowerCase()}
+              key={`pc-${section.title}`}
+              id={`${section.title.toLowerCase()}-pc`}
               className="relative z-10 h-screen flex items-center py-20 px-6 snap-start"
             >
               <div className="max-w-6xl mx-auto w-full">
@@ -116,7 +116,7 @@ export default function Home() {
 
           return (
             <section
-              key={section.title}
+              key={`mobile-${section.title}`}
               id={section.title.toLowerCase()}
               className="relative z-10 min-h-screen flex items-center py-20 px-6"
             >
