@@ -18,7 +18,6 @@ export default function Header() {
     setMenuOpen(false);
     
     const targetId = href.replace("#", "");
-    const headerHeight = 80;
     const isPc = window.innerWidth >= 768;
     
     // PC版は -pc 接尾辞、モバイルはそのまま
@@ -27,11 +26,14 @@ export default function Header() {
     
     if (!element) return;
     
+    // ヘッダー高さを動的に取得
+    const header = document.querySelector("header");
+    const headerHeight = header?.offsetHeight ?? 80;
+    
     if (isPc) {
       // PC: pc-scroll-container 内でスクロール
       const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
       if (pcContainer) {
-        // コンテナ基準の位置を計算
         const elementTop = element.offsetTop - pcContainer.offsetTop;
         pcContainer.scrollTo({
           top: Math.max(0, elementTop - headerHeight),
@@ -39,14 +41,12 @@ export default function Header() {
         });
       }
     } else {
-      // モバイル: windowスクロール
-      const rect = element.getBoundingClientRect();
-      const targetY = rect.top + window.scrollY - headerHeight;
-      
-      window.scrollTo({
-        top: Math.max(0, targetY),
-        behavior: "smooth",
-      });
+      // モバイル: scrollIntoViewを使用（確実に動作）
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // ヘッダー分を追加でスクロール
+      setTimeout(() => {
+        window.scrollBy(0, -headerHeight);
+      }, 100);
     }
   };
 
