@@ -8,6 +8,10 @@ import { Text } from "@react-three/drei";
 export default function Scene() {
   const groupRef = useRef<THREE.Group>(null);
 
+  // デバイス判定
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const fontSize = isMobile ? 0.6 : 1;
+
   // キューブ1のジオメトリ
   const cube1Geometry = useMemo(() => {
     const box = new THREE.BoxGeometry(2, 2, 2);
@@ -57,7 +61,7 @@ export default function Scene() {
       {/* ロゴ */}
       <Text
         position={[0, 0, -1]}
-        fontSize={0.6}
+        fontSize={fontSize}
         color="white"
         anchorX="center"
         anchorY="middle"
