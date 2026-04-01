@@ -230,6 +230,7 @@ function create3DCatGeometry(): THREE.BufferGeometry {
 export default function Scene() {
   const groupRef = useRef<THREE.Group>(null);
   const catRef = useRef<THREE.LineSegments>(null);
+  const textRef = useRef<THREE.Mesh>(null);
 
   // 3D立体猫
   const catGeometry = useMemo(() => create3DCatGeometry(), []);
@@ -242,11 +243,21 @@ export default function Scene() {
       catRef.current.rotation.y = t * 0.15;
       catRef.current.rotation.x = Math.sin(t * 0.1) * 0.15;
       catRef.current.rotation.z = Math.sin(t * 0.05) * 0.05;
+      
+      // 猫の浮遊動作（前後左右に漂う）
+      catRef.current.position.y = Math.sin(t * 0.3) * 0.2;
+      catRef.current.position.x = -2 + Math.cos(t * 0.2) * 0.15;
     }
 
-    // テキストも少し動かす
-    if (groupRef.current) {
-      groupRef.current.position.y = Math.sin(t * 0.3) * 0.1;
+    // Whiskersテキストのアニメーション
+    if (textRef.current) {
+      textRef.current.position.y = Math.sin(t * 0.5) * 0.15;
+      textRef.current.rotation.y = Math.sin(t * 0.3) * 0.1;
+      // 発光効果（脈打つ）
+      const material = textRef.current.material as THREE.MeshBasicMaterial;
+      if (material) {
+        material.opacity = 0.7 + Math.sin(t * 2) * 0.3;
+      }
     }
   });
 
@@ -259,6 +270,7 @@ export default function Scene() {
 
       {/* 3Dテキストロゴ */}
       <Text
+        ref={textRef}
         position={[0, 0, -1]}
         fontSize={0.8}
         color="#d8c4ff"
