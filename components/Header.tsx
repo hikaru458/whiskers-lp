@@ -19,33 +19,17 @@ export default function Header() {
     
     setTimeout(() => {
       const targetId = href.replace("#", "");
-      const headerHeight = 80;
-      
-      // PCかモバイルかで検索するコンテナを切り替え
-      const isPc = window.innerWidth >= 768;
-      let element: HTMLElement | null = null;
-      
-      if (isPc) {
-        // PC: PCコンテナ内から検索
-        const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll');
-        element = pcContainer?.querySelector(`#${targetId}`) as HTMLElement | null;
-      } else {
-        // モバイル: md:hiddenコンテナ内から検索
-        const mobileContainer = document.querySelector('.md\\:hidden');
-        element = mobileContainer?.querySelector(`#${targetId}`) as HTMLElement | null;
-      }
-      
-      if (!element) {
-        // フォールバック: document全体から検索
-        element = document.getElementById(targetId);
-      }
+      const element = document.getElementById(targetId);
       
       if (element) {
+        const headerHeight = 80;
+        const isPc = window.innerWidth >= 768;
+        
         if (isPc) {
           // PC: コンテナ内スクロール
           const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
           if (pcContainer) {
-            const elementTop = element.offsetTop;
+            const elementTop = (element as HTMLElement).offsetTop;
             pcContainer.scrollTo({
               top: Math.max(0, elementTop - headerHeight),
               behavior: "smooth",
@@ -53,9 +37,9 @@ export default function Header() {
           }
         } else {
           // モバイル: windowスクロール
-          const elementRect = element.getBoundingClientRect();
-          const currentScrollY = window.scrollY || window.pageYOffset;
-          const targetY = elementRect.top + currentScrollY - headerHeight;
+          const rect = element.getBoundingClientRect();
+          const scrollY = window.scrollY || window.pageYOffset;
+          const targetY = rect.top + scrollY - headerHeight;
           
           window.scrollTo({
             top: Math.max(0, targetY),
