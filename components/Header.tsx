@@ -43,18 +43,18 @@ export default function Header() {
       return;
     }
     
-    // PC の場合は遅延なしで即スクロール
+    // PC の場合は遅延なしで即スクロール（window.scrollToを使用）
     if (isPc) {
-      const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
-      if (pcContainer) {
-        const elementTop = element.offsetTop - pcContainer.offsetTop;
-        const header = document.querySelector("header");
-        const headerHeight = header?.offsetHeight ?? 80;
-        pcContainer.scrollTo({
-          top: Math.max(0, elementTop - headerHeight),
-          behavior: "smooth",
-        });
-      }
+      const header = document.querySelector("header");
+      const headerHeight = header?.offsetHeight ?? 80;
+      const rect = element.getBoundingClientRect();
+      const scrollY = window.scrollY;
+      const targetY = rect.top + scrollY - headerHeight;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: "smooth",
+      });
       return; // 遅延スクロールを発火させない
     }
 

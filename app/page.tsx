@@ -78,7 +78,7 @@ export default function Home() {
       <ScrollFog />
 
       {/* 6セクション - PCでは左右交互 */}
-      <div className="pc-scroll-container hidden md:block min-h-screen overflow-y-scroll snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
+      <div className="pc-scroll-container hidden md:block snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
         {/* Heroセクション */}
         <section id="hero-pc" className="relative z-10 h-screen flex flex-col items-center justify-center px-6 snap-start">
         </section>
