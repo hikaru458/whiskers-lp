@@ -24,23 +24,25 @@ export default function PhotoPanel({
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* PC版: 横並びレイアウト - 写真とグレーパネル（文字入り） */}
-      <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
-        {/* 写真側 */}
-        <div className={`relative aspect-[4/5] overflow-hidden ${isImageLeft ? "order-1" : "order-2"}`}>
-          <Image
-            src={imageSrc}
-            alt={title}
-            fill
-            className="object-cover"
-            sizes="420px"
-          />
+      <div className={`hidden md:grid gap-0 rounded-2xl overflow-hidden ${isImageLeft ? 'md:grid-cols-[1fr_1.3fr]' : 'md:grid-cols-[1.3fr_1fr]'}`}>
+        {/* 写真側 - フレーム効果のためパディング追加 */}
+        <div className={`relative overflow-hidden p-6 ${isImageLeft ? "order-1" : "order-2"}`}>
+          <div className="relative w-full h-full aspect-[4/5] overflow-hidden rounded-xl">
+            <Image
+              src={imageSrc}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="420px"
+            />
+          </div>
         </div>
 
-        {/* グレーパネル側（写真の反対側）- 文字を内包 */}
+        {/* グレーパネル側（写真の反対側）- 文字を内包、透明感を弱める */}
         <div
           className={`relative flex flex-col justify-center p-8 ${isImageLeft ? "order-2" : "order-1"}`}
           style={{
-            background: "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.30) 100%)",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.20) 50%, rgba(0,0,0,0.60) 100%)",
             backdropFilter: "blur(20px)",
           }}
         >
@@ -62,8 +64,8 @@ export default function PhotoPanel({
 
       {/* スマホ版: 縦並びでグレーパネルが下に伸びる */}
       <div className="md:hidden rounded-2xl overflow-hidden">
-        {/* 写真（上部） */}
-        <div className="relative aspect-square overflow-hidden">
+        {/* 写真（上部）- フレーム効果のためマージン追加 */}
+        <div className="relative aspect-square overflow-hidden mx-4 mt-4 rounded-xl">
           <Image
             src={imageSrc}
             alt={title}
@@ -73,11 +75,11 @@ export default function PhotoPanel({
           />
         </div>
 
-        {/* グレーパネル（下部に伸ばす） */}
+        {/* グレーパネル（下部に伸ばす）- 透明感を弱める */}
         <div
-          className="p-6"
+          className="p-8 m-4 rounded-xl"
           style={{
-            background: "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.30) 100%)",
+            background: "linear-gradient(to bottom, rgba(255,255,255,0.30) 0%, rgba(0,0,0,0.50) 100%)",
             backdropFilter: "blur(15px)",
           }}
         >
