@@ -11,10 +11,10 @@ function create3DCatGeometry(): THREE.BufferGeometry {
   const depth = 0.25; // 奥行き（厚み）
 
   // === 前面の猫顔 ===
-  // 顔の輪郭（楕円）
+  // 顔の輪郭（楕円）- より細かいセグメント
   const faceRadiusX = 0.9;
   const faceRadiusY = 0.8;
-  const segments = 32;
+  const segments = 48; // 32→48でより滑らかに
   const frontFacePoints: THREE.Vector3[] = [];
   const backFacePoints: THREE.Vector3[] = [];
 
@@ -199,17 +199,17 @@ function create3DCatGeometry(): THREE.BufferGeometry {
   }
 
   // === 顔の内側の補助線（より立体的に見せる）===
-  // 中心から顔の輪郭への線（前面）
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * Math.PI * 2;
+  // 中心から顔の輪郭への線（前面）- 8→16本に増加
+  for (let i = 0; i < 16; i++) {
+    const angle = (i / 16) * Math.PI * 2;
     const x = Math.cos(angle) * faceRadiusX * 0.7;
     const y = Math.sin(angle) * faceRadiusY * 0.7;
     points.push(new THREE.Vector3(0, 0, depth), new THREE.Vector3(x, y, depth));
   }
 
-  // 縦横の補助線（球体メッシュ風）
-  for (let i = -3; i <= 3; i++) {
-    const offset = i * 0.25;
+  // 縦横の補助線（球体メッシュ風）- より細かい格子
+  for (let i = -5; i <= 5; i++) {
+    const offset = i * 0.15; // 0.25→0.15でより細かく
     // 横線
     points.push(
       new THREE.Vector3(-faceRadiusX * 0.8, offset, depth * 0.8),
@@ -219,6 +219,27 @@ function create3DCatGeometry(): THREE.BufferGeometry {
     points.push(
       new THREE.Vector3(offset, -faceRadiusY * 0.7, depth * 0.8),
       new THREE.Vector3(offset, faceRadiusY * 0.7, depth * 0.8)
+    );
+  }
+
+  // 中心から顔の輪郭への線（後面）- 追加
+  for (let i = 0; i < 16; i++) {
+    const angle = (i / 16) * Math.PI * 2;
+    const x = Math.cos(angle) * faceRadiusX * 0.6;
+    const y = Math.sin(angle) * faceRadiusY * 0.6;
+    points.push(new THREE.Vector3(0, 0, -depth), new THREE.Vector3(x, y, -depth));
+  }
+
+  // 後面の縦横補助線
+  for (let i = -4; i <= 4; i++) {
+    const offset = i * 0.18;
+    points.push(
+      new THREE.Vector3(-faceRadiusX * 0.7, offset, -depth * 0.8),
+      new THREE.Vector3(faceRadiusX * 0.7, offset, -depth * 0.8)
+    );
+    points.push(
+      new THREE.Vector3(offset, -faceRadiusY * 0.6, -depth * 0.8),
+      new THREE.Vector3(offset, faceRadiusY * 0.6, -depth * 0.8)
     );
   }
 
