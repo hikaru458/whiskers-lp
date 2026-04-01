@@ -20,6 +20,8 @@ export default function Header() {
     const id = href.replace("#", "");
     const isPc = window.innerWidth >= 768;
     
+    console.log(`[Nav] Clicked: ${href}, isPc: ${isPc}`);
+    
     // PC/モバイル両方のIDパターンを生成
     const pcId = `${id}-pc`;
     const mobileId = id;
@@ -28,41 +30,53 @@ export default function Header() {
     const primaryId = isPc ? pcId : mobileId;
     const fallbackId = isPc ? mobileId : pcId;
     
+    console.log(`[Nav] Looking for: ${primaryId} or ${fallbackId}`);
+    
     // 要素を取得（優先ID → fallbackID の順）
     let element = document.getElementById(primaryId) || document.getElementById(fallbackId);
     
+    console.log(`[Nav] Found element:`, element?.id || "NOT FOUND");
+    
     // 要素が見つからない場合は処理中断
     if (!element) {
-      console.warn(`Section not found: ${primaryId} or ${fallbackId}`);
+      console.warn(`[Nav] Section not found: ${primaryId} or ${fallbackId}`);
       return;
     }
     
-    // ヘッダー高さを動的に取得
-    const header = document.querySelector("header");
-    const headerHeight = header?.offsetHeight ?? 80;
-    
-    if (isPc) {
-      // PC: pc-scroll-container 内でスクロール
-      const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
-      if (pcContainer) {
-        // 要素がpcContainer内にあるか確認
-        const elementTop = element.offsetTop - pcContainer.offsetTop;
-        pcContainer.scrollTo({
-          top: Math.max(0, elementTop - headerHeight),
+    // 少し遅延してスクロール（メニュー閉じるアニメーション後）
+    setTimeout(() => {
+      // ヘッダー高さを動的に取得
+      const header = document.querySelector("header");
+      const headerHeight = header?.offsetHeight ?? 80;
+      
+      console.log(`[Nav] Header height: ${headerHeight}`);
+      
+      if (isPc) {
+        // PC: pc-scroll-container 内でスクロール
+        const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
+        if (pcContainer) {
+          const elementTop = element.offsetTop - pcContainer.offsetTop;
+          console.log(`[Nav] PC scroll: ${elementTop - headerHeight}`);
+          pcContainer.scrollTo({
+            top: Math.max(0, elementTop - headerHeight),
+            behavior: "smooth",
+          });
+        }
+      } else {
+        // スマホ版: window.scrollTo を使用
+        const rect = element.getBoundingClientRect();
+        const scrollY = window.scrollY;
+        const targetY = rect.top + scrollY - headerHeight;
+        
+        console.log(`[Nav] Mobile scroll target: ${targetY}`);
+        console.log(`[Nav] rect.top: ${rect.top}, scrollY: ${scrollY}`);
+        
+        window.scrollTo({
+          top: Math.max(0, targetY),
           behavior: "smooth",
         });
       }
-    } else {
-      // スマホ版: window.scrollTo を使用
-      const rect = element.getBoundingClientRect();
-      const scrollY = window.scrollY;
-      const targetY = rect.top + scrollY - headerHeight;
-      
-      window.scrollTo({
-        top: Math.max(0, targetY),
-        behavior: "smooth",
-      });
-    }
+    }, 300); // メニュー閉じるアニメーション待機
   };
 
   return (
