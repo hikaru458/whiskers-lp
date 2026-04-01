@@ -14,40 +14,33 @@ export default function Header() {
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
     setMenuOpen(false);
     
-    setTimeout(() => {
-      const targetId = href.replace("#", "");
-      const element = document.getElementById(targetId);
+    const isPc = window.innerWidth >= 768;
+    
+    if (isPc) {
+      // PC版のみJavaScriptでスクロール（コンテナ内スクロールのため）
+      e.preventDefault();
       
-      if (element) {
-        const headerHeight = 80;
-        const isPc = window.innerWidth >= 768;
+      setTimeout(() => {
+        const targetId = href.replace("#", "");
+        const element = document.getElementById(targetId);
         
-        if (isPc) {
-          // PC: コンテナ内スクロール
+        if (element) {
+          const headerHeight = 80;
           const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
+          
           if (pcContainer) {
-            const elementTop = (element as HTMLElement).offsetTop;
+            const elementTop = element.offsetTop;
             pcContainer.scrollTo({
               top: Math.max(0, elementTop - headerHeight),
               behavior: "smooth",
             });
           }
-        } else {
-          // モバイル: windowスクロール
-          const rect = element.getBoundingClientRect();
-          const scrollY = window.scrollY || window.pageYOffset;
-          const targetY = rect.top + scrollY - headerHeight;
-          
-          window.scrollTo({
-            top: Math.max(0, targetY),
-            behavior: "smooth",
-          });
         }
-      }
-    }, 150);
+      }, 100);
+    }
+    // モバイルはネイティブのアンカーリンクを使用（e.preventDefaultなし）
   };
 
   return (
