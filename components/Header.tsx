@@ -16,10 +16,38 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* ロゴ */}
-        <span className="text-lg font-bold tracking-[0.15em] text-white">
-          Whiskers
-        </span>
+        {/* ロゴ - 2段構成のブロックスタイル */}
+        <div
+          className="flex flex-col items-center leading-none"
+          style={{ gap: "0.02em" }}
+        >
+          <span
+            className="font-extrabold tracking-[0.12em] uppercase"
+            style={{
+              fontSize: "clamp(14px, 2.5vw, 20px)",
+              background: "linear-gradient(135deg, rgba(220,230,255,0.95) 0%, rgba(140,160,220,0.9) 50%, rgba(80,100,180,0.95) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 6px rgba(120,160,255,0.4))",
+              transform: "translateY(1px)",
+            }}
+          >
+            WHIS
+          </span>
+          <span
+            className="font-extrabold tracking-[0.12em] uppercase"
+            style={{
+              fontSize: "clamp(14px, 2.5vw, 20px)",
+              background: "linear-gradient(135deg, rgba(220,230,255,0.95) 0%, rgba(140,160,220,0.9) 50%, rgba(80,100,180,0.95) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5)) drop-shadow(0 0 6px rgba(120,160,255,0.4))",
+              transform: "translateY(-1px)",
+            }}
+          >
+            KERS
+          </span>
+        </div>
 
         {/* ハンバーガーメニュー - PC/スマホ共通 */}
         <button
