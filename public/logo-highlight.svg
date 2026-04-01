@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" fill="none">
+  <!-- Light highlight on whiskers - left -->
+  <path 
+    d="M80 55 L20 35 M80 65 L15 65 M80 75 L25 95" 
+    stroke="#ffffff" 
+    stroke-width="4" 
+    stroke-linecap="round"
+    opacity="0.8"
+    filter="url(#glow)"
+  />
+  
+  <!-- Light highlight on whiskers - right -->
+  <path 
+    d="M320 55 L380 35 M320 65 L385 65 M320 75 L375 95" 
+    stroke="#ffffff" 
+    stroke-width="4" 
+    stroke-linecap="round"
+    opacity="0.8"
+    filter="url(#glow)"
+  />
+  
+  <!-- Text highlight stroke -->
+  <text 
+    x="200" 
+    y="75" 
+    text-anchor="middle" 
+    font-family="system-ui, -apple-system, sans-serif" 
+    font-weight="700" 
+    font-size="52" 
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2"
+    letter-spacing="0.1em"
+    opacity="0.6"
+    filter="url(#glow)"
+  >
+    Whiskers
+  </text>
+  
+  <!-- Light flare particles -->
+  <circle cx="25" cy="35" r="3" fill="#ffffff" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="375" cy="35" r="3" fill="#ffffff" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="200" cy="45" r="2" fill="#ffffff" opacity="0.7" filter="url(#glow)"/>
+  
+  <!-- Glow filter -->
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+</svg>

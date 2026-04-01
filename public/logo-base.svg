@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" fill="none">
+  <!-- Whiskers text - thick lines -->
+  <text 
+    x="200" 
+    y="75" 
+    text-anchor="middle" 
+    font-family="system-ui, -apple-system, sans-serif" 
+    font-weight="700" 
+    font-size="52" 
+    fill="#f7f8ff"
+    letter-spacing="0.1em"
+  >
+    Whiskers
+  </text>
+  
+  <!-- Left cat whiskers -->
+  <path 
+    d="M80 55 L20 35 M80 65 L15 65 M80 75 L25 95" 
+    stroke="#f7f8ff" 
+    stroke-width="3" 
+    stroke-linecap="round"
+  />
+  
+  <!-- Right cat whiskers -->
+  <path 
+    d="M320 55 L380 35 M320 65 L385 65 M320 75 L375 95" 
+    stroke="#f7f8ff" 
+    stroke-width="3" 
+    stroke-linecap="round"
+  />
+</svg>
