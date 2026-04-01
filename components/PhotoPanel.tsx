@@ -19,37 +19,61 @@ export default function PhotoPanel({
 }: PhotoPanelProps) {
   return (
     <div className="w-full max-w-md mx-auto md:max-w-none">
-      {/* グレーパネル（写真より大きい） */}
-      <div
-        className="relative rounded-2xl overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.40) 100%)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        {/* 写真 */}
-        <div className="relative aspect-square md:aspect-[4/5] overflow-hidden rounded-xl m-4">
+      {/* PC版: 既存レイアウト（グレーパネル内に写真） */}
+      <div className="hidden md:block">
+        <div
+          className="relative rounded-2xl overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.40) 100%)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          {/* 写真 */}
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl m-4">
+            <Image
+              src={imageSrc}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="420px"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* スマホ版: 縦並びでグレーパネルが下に伸びる */}
+      <div className="md:hidden rounded-2xl overflow-hidden">
+        {/* 写真（上部） */}
+        <div className="relative aspect-square overflow-hidden">
           <Image
             src={imageSrc}
             alt={title}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 420px"
+            sizes="100vw"
           />
         </div>
-      </div>
 
-      {/* テキストエリア */}
-      <div className="mt-6 space-y-3 px-2">
-        <h3 className="text-xl font-light text-white tracking-wide">{title}</h3>
-        <p className="text-sm text-white/70 leading-relaxed">{description}</p>
-        <a
-          href={linkHref}
-          className="inline-block text-sm text-white hover:text-sky-300 transition-colors"
+        {/* グレーパネル（下部に伸ばす） */}
+        <div
+          className="p-6"
+          style={{
+            background: "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.30) 100%)",
+            backdropFilter: "blur(15px)",
+          }}
         >
-          {linkText}
-        </a>
+          <div className="space-y-3">
+            <h3 className="text-xl font-light text-white tracking-wide">{title}</h3>
+            <p className="text-sm text-white leading-relaxed">{description}</p>
+            <a
+              href={linkHref}
+              className="inline-block text-sm text-sky-300 hover:text-sky-200 transition-colors"
+            >
+              {linkText}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
