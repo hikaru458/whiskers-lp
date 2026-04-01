@@ -25,8 +25,9 @@ export default function Header() {
       
       // PC版: スクロールコンテナを探す (hidden md:block h-screen overflow-y-scroll)
       const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll');
+      const isPcVisible = pcContainer && window.getComputedStyle(pcContainer).display !== 'none';
       
-      if (pcContainer) {
+      if (pcContainer && isPcVisible) {
         // PC: コンテナ内スクロール - offsetTopを使用
         const container = pcContainer as HTMLElement;
         const elementTop = element.offsetTop;
@@ -36,7 +37,6 @@ export default function Header() {
         });
       } else {
         // スマホ: 通常のwindowスクロール
-        // まず要素の位置を取得
         const elementRect = element.getBoundingClientRect();
         const currentScrollY = window.scrollY || window.pageYOffset;
         const elementAbsoluteTop = elementRect.top + currentScrollY;
