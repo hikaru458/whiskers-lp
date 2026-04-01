@@ -19,34 +19,49 @@ export default function Header() {
     
     setTimeout(() => {
       const targetId = href.replace("#", "");
-      const element = document.getElementById(targetId);
-      if (!element) return;
-      
       const headerHeight = 80;
       
-      // PC版かどうかを判定（mdブレークポイント以上かつPCコンテナが存在）
+      // PCかモバイルかで検索するコンテナを切り替え
       const isPc = window.innerWidth >= 768;
+      let element: HTMLElement | null = null;
       
       if (isPc) {
-        // PC: コンテナ内スクロール
-        const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
-        if (pcContainer) {
-          const elementTop = element.offsetTop;
-          pcContainer.scrollTo({
-            top: Math.max(0, elementTop - headerHeight),
+        // PC: PCコンテナ内から検索
+        const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll');
+        element = pcContainer?.querySelector(`#${targetId}`) as HTMLElement | null;
+      } else {
+        // モバイル: md:hiddenコンテナ内から検索
+        const mobileContainer = document.querySelector('.md\\:hidden');
+        element = mobileContainer?.querySelector(`#${targetId}`) as HTMLElement | null;
+      }
+      
+      if (!element) {
+        // フォールバック: document全体から検索
+        element = document.getElementById(targetId);
+      }
+      
+      if (element) {
+        if (isPc) {
+          // PC: コンテナ内スクロール
+          const pcContainer = document.querySelector('.hidden.md\\:block.h-screen.overflow-y-scroll') as HTMLElement | null;
+          if (pcContainer) {
+            const elementTop = element.offsetTop;
+            pcContainer.scrollTo({
+              top: Math.max(0, elementTop - headerHeight),
+              behavior: "smooth",
+            });
+          }
+        } else {
+          // モバイル: windowスクロール
+          const elementRect = element.getBoundingClientRect();
+          const currentScrollY = window.scrollY || window.pageYOffset;
+          const targetY = elementRect.top + currentScrollY - headerHeight;
+          
+          window.scrollTo({
+            top: Math.max(0, targetY),
             behavior: "smooth",
           });
         }
-      } else {
-        // モバイル: windowスクロール
-        const elementRect = element.getBoundingClientRect();
-        const currentScrollY = window.scrollY || window.pageYOffset;
-        const targetY = elementRect.top + currentScrollY - headerHeight;
-        
-        window.scrollTo({
-          top: Math.max(0, targetY),
-          behavior: "smooth",
-        });
       }
     }, 150);
   };
