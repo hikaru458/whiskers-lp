@@ -32,8 +32,8 @@ export default function FadeInSection({
         }
       },
       {
-        threshold: 0,
-        rootMargin: "-45% 0px -45% 0px",
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px",
       }
     );
 
