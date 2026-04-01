@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -15,22 +15,26 @@ interface GlassPhotoPanelProps {
   imagePosition?: "left" | "right";
 }
 
+// 画像のアスペクト比を取得するフック
+function useImageAspect(imageSrc: string) {
+  const [aspect, setAspect] = useState(4 / 5); // デフォルト
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => {
+      setAspect(img.height / img.width);
+    };
+    img.src = imageSrc;
+  }, [imageSrc]);
+
+  return aspect;
+}
+
 /* -------------------------------------------------------
    Layer 1: Photo（auto-fit・シンプル）
 ------------------------------------------------------- */
-function PhotoLayer({ imageSrc }: { imageSrc: string }) {
+function PhotoLayer({ imageSrc, width, height }: { imageSrc: string; width: number; height: number }) {
   const texture = useTexture(imageSrc);
-
-  const { width, height } = useMemo(() => {
-    const img = texture.image as HTMLImageElement;
-    if (!img || !img.width || !img.height) {
-      return { width: 1, height: 1 };
-    }
-    const aspect = img.height / img.width;
-    // 横幅を1.8程度に固定し、アスペクト比に応じて高さを調整
-    const baseWidth = 1.8;
-    return { width: baseWidth, height: baseWidth * aspect };
-  }, [texture]);
 
   return (
     <mesh position={[0, 0, 0]} renderOrder={1}>
@@ -43,19 +47,7 @@ function PhotoLayer({ imageSrc }: { imageSrc: string }) {
 /* -------------------------------------------------------
    Layer 2: Front Glass（透明グレーパネル）
 ------------------------------------------------------- */
-function FrontGlass({ imageSrc }: { imageSrc: string }) {
-  const texture = useTexture(imageSrc);
-
-  const { width, height } = useMemo(() => {
-    const img = texture.image as HTMLImageElement;
-    if (!img || !img.width || !img.height) {
-      return { width: 1, height: 1 };
-    }
-    const aspect = img.height / img.width;
-    const baseWidth = 1.8;
-    return { width: baseWidth, height: baseWidth * aspect };
-  }, [texture]);
-
+function FrontGlass({ width, height }: { width: number; height: number }) {
   return (
     <mesh position={[0, 0, 0.05]} renderOrder={2}>
       <planeGeometry args={[width, height]} />
@@ -76,12 +68,29 @@ function FrontGlass({ imageSrc }: { imageSrc: string }) {
 /* -------------------------------------------------------
    Combined Scene（2レイヤー・auto-fit）
 ------------------------------------------------------- */
-function GlassPanelScene({ imageSrc }: { imageSrc: string }) {
+function GlassPanelScene({ imageSrc, baseWidth }: { imageSrc: string; baseWidth: number }) {
+  const { camera } = useThree();
+  const texture = useTexture(imageSrc);
+
+  const { width, height } = useMemo(() => {
+    const img = texture.image as HTMLImageElement;
+    if (!img || !img.width || !img.height) {
+      return { width: baseWidth, height: baseWidth };
+    }
+    const aspect = img.height / img.width;
+    return { width: baseWidth, height: baseWidth * aspect };
+  }, [texture, baseWidth]);
+
+  // カメラ距離を自動調整
+  useMemo(() => {
+    camera.position.z = height * 1.2;
+  }, [camera, height]);
+
   return (
     <>
       <ambientLight intensity={0.8} />
-      <PhotoLayer imageSrc={imageSrc} />
-      <FrontGlass imageSrc={imageSrc} />
+      <PhotoLayer imageSrc={imageSrc} width={width} height={height} />
+      <FrontGlass width={width} height={height} />
     </>
   );
 }
@@ -95,6 +104,15 @@ export default function GlassPhotoPanel({
   imagePosition = "left",
 }: GlassPhotoPanelProps) {
   const isImageLeft = imagePosition === "left";
+  const aspect = useImageAspect(imageSrc);
+  
+  // コンテナの高さを画像のアスペクト比に基づいて計算
+  // 幅はグリッドに合わせて100%、高さはアスペクト比で決定
+  const containerHeight = useMemo(() => {
+    // コンテナの幅に対する比率で高さを計算
+    // PC版はgrid-cols-2なので、コンテナ幅はmax-w-4xlの半分程度
+    return `${aspect * 100}%`;
+  }, [aspect]);
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -102,17 +120,17 @@ export default function GlassPhotoPanel({
       <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
         {/* 写真（Three.js・auto-fit） */}
         <div
-          className={`relative w-full h-auto ${
+          className={`relative w-full ${
             isImageLeft ? "order-1" : "order-2"
           }`}
+          style={{ aspectRatio: `1 / ${aspect}` }}
         >
           <Canvas
             camera={{ position: [0, 0, 2], fov: 45 }}
             gl={{ antialias: true, alpha: true }}
-            className="w-full h-auto"
-            style={{ height: "auto" }}
+            className="absolute inset-0"
           >
-            <GlassPanelScene imageSrc={imageSrc} />
+            <GlassPanelScene imageSrc={imageSrc} baseWidth={1.8} />
           </Canvas>
         </div>
 
