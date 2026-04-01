@@ -197,14 +197,17 @@ function PhotoLayer({
   });
 
   return (
-    <mesh ref={meshRef} position={[0, 0, 0]}>
+    <mesh ref={meshRef} position={[0, 0, 0]} renderOrder={1}>
       <planeGeometry args={[width, height, 16, 16]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={uniforms}
-        transparent
+        transparent={false}
+        depthWrite={true}
+        depthTest={true}
+        alphaTest={0.01}
       />
     </mesh>
   );
