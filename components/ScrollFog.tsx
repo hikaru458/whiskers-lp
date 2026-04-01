@@ -8,7 +8,7 @@ export default function ScrollFog() {
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      const newOpacity = Math.min(0.6, y / 600);
+      const newOpacity = Math.min(0.45, y / 600);
       setOpacity(newOpacity);
     };
 
@@ -18,10 +18,11 @@ export default function ScrollFog() {
 
   return (
     <div
-      className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-200"
+      className="fixed inset-0 pointer-events-none transition-opacity duration-200"
       style={{
+        zIndex: -10,
         opacity,
-        background: "radial-gradient(ellipse at center, rgba(10,15,40,0.8) 0%, rgba(5,10,20,0.9) 100%)",
+        background: "rgba(100, 120, 255, 1)",
       }}
     />
   );

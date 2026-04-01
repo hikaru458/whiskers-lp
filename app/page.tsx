@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import PhotoPanel from "@/components/PhotoPanel";
 import Scene from "@/components/Scene";
 import FadeInSection from "@/components/FadeInSection";
+import ScrollFog from "@/components/ScrollFog";
 
 // 6セクションのデータ
 const SECTIONS = [
@@ -72,6 +73,9 @@ export default function Home() {
           </Suspense>
         </Canvas>
       </div>
+
+      {/* 霧レイヤー - スクロールで濃くなる空気感 */}
+      <ScrollFog />
 
       {/* 6セクション - PCでは左右交互 */}
       <div className="pc-scroll-container hidden md:block h-screen overflow-y-scroll snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
