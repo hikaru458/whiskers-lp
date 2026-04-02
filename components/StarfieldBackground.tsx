@@ -72,59 +72,105 @@ export default function StarfieldBackground() {
     return generated;
   }, []);
 
-  // ネオングリッド線 - 中心に向かって収束し中心でフェード
-  const gridLines = useMemo(() => {
-    const lines = [];
+  // ネオングリッド線 - 3レイヤー奥行き構造
+  const gridLayers = useMemo(() => {
+    const layers = {
+      foreground: [], // 近景: opacity 0.5, 太線
+      middle: [],     // 中景: opacity 0.25, 細線  
+      background: [], // 遠景: opacity 0.1, ぼかし
+    };
     
-    // 上部から中心への垂直線
-    for (let i = 0; i < 8; i++) {
-      const x = 20 + (i / 7) * 60; // 20%〜80%の範囲
-      lines.push({
-        id: `top-v-${i}`,
-        type: "vertical-converge",
-        x: x,
-        from: "top",
-        delay: i * 0.1,
-      });
-    }
-    
-    // 下部から中心への垂直線
-    for (let i = 0; i < 8; i++) {
-      const x = 20 + (i / 7) * 60;
-      lines.push({
-        id: `bottom-v-${i}`,
+    // === 近景（下部）===
+    // 垂直線
+    for (let i = 0; i < 6; i++) {
+      const x = 25 + (i / 5) * 50;
+      layers.foreground.push({
+        id: `fg-v-${i}`,
         type: "vertical-converge",
         x: x,
         from: "bottom",
-        delay: i * 0.1 + 0.5,
+        opacity: 0.5,
+        width: 2,
+        blur: 0,
+        delay: i * 0.05,
+      });
+    }
+    // 水平線
+    for (let i = 0; i < 4; i++) {
+      const y = 60 + (i / 3) * 35; // 下部60%〜
+      layers.foreground.push({
+        id: `fg-h-${i}`,
+        type: "horizontal-converge",
+        y: y,
+        from: "bottom",
+        opacity: 0.5,
+        width: 2,
+        blur: 0,
+        delay: i * 0.04,
       });
     }
     
-    // 上部から中心への水平線
+    // === 中景（中部）===
+    // 垂直線
+    for (let i = 0; i < 8; i++) {
+      const x = 15 + (i / 7) * 70;
+      layers.middle.push({
+        id: `md-v-${i}`,
+        type: "vertical-converge",
+        x: x,
+        from: Math.random() > 0.5 ? "top" : "bottom",
+        opacity: 0.25,
+        width: 1,
+        blur: 0,
+        delay: i * 0.08,
+      });
+    }
+    // 水平線
     for (let i = 0; i < 6; i++) {
-      const y = 10 + (i / 5) * 35; // 10%〜45%
-      lines.push({
-        id: `top-h-${i}`,
+      const y = 25 + (i / 5) * 50; // 中央付近
+      layers.middle.push({
+        id: `md-h-${i}`,
+        type: "horizontal-converge",
+        y: y,
+        from: Math.random() > 0.5 ? "top" : "bottom",
+        opacity: 0.25,
+        width: 1,
+        blur: 0,
+        delay: i * 0.06,
+      });
+    }
+    
+    // === 遠景（上部・奥）===
+    // 垂直線
+    for (let i = 0; i < 10; i++) {
+      const x = 10 + (i / 9) * 80;
+      layers.background.push({
+        id: `bg-v-${i}`,
+        type: "vertical-converge",
+        x: x,
+        from: "top",
+        opacity: 0.1,
+        width: 1,
+        blur: 2,
+        delay: i * 0.1,
+      });
+    }
+    // 水平線
+    for (let i = 0; i < 8; i++) {
+      const y = 5 + (i / 7) * 30; // 上部
+      layers.background.push({
+        id: `bg-h-${i}`,
         type: "horizontal-converge",
         y: y,
         from: "top",
+        opacity: 0.1,
+        width: 1,
+        blur: 2,
         delay: i * 0.08,
       });
     }
     
-    // 下部から中心への水平線
-    for (let i = 0; i < 6; i++) {
-      const y = 55 + (i / 5) * 35; // 55%〜90%
-      lines.push({
-        id: `bottom-h-${i}`,
-        type: "horizontal-converge",
-        y: y,
-        from: "bottom",
-        delay: i * 0.08 + 0.5,
-      });
-    }
-    
-    return lines;
+    return layers;
   }, []);
 
   return (
@@ -139,7 +185,7 @@ export default function StarfieldBackground() {
         `,
       }}
     >
-      {/* ネオングリッド - 中心に向かって収束し中心でフェード */}
+      {/* ネオングリッド - 3レイヤー奥行き構造 */}
       <div 
         className="absolute inset-0"
         style={{
@@ -149,71 +195,91 @@ export default function StarfieldBackground() {
       >
         {/* グリッドコンテナ - 上下から中心へ */}
         <div className="absolute inset-0">
-          {gridLines.map((line) => {
-            // 中心に近いほど透明に（グレーパネルの文字を際立たせる）
-            const distanceFromCenter = line.type === "vertical-converge" 
-              ? Math.abs((line.x || 50) - 50) / 50  // 0=中心, 1=端
-              : line.type === "horizontal-converge"
-                ? Math.abs((line.y || 50) - 50) / 50
-                : 1;
-            const opacity = 0.1 + distanceFromCenter * 0.5; // 中心=0.1, 端=0.6
-            
-            if (line.type === "horizontal-converge") {
-              return (
-                <div
-                  key={line.id}
-                  className="absolute w-full"
-                  style={{
-                    top: `${line.y}%`,
-                    height: "1px",
-                    background: line.from === "top"
-                      ? `linear-gradient(to bottom, 
-                          rgba(59, 130, 246, ${opacity}) 0%, 
-                          rgba(139, 92, 246, ${opacity * 0.5}) 50%,
-                          transparent 100%
-                        )`
-                      : `linear-gradient(to top, 
-                          rgba(59, 130, 246, ${opacity}) 0%, 
-                          rgba(139, 92, 246, ${opacity * 0.5}) 50%,
-                          transparent 100%
-                        )`,
-                    animation: `gridPulse ${2 + line.delay}s ease-in-out infinite`,
-                    boxShadow: `0 0 6px rgba(59, 130, 246, ${opacity * 0.3})`,
-                  }}
-                />
-              );
-            }
-            
-            if (line.type === "vertical-converge") {
-              return (
-                <div
-                  key={line.id}
-                  className="absolute"
-                  style={{
-                    left: `${line.x}%`,
-                    top: "0",
-                    width: "1px",
-                    height: "100%",
-                    background: line.from === "top"
-                      ? `linear-gradient(to bottom, 
-                          rgba(6, 182, 212, ${opacity}) 0%, 
-                          rgba(99, 102, 241, ${opacity * 0.5}) 50%,
-                          transparent 100%
-                        )`
-                      : `linear-gradient(to top, 
-                          rgba(6, 182, 212, ${opacity}) 0%, 
-                          rgba(99, 102, 241, ${opacity * 0.5}) 50%,
-                          transparent 100%
-                        )`,
-                    animation: `gridPulse ${2 + line.delay}s ease-in-out infinite`,
-                    boxShadow: `0 0 6px rgba(6, 182, 212, ${opacity * 0.3})`,
-                  }}
-                />
-              );
-            }
-            
-            return null;
-          })}
+          {/* 遠景: ぼかし、薄く */}
+          {gridLayers.background.map((line) => (
+            <div
+              key={line.id}
+              className="absolute"
+              style={{
+                left: line.type === "vertical-converge" ? `${line.x}%` : undefined,
+                top: line.type === "vertical-converge" ? "0" : `${line.y}%`,
+                width: line.type === "vertical-converge" ? `${line.width}px` : "100%",
+                height: line.type === "vertical-converge" ? "100%" : `${line.width}px`,
+                background: line.type === "vertical-converge"
+                  ? `linear-gradient(to ${line.from === "top" ? "bottom" : "top"}, 
+                      rgba(59, 130, 246, ${line.opacity}) 0%, 
+                      rgba(139, 92, 246, ${line.opacity * 0.5}) 50%,
+                      transparent 100%
+                    )`
+                  : `linear-gradient(to ${line.from === "top" ? "bottom" : "top"}, 
+                      rgba(59, 130, 246, ${line.opacity}) 0%, 
+                      rgba(139, 92, 246, ${line.opacity * 0.5}) 50%,
+                      transparent 100%
+                    )`,
+                filter: `blur(${line.blur}px)`,
+                animation: `gridPulse ${3 + line.delay}s ease-in-out infinite`,
+                opacity: line.opacity,
+              }}
+            />
+          ))}
+          
+          {/* 中景: 普通 */}
+          {gridLayers.middle.map((line) => (
+            <div
+              key={line.id}
+              className="absolute"
+              style={{
+                left: line.type === "vertical-converge" ? `${line.x}%` : undefined,
+                top: line.type === "vertical-converge" ? "0" : `${line.y}%`,
+                width: line.type === "vertical-converge" ? `${line.width}px` : "100%",
+                height: line.type === "vertical-converge" ? "100%" : `${line.width}px`,
+                background: line.type === "vertical-converge"
+                  ? `linear-gradient(to ${line.from === "top" ? "bottom" : "top"}, 
+                      rgba(6, 182, 212, ${line.opacity}) 0%, 
+                      rgba(99, 102, 241, ${line.opacity * 0.5}) 50%,
+                      transparent 100%
+                    )`
+                  : `linear-gradient(to ${line.from === "top" ? "bottom" : "top"}, 
+                      rgba(59, 130, 246, ${line.opacity}) 0%, 
+                      rgba(139, 92, 246, ${line.opacity * 0.5}) 50%,
+                      transparent 100%
+                    )`,
+                animation: `gridPulse ${2 + line.delay}s ease-in-out infinite`,
+                boxShadow: line.type === "vertical-converge" 
+                  ? `0 0 6px rgba(6, 182, 212, ${line.opacity * 0.3})`
+                  : `0 0 6px rgba(59, 130, 246, ${line.opacity * 0.3})`,
+              }}
+            />
+          ))}
+          
+          {/* 近景: 太く、明るく */}
+          {gridLayers.foreground.map((line) => (
+            <div
+              key={line.id}
+              className="absolute"
+              style={{
+                left: line.type === "vertical-converge" ? `${line.x}%` : undefined,
+                top: line.type === "vertical-converge" ? "0" : `${line.y}%`,
+                width: line.type === "vertical-converge" ? `${line.width}px` : "100%",
+                height: line.type === "vertical-converge" ? "100%" : `${line.width}px`,
+                background: line.type === "vertical-converge"
+                  ? `linear-gradient(to ${line.from === "top" ? "bottom" : "top"}, 
+                      rgba(139, 92, 246, ${line.opacity}) 0%, 
+                      rgba(59, 130, 246, ${line.opacity * 0.8}) 50%,
+                      transparent 100%
+                    )`
+                  : `linear-gradient(to ${line.from === "top" ? "bottom" : "top"}, 
+                      rgba(139, 92, 246, ${line.opacity}) 0%, 
+                      rgba(59, 130, 246, ${line.opacity * 0.8}) 50%,
+                      transparent 100%
+                    )`,
+                animation: `gridPulse ${1.5 + line.delay}s ease-in-out infinite`,
+                boxShadow: line.type === "vertical-converge" 
+                  ? `0 0 10px rgba(139, 92, 246, ${line.opacity * 0.5})`
+                  : `0 0 10px rgba(139, 92, 246, ${line.opacity * 0.5})`,
+              }}
+            />
+          ))}
         </div>
       </div>
 
