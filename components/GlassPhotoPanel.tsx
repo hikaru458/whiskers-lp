@@ -115,14 +115,13 @@ export default function GlassPhotoPanel({
             backdropFilter: "blur(20px)",
           }}
         >
-          {/* 独立した文字背景パネル */}
+          {/* 独立した文字背景パネル - 透明度を下げて読みやすく */}
           <div
             className="m-8 p-8 rounded-xl"
             style={{
-              background: "rgba(0, 0, 0, 0.45)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
+              background: "rgba(15, 23, 42, 0.92)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(0,0,0,0.2)",
             }}
           >
             <div className="space-y-4" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
@@ -156,12 +155,12 @@ export default function GlassPhotoPanel({
           />
         </div>
         <div
-          className="p-6"
+          className="p-6 relative"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.30) 100%)",
-            backdropFilter: "blur(15px) brightness(0.7)",
-            boxShadow: "inset 0 0 40px rgba(0,0,0,0.3)",
+              "linear-gradient(to bottom, rgba(15,23,42,0.95) 0%, rgba(10,15,30,0.98) 100%)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
           }}
         >
           {/* 背景調光オーバーレイ */}
