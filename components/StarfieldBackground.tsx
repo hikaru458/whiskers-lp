@@ -45,44 +45,44 @@ export default function StarfieldBackground() {
     
     const generated: LightParticle[] = [];
 
-    // スポットライト（大きな光）
-    for (let i = 0; i < 6; i++) {
+    // スポットライト（大きな光）- 減らす
+    for (let i = 0; i < 3; i++) {
       generated.push({
         id: i,
         x: Math.random() * 100,
-        y: Math.random() * 60, // 上側に集中
-        size: Math.random() * 80 + 40,
+        y: Math.random() * 40, // より上側に集中
+        size: Math.random() * 60 + 30,
         color: colors[Math.floor(Math.random() * colors.length)],
-        duration: Math.random() * 2 + 1, // 速いパルス
-        delay: Math.random() * 3,
+        duration: Math.random() * 3 + 2,
+        delay: Math.random() * 4,
         type: "spot",
       });
     }
 
-    // ビーム（光の筋）
-    for (let i = 6; i < 15; i++) {
+    // ビーム（光の筋）- 減らす
+    for (let i = 3; i < 7; i++) {
       generated.push({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 4 + 2,
+        size: Math.random() * 3 + 1,
         color: colors[Math.floor(Math.random() * colors.length)],
-        duration: Math.random() * 3 + 2,
-        delay: Math.random() * 4,
+        duration: Math.random() * 4 + 3,
+        delay: Math.random() * 5,
         type: "beam",
       });
     }
 
-    // パルス粒子（小さな光）
-    for (let i = 15; i < 40; i++) {
+    // パルス粒子（小さな光）- 減らす
+    for (let i = 7; i < 15; i++) {
       generated.push({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 6 + 2,
+        size: Math.random() * 4 + 1,
         color: colors[Math.floor(Math.random() * colors.length)],
-        duration: Math.random() * 1.5 + 0.5, // BPM感
-        delay: Math.random() * 2,
+        duration: Math.random() * 2 + 1,
+        delay: Math.random() * 3,
         type: "pulse",
       });
     }
@@ -99,92 +99,92 @@ export default function StarfieldBackground() {
     };
     
     // === 近景（下部）===
-    // 垂直線
-    for (let i = 0; i < 6; i++) {
-      const x = 25 + (i / 5) * 50;
+    // 垂直線（減らす）
+    for (let i = 0; i < 3; i++) {
+      const x = 30 + (i / 2) * 40;
       layers.foreground.push({
         id: `fg-v-${i}`,
         type: "vertical-converge",
         x: x,
         from: "bottom",
-        opacity: 0.5,
+        opacity: 0.3,
         width: 2,
         blur: 0,
-        delay: i * 0.05,
+        delay: i * 0.1,
       });
     }
-    // 水平線
-    for (let i = 0; i < 4; i++) {
-      const y = 60 + (i / 3) * 35; // 下部60%〜
+    // 水平線（減らす）
+    for (let i = 0; i < 2; i++) {
+      const y = 70 + (i / 1) * 25;
       layers.foreground.push({
         id: `fg-h-${i}`,
         type: "horizontal-converge",
         y: y,
         from: "bottom",
-        opacity: 0.5,
+        opacity: 0.3,
         width: 2,
         blur: 0,
-        delay: i * 0.04,
+        delay: i * 0.08,
       });
     }
     
     // === 中景（中部）===
-    // 垂直線
-    for (let i = 0; i < 8; i++) {
-      const x = 15 + (i / 7) * 70;
+    // 垂直線（減らす）
+    for (let i = 0; i < 4; i++) {
+      const x = 20 + (i / 3) * 60;
       layers.middle.push({
         id: `md-v-${i}`,
         type: "vertical-converge",
         x: x,
         from: Math.random() > 0.5 ? "top" : "bottom",
-        opacity: 0.25,
+        opacity: 0.15,
         width: 1,
         blur: 0,
-        delay: i * 0.08,
+        delay: i * 0.15,
       });
     }
-    // 水平線
-    for (let i = 0; i < 6; i++) {
-      const y = 25 + (i / 5) * 50; // 中央付近
+    // 水平線（減らす）
+    for (let i = 0; i < 3; i++) {
+      const y = 30 + (i / 2) * 40;
       layers.middle.push({
         id: `md-h-${i}`,
         type: "horizontal-converge",
         y: y,
         from: Math.random() > 0.5 ? "top" : "bottom",
-        opacity: 0.25,
+        opacity: 0.15,
         width: 1,
         blur: 0,
-        delay: i * 0.06,
+        delay: i * 0.12,
       });
     }
     
     // === 遠景（上部・奥）===
-    // 垂直線
-    for (let i = 0; i < 10; i++) {
-      const x = 10 + (i / 9) * 80;
+    // 垂直線（減らす）
+    for (let i = 0; i < 5; i++) {
+      const x = 15 + (i / 4) * 70;
       layers.background.push({
         id: `bg-v-${i}`,
         type: "vertical-converge",
         x: x,
         from: "top",
-        opacity: 0.1,
+        opacity: 0.08,
         width: 1,
         blur: 2,
-        delay: i * 0.1,
+        delay: i * 0.2,
       });
     }
-    // 水平線
-    for (let i = 0; i < 8; i++) {
-      const y = 5 + (i / 7) * 30; // 上部
+    // 水平線（減らす）
+    for (let i = 0; i < 4; i++) {
+      const y = 10 + (i / 3) * 25;
       layers.background.push({
         id: `bg-h-${i}`,
         type: "horizontal-converge",
         y: y,
         from: "top",
-        opacity: 0.1,
+        opacity: 0.08,
         width: 1,
         blur: 2,
-        delay: i * 0.08,
+        delay: i * 0.15,
       });
     }
     
@@ -196,9 +196,9 @@ export default function StarfieldBackground() {
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
       style={{
         background: `
-          radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.15), transparent 50%),
-          radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.12), transparent 40%),
-          radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.12), transparent 40%),
+          radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.08), transparent 50%),
+          radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.06), transparent 40%),
+          radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.06), transparent 40%),
           linear-gradient(to bottom, #0a0f1a, #0f172a)
         `,
       }}
