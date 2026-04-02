@@ -72,25 +72,32 @@ export default function StarfieldBackground() {
     return generated;
   }, []);
 
-  // ネオングリッド線
+  // ネオングリッド線 - 奥行き強調版
   const gridLines = useMemo(() => {
     const lines = [];
-    // 水平線
-    for (let i = 0; i < 12; i++) {
+    
+    // 水平線（床面グリッド - 遠近法で下に集中）
+    for (let i = 0; i < 20; i++) {
+      // 非線形分布: 下に近いほど密に、上に行くほど疎に
+      const t = i / 20;
+      const position = 100 - (Math.pow(1 - t, 2) * 60 + t * 40); // 下70%に集中
       lines.push({
         id: `h-${i}`,
         type: "horizontal",
-        position: (i / 12) * 100,
-        delay: i * 0.1,
+        position: position,
+        delay: i * 0.05,
+        opacity: 0.3 + (1 - t) * 0.5, // 手前ほど明るく
       });
     }
-    // 垂直線（遠近感あり）
-    for (let i = 0; i < 8; i++) {
+    
+    // 垂直線（放射状 - 地平線から広がる）
+    for (let i = 0; i < 16; i++) {
+      const angle = ((i / 16) * 180 - 90); // -90度〜+90度
       lines.push({
         id: `v-${i}`,
         type: "vertical",
-        position: ((i / 8) * 100 - 50) * 2, // 中央から放射
-        delay: i * 0.15,
+        angle: angle,
+        delay: i * 0.08,
       });
     }
     return lines;
@@ -108,34 +115,64 @@ export default function StarfieldBackground() {
         `,
       }}
     >
-      {/* ネオングリッド */}
-      <div className="absolute inset-0 opacity-30">
-        {gridLines.map((line) =>
-          line.type === "horizontal" ? (
-            <div
-              key={line.id}
-              className="absolute w-full"
-              style={{
-                top: `${line.position}%`,
-                height: "1px",
-                background: "linear-gradient(90deg, transparent, #ff0080, #00ffff, transparent)",
-                animation: `pulse ${2 + line.delay}s ease-in-out infinite`,
-                opacity: 0.6,
-              }}
-            />
-          ) : (
-            <div
-              key={line.id}
-              className="absolute h-full"
-              style={{
-                left: `${50 + line.position * 0.5}%`,
-                width: "1px",
-                background: `linear-gradient(to bottom, transparent, rgba(0, 255, 255, 0.4), transparent)`,
-                transform: `perspective(500px) rotateY(${line.position}deg)`,
-              }}
-            />
-          )
-        )}
+      {/* ネオングリッド - 奥行き強調版（控えめに） */}
+      <div 
+        className="absolute inset-0 opacity-20"
+        style={{
+          perspective: "800px",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {/* 床面グリッドコンテナ - 傾けて奥行き出す */}
+        <div
+          className="absolute inset-0"
+          style={{
+            transform: "rotateX(60deg) translateY(-20%)",
+            transformOrigin: "center bottom",
+          }}
+        >
+          {gridLines.map((line) =>
+            line.type === "horizontal" ? (
+              <div
+                key={line.id}
+                className="absolute w-full"
+                style={{
+                  top: `${line.position}%`,
+                  height: "2px",
+                  background: `linear-gradient(90deg, 
+                    transparent, 
+                    rgba(255, 0, 128, ${line.opacity || 0.6}), 
+                    rgba(0, 255, 255, ${line.opacity || 0.6}), 
+                    transparent
+                  )`,
+                  animation: `gridPulse ${3 + line.delay}s ease-in-out infinite`,
+                  boxShadow: `0 0 10px rgba(0, 255, 255, ${(line.opacity || 0.6) * 0.5})`,
+                }}
+              />
+            ) : (
+              <div
+                key={line.id}
+                className="absolute h-[200%]"
+                style={{
+                  left: "50%",
+                  top: "-50%",
+                  width: "2px",
+                  background: `linear-gradient(to bottom, 
+                    transparent 0%, 
+                    rgba(255, 0, 128, 0.8) 30%, 
+                    rgba(0, 255, 255, 0.8) 50%, 
+                    rgba(255, 0, 128, 0.8) 70%, 
+                    transparent 100%
+                  )`,
+                  transformOrigin: "center center",
+                  transform: `rotateZ(${line.angle}deg) translateY(-30%)`,
+                  animation: `gridPulse ${2.5 + line.delay}s ease-in-out infinite`,
+                  boxShadow: "0 0 8px rgba(255, 0, 128, 0.4)",
+                }}
+              />
+            )
+          )}
+        </div>
       </div>
 
       {/* ライブ照明パーティクル */}
@@ -186,6 +223,15 @@ export default function StarfieldBackground() {
       />
 
       <style jsx>{`
+        @keyframes gridPulse {
+          0%, 100% {
+            opacity: 0.3;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+
         @keyframes pulse {
           0%, 100% {
             opacity: 0.4;
