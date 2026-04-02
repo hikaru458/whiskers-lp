@@ -106,37 +106,40 @@ export default function GlassPhotoPanel({
 
         {/* テキストパネル */}
         <div
-          className={`relative flex flex-col justify-center p-8 ${
+          className={`relative flex flex-col justify-center ${
             isImageLeft ? "order-2" : "order-1"
           }`}
           style={{
             background:
               "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.30) 100%)",
             backdropFilter: "blur(20px)",
-            boxShadow: "inset 0 0 60px rgba(0,0,0,0.3), 0 0 30px rgba(0,0,0,0.2)",
           }}
         >
-          {/* 背景調光オーバーレイ */}
-          <div 
-            className="absolute inset-0 pointer-events-none"
+          {/* 独立した文字背景パネル */}
+          <div
+            className="m-8 p-8 rounded-xl"
             style={{
-              background: "radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 100%)",
+              background: "rgba(0, 0, 0, 0.45)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
             }}
-          />
-          <div className="relative space-y-4" style={{ textShadow: "0 2px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)" }}>
-            <h2 className="text-3xl font-light text-white tracking-wide">
-              {title}
-            </h2>
-            <p className="text-base text-white/90 leading-relaxed">
-              {description}
-            </p>
-            <a
-              href={linkHref}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-2"
-              style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}
-            >
-              {linkText}
-            </a>
+          >
+            <div className="space-y-4" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
+              <h2 className="text-3xl font-light text-white tracking-wide">
+                {title}
+              </h2>
+              <p className="text-base text-white/95 leading-relaxed">
+                {description}
+              </p>
+              <a
+                href={linkHref}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-2"
+                style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}
+              >
+                {linkText}
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -157,7 +160,7 @@ export default function GlassPhotoPanel({
           style={{
             background:
               "linear-gradient(to bottom, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.30) 100%)",
-            backdropFilter: "blur(15px)",
+            backdropFilter: "blur(15px) brightness(0.7)",
             boxShadow: "inset 0 0 40px rgba(0,0,0,0.3)",
           }}
         >
