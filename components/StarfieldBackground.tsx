@@ -13,6 +13,24 @@ interface LightParticle {
   type: "pulse" | "beam" | "spot";
 }
 
+interface GridLine {
+  id: string;
+  type: "vertical-converge" | "horizontal-converge";
+  x?: number;
+  y?: number;
+  from: "top" | "bottom";
+  opacity: number;
+  width: number;
+  blur: number;
+  delay: number;
+}
+
+interface GridLayers {
+  foreground: GridLine[];
+  middle: GridLine[];
+  background: GridLine[];
+}
+
 export default function StarfieldBackground() {
   // ライブ会場風の照明パーティクル
   const lights = useMemo<LightParticle[]>(() => {
@@ -73,8 +91,8 @@ export default function StarfieldBackground() {
   }, []);
 
   // ネオングリッド線 - 3レイヤー奥行き構造
-  const gridLayers = useMemo(() => {
-    const layers = {
+  const gridLayers = useMemo<GridLayers>(() => {
+    const layers: GridLayers = {
       foreground: [], // 近景: opacity 0.5, 太線
       middle: [],     // 中景: opacity 0.25, 細線  
       background: [], // 遠景: opacity 0.1, ぼかし
