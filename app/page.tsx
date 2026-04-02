@@ -92,7 +92,7 @@ export default function Home() {
             <section
               key={`pc-${section.title}`}
               id={`${section.title.toLowerCase()}-pc`}
-              className="relative z-10 min-h-[100svh] md:min-h-[150svh] flex items-center py-20 px-6 snap-center"
+              className="relative z-10 h-screen flex items-center py-20 px-6 snap-center"
             >
               <div className="max-w-6xl mx-auto w-full">
                 <FadeInSection delay={index * 100}>
