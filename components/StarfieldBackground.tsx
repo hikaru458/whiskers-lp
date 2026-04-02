@@ -17,12 +17,12 @@ export default function StarfieldBackground() {
   // ライブ会場風の照明パーティクル
   const lights = useMemo<LightParticle[]>(() => {
     const colors = [
-      "#ff0080", // ホットピンク
-      "#00ffff", // シアン
-      "#ff6b00", // オレンジ
-      "#ff00ff", // マゼンタ
-      "#ffff00", // イエロー
-      "#00ff88", // ライム
+      "#00d4ff", // シアンブルー
+      "#8b5cf6", // 紫
+      "#3b82f6", // 青
+      "#06b6d4", // シアン
+      "#6366f1", // インディゴ
+      "#a78bfa", // 薄紫
     ];
     
     const generated: LightParticle[] = [];
@@ -72,34 +72,58 @@ export default function StarfieldBackground() {
     return generated;
   }, []);
 
-  // ネオングリッド線 - 奥行き強調版
+  // ネオングリッド線 - 中心に向かって収束し中心でフェード
   const gridLines = useMemo(() => {
     const lines = [];
     
-    // 水平線（床面グリッド - 遠近法で下に集中）
-    for (let i = 0; i < 20; i++) {
-      // 非線形分布: 下に近いほど密に、上に行くほど疎に
-      const t = i / 20;
-      const position = 100 - (Math.pow(1 - t, 2) * 60 + t * 40); // 下70%に集中
+    // 上部から中心への垂直線
+    for (let i = 0; i < 8; i++) {
+      const x = 20 + (i / 7) * 60; // 20%〜80%の範囲
       lines.push({
-        id: `h-${i}`,
-        type: "horizontal",
-        position: position,
-        delay: i * 0.05,
-        opacity: 0.3 + (1 - t) * 0.5, // 手前ほど明るく
+        id: `top-v-${i}`,
+        type: "vertical-converge",
+        x: x,
+        from: "top",
+        delay: i * 0.1,
       });
     }
     
-    // 垂直線（放射状 - 地平線から広がる）
-    for (let i = 0; i < 16; i++) {
-      const angle = ((i / 16) * 180 - 90); // -90度〜+90度
+    // 下部から中心への垂直線
+    for (let i = 0; i < 8; i++) {
+      const x = 20 + (i / 7) * 60;
       lines.push({
-        id: `v-${i}`,
-        type: "vertical",
-        angle: angle,
+        id: `bottom-v-${i}`,
+        type: "vertical-converge",
+        x: x,
+        from: "bottom",
+        delay: i * 0.1 + 0.5,
+      });
+    }
+    
+    // 上部から中心への水平線
+    for (let i = 0; i < 6; i++) {
+      const y = 10 + (i / 5) * 35; // 10%〜45%
+      lines.push({
+        id: `top-h-${i}`,
+        type: "horizontal-converge",
+        y: y,
+        from: "top",
         delay: i * 0.08,
       });
     }
+    
+    // 下部から中心への水平線
+    for (let i = 0; i < 6; i++) {
+      const y = 55 + (i / 5) * 35; // 55%〜90%
+      lines.push({
+        id: `bottom-h-${i}`,
+        type: "horizontal-converge",
+        y: y,
+        from: "bottom",
+        delay: i * 0.08 + 0.5,
+      });
+    }
+    
     return lines;
   }, []);
 
@@ -108,70 +132,88 @@ export default function StarfieldBackground() {
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
       style={{
         background: `
-          radial-gradient(ellipse at 50% 0%, rgba(255, 0, 128, 0.15), transparent 50%),
-          radial-gradient(ellipse at 20% 80%, rgba(0, 255, 255, 0.1), transparent 40%),
-          radial-gradient(ellipse at 80% 80%, rgba(255, 107, 0, 0.1), transparent 40%),
-          linear-gradient(to bottom, #0a0a1a, #1a0a2e)
+          radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.15), transparent 50%),
+          radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.12), transparent 40%),
+          radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.12), transparent 40%),
+          linear-gradient(to bottom, #0a0f1a, #0f172a)
         `,
       }}
     >
-      {/* ネオングリッド - 奥行き強調版（控えめに） */}
+      {/* ネオングリッド - 中心に向かって収束し中心でフェード */}
       <div 
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0"
         style={{
-          perspective: "800px",
+          perspective: "1000px",
           transformStyle: "preserve-3d",
         }}
       >
-        {/* 床面グリッドコンテナ - 傾けて奥行き出す */}
-        <div
-          className="absolute inset-0"
-          style={{
-            transform: "rotateX(60deg) translateY(-20%)",
-            transformOrigin: "center bottom",
-          }}
-        >
-          {gridLines.map((line) =>
-            line.type === "horizontal" ? (
-              <div
-                key={line.id}
-                className="absolute w-full"
-                style={{
-                  top: `${line.position}%`,
-                  height: "2px",
-                  background: `linear-gradient(90deg, 
-                    transparent, 
-                    rgba(255, 0, 128, ${line.opacity || 0.6}), 
-                    rgba(0, 255, 255, ${line.opacity || 0.6}), 
-                    transparent
-                  )`,
-                  animation: `gridPulse ${3 + line.delay}s ease-in-out infinite`,
-                  boxShadow: `0 0 10px rgba(0, 255, 255, ${(line.opacity || 0.6) * 0.5})`,
-                }}
-              />
-            ) : (
-              <div
-                key={line.id}
-                className="absolute h-[200%]"
-                style={{
-                  left: "50%",
-                  top: "-50%",
-                  width: "2px",
-                  background: `linear-gradient(to bottom, 
-                    transparent 0%, 
-                    rgba(255, 0, 128, 0.8) 30%, 
-                    rgba(0, 255, 255, 0.8) 50%, 
-                    rgba(255, 0, 128, 0.8) 70%, 
-                    transparent 100%
-                  )`,
-                  transformOrigin: "center center",
-                  transform: `rotateZ(${line.angle}deg) translateY(-30%)`,
-                  animation: `gridPulse ${2.5 + line.delay}s ease-in-out infinite`,
-                  boxShadow: "0 0 8px rgba(255, 0, 128, 0.4)",
-                }}
-              />
-            )
-          )}
+        {/* グリッドコンテナ - 上下から中心へ */}
+        <div className="absolute inset-0">
+          {gridLines.map((line) => {
+            // 中心に近いほど透明に（グレーパネルの文字を際立たせる）
+            const distanceFromCenter = line.type === "vertical-converge" 
+              ? Math.abs((line.x || 50) - 50) / 50  // 0=中心, 1=端
+              : line.type === "horizontal-converge"
+                ? Math.abs((line.y || 50) - 50) / 50
+                : 1;
+            const opacity = 0.1 + distanceFromCenter * 0.5; // 中心=0.1, 端=0.6
+            
+            if (line.type === "horizontal-converge") {
+              return (
+                <div
+                  key={line.id}
+                  className="absolute w-full"
+                  style={{
+                    top: `${line.y}%`,
+                    height: "1px",
+                    background: line.from === "top"
+                      ? `linear-gradient(to bottom, 
+                          rgba(59, 130, 246, ${opacity}) 0%, 
+                          rgba(139, 92, 246, ${opacity * 0.5}) 50%,
+                          transparent 100%
+                        )`
+                      : `linear-gradient(to top, 
+                          rgba(59, 130, 246, ${opacity}) 0%, 
+                          rgba(139, 92, 246, ${opacity * 0.5}) 50%,
+                          transparent 100%
+                        )`,
+                    animation: `gridPulse ${2 + line.delay}s ease-in-out infinite`,
+                    boxShadow: `0 0 6px rgba(59, 130, 246, ${opacity * 0.3})`,
+                  }}
+                />
+              );
+            }
+            
+            if (line.type === "vertical-converge") {
+              return (
+                <div
+                  key={line.id}
+                  className="absolute"
+                  style={{
+                    left: `${line.x}%`,
+                    top: "0",
+                    width: "1px",
+                    height: "100%",
+                    background: line.from === "top"
+                      ? `linear-gradient(to bottom, 
+                          rgba(6, 182, 212, ${opacity}) 0%, 
+                          rgba(99, 102, 241, ${opacity * 0.5}) 50%,
+                          transparent 100%
+                        )`
+                      : `linear-gradient(to top, 
+                          rgba(6, 182, 212, ${opacity}) 0%, 
+                          rgba(99, 102, 241, ${opacity * 0.5}) 50%,
+                          transparent 100%
+                        )`,
+                    animation: `gridPulse ${2 + line.delay}s ease-in-out infinite`,
+                    boxShadow: `0 0 6px rgba(6, 182, 212, ${opacity * 0.3})`,
+                  }}
+                />
+              );
+            }
+            
+            return null;
+          })}
         </div>
       </div>
 
