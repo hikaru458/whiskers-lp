@@ -152,7 +152,8 @@ export default function WhiskersBackground() {
   const meshRef = useRef<THREE.Mesh>(null);
 
   // ★ カメラFOVから背景Planeの必要サイズを正確に計算
-  const distance = 10; // Plane の Z 位置（position.z = -10 の場合）
+  // カメラ位置 z=8、Plane位置 z=-10 → 距離 = 18
+  const distance = 18; // カメラからPlaneまでの距離
   const vFov = ((camera as THREE.PerspectiveCamera).fov * Math.PI) / 180; // 垂直FOV（ラジアン）
   const height = 2 * Math.tan(vFov / 2) * distance;
   const width = height * (camera as THREE.PerspectiveCamera).aspect;
