@@ -54,11 +54,12 @@ export default function Home() {
   return (
     <main className="min-h-screen text-white relative">
       {/* 3D背景シーン */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      <div className="fixed inset-0 z-0 pointer-events-none w-screen h-screen">
         <Canvas
           camera={{ position: [0, 0, 8], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ antialias: false, alpha: true }}
+          style={{ width: '100vw', height: '100vh' }}
           onCreated={({ gl }) => {
             gl.setClearColor(0x000000, 0); // 完全透明
           }}
