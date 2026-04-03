@@ -104,41 +104,29 @@ export default function GlassPhotoPanel({
           </Canvas>
         </div>
 
-        {/* テキストパネル */}
+        {/* テキストパネル - 引き算の美学 */}
         <div
-          className={`relative flex flex-col justify-center ${
+          className={`relative flex flex-col justify-center p-8 ${
             isImageLeft ? "order-2" : "order-1"
           }`}
           style={{
-            background:
-              "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.30) 100%)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(15, 23, 42, 0.95)",
+            border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          {/* 独立した文字背景パネル - 透明度を下げて読みやすく */}
-          <div
-            className="m-8 p-8 rounded-xl"
-            style={{
-              background: "rgba(15, 23, 42, 0.92)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              boxShadow: "0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(0,0,0,0.2)",
-            }}
-          >
-            <div className="space-y-4" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.8)" }}>
-              <h2 className="text-3xl font-light text-white tracking-wide">
-                {title}
-              </h2>
-              <p className="text-base text-white/95 leading-relaxed">
-                {description}
-              </p>
-              <a
-                href={linkHref}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-2"
-                style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}
-              >
-                {linkText}
-              </a>
-            </div>
+          <div className="space-y-4">
+            <h2 className="text-3xl font-light text-white tracking-wide">
+              {title}
+            </h2>
+            <p className="text-base text-white/80 leading-relaxed">
+              {description}
+            </p>
+            <a
+              href={linkHref}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-2"
+            >
+              {linkText}
+            </a>
           </div>
         </div>
       </div>
@@ -155,30 +143,20 @@ export default function GlassPhotoPanel({
           />
         </div>
         <div
-          className="p-6 relative"
+          className="p-6"
           style={{
-            background:
-              "linear-gradient(to bottom, rgba(15,23,42,0.95) 0%, rgba(10,15,30,0.98) 100%)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+            background: "rgba(15, 23, 42, 0.95)",
+            border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          {/* 背景調光オーバーレイ */}
-          <div 
-            className="absolute inset-0 pointer-events-none rounded-b-2xl"
-            style={{
-              background: "radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 100%)",
-            }}
-          />
-          <div className="relative space-y-3" style={{ textShadow: "0 2px 6px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.7)" }}>
+          <div className="space-y-3">
             <h3 className="text-xl font-light text-white tracking-wide">
               {title}
             </h3>
-            <p className="text-sm text-white/90 leading-relaxed">{description}</p>
+            <p className="text-sm text-white/80 leading-relaxed">{description}</p>
             <a
               href={linkHref}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm text-white bg-white/10 border border-white/20 hover:border-sky-400 hover:bg-white/15 transition-all duration-300 mt-1"
-              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
             >
               {linkText}
             </a>
