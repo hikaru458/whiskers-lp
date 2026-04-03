@@ -116,7 +116,6 @@ export default function GlassPhotoPanel({
             camera={{ position: [0, 0, 2], fov: 45 }}
             gl={{ 
               antialias: false, 
-              alpha: true,
               powerPreference: "high-performance",
             }}
             frameloop="demand"
