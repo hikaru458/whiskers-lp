@@ -34,6 +34,18 @@ const fragmentShader = `
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
 
+  // FBM（フラクタルブラウン運動）
+  float fbm(vec2 p) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    for (int i = 0; i < 6; i++) {
+      value += amplitude * noise(p);
+      p *= 2.0;
+      amplitude *= 0.5;
+    }
+    return value;
+  }
+
   // 回転関数
   vec2 rotate(vec2 p, float angle) {
     float s = sin(angle);
@@ -43,6 +55,10 @@ const fragmentShader = `
 
   void main() {
     vec2 uv = vUv;
+    
+    // ★ FBMノイズ（有機的なゆらぎ）
+    float liquid = fbm(uv * 3.0 + vec2(uTime * 0.03, 0.0));
+    float liquid2 = fbm(uv * 5.0 - vec2(0.0, uTime * 0.05));
     
     // ★ 光の指向性（左上が明るく、右下が暗い）
     vec2 lightDir = normalize(vec2(-1.0, -1.0));
@@ -60,21 +76,22 @@ const fragmentShader = `
     vec3 lavender = vec3(0.7, 0.55, 0.9);
     
     // ★ カラーブレンド
-    float redMask = smoothstep(0.3, 0.7, uv.y);
+    float redMask = smoothstep(0.3, 0.7, uv.y + liquid * 0.3);
     float cyanMask = 1.0 - redMask;
     
     // 対角線ベースのグラデーション
     float diagonalGrad = (uv.x + (1.0 - uv.y)) * 0.5;
+    diagonalGrad += liquid * 0.2;
     
     // メインカラーミックス
     vec3 color = mix(vividRed, turquoise, diagonalGrad);
     
     // ラベンダーアクセント（中央から左上）
     float lavenderMask = smoothstep(0.4, 0.8, 1.0 - uv.x + uv.y * 0.5);
-    color = mix(color, lavender, lavenderMask * 0.6);
+    color = mix(color, lavender, lavenderMask * liquid * 0.6);
     
     // ソフトホワイトハイライト（左上）
-    float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y);
+    float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y + liquid2 * 0.3);
     color = mix(color, softWhite, whiteMask * 0.0); // 白ハイライトを完全に消す
     
     // ★ 光の輝き（左上から）- 控えめに
