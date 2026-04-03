@@ -82,7 +82,7 @@ const fragmentShader = `
     // 対角線ベースのグラデーション - ノイズを均等に適用
     float diagonalGrad = (uv.x + (1.0 - uv.y)) * 0.5;
     // 全領域でノイズを強制的に適用（右下でもピンクにならないよう調整）
-    float noiseBlend = liquid * 0.45 + 0.5; // 0.35〜0.65の範囲に正規化（3倍強化）
+    float noiseBlend = liquid * 0.30 + 0.5; // 0.35〜0.65の範囲に正規化（0.30倍）
     diagonalGrad = mix(diagonalGrad, noiseBlend, 0.4);
     
     // メインカラーミックス
