@@ -103,10 +103,6 @@ const fragmentShader = `
     // ★ 暗部の引き締め（コントラスト強調）
     color = pow(color, vec3(1.3));
     
-    // ★ デジタルノイズ感（わずかに）
-    float digitalNoise = hash(uv * 1000.0 + uTime) * 0.03;
-    color += digitalNoise;
-    
     // ★ 最終調整
     color = clamp(color, 0.0, 1.0);
     
