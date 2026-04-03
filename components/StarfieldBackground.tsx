@@ -45,25 +45,26 @@ export default function StarfieldBackground() {
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
       style={{
         background: `
-          /* 左上：鮮やかなレッド〜ピンク */
-          radial-gradient(ellipse at 20% 20%, rgba(255, 59, 92, 0.6) 0%, transparent 50%),
-          /* 中央：深いブルー光（奥行き演出） */
-          radial-gradient(circle at 50% 50%, rgba(30, 58, 255, 0.4) 0%, transparent 60%),
-          /* 右下：紫〜バイオレット */
-          radial-gradient(ellipse at 80% 80%, rgba(122, 59, 255, 0.55) 0%, transparent 50%),
-          /* 主軸グラデーション：赤 → 青 → 紫 */
-          linear-gradient(145deg, 
-            #FF3B5C 0%,     /* 左上：レッドピンク */
-            #FF4B8C 15%,    /* ピンク */
-            #8B5CF6 35%,    /* 中間：バイオレット */
-            #1E3AFF 50%,    /* 中央：深いブルー（最も明るい） */
-            #5B4DFF 65%,    /* 青紫 */
-            #7A3BFF 80%,    /* 右下：紫 */
-            #6366F1 100%     /* 紫系で締める */
+          /* 主構造：中央から外側へ広がるラディアルグラデーション */
+          radial-gradient(ellipse at 50% 50%, 
+            #E0003A 0%,      /* 中心：深く濃い赤（発光感） */
+            #C4002E 15%,     /* 赤 */
+            #D4006E 30%,     /* マゼンタ */
+            #9D4EDD 50%,     /* パープル */
+            #7C3AED 65%,     /* 紫 */
+            #4F46E5 80%,     /* 青紫 */
+            #1E2BFF 100%     /* 外周：深いブルー */
+          ),
+          /* 補助構造：左上→右下にごく薄い線形グラデーション（奥行き用） */
+          linear-gradient(160deg, 
+            rgba(255, 59, 92, 0.15) 0%,
+            transparent 30%,
+            transparent 70%,
+            rgba(122, 59, 255, 0.12) 100%
           )
         `,
-        /* わずかに霧がかったディフューズ感 */
-        filter: "contrast(1.05) saturate(1.1)",
+        /* 軽い霧（ディフューズ）効果 5-8% */
+        filter: "contrast(1.08) saturate(1.05)",
       }}
     >
       {/* 最小限グリッド - 水平線のみ */}
