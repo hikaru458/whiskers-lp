@@ -172,7 +172,7 @@ export default function WhiskersBackground() {
   });
 
   return (
-    <mesh ref={meshRef} scale={[width * 1.2, height * 1.2, 1]} position={[0, 0, -10]}>
+    <mesh ref={meshRef} scale={[width, height, 1]} position={[0, 0, -10]}>
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
         vertexShader={vertexShader}
