@@ -74,22 +74,24 @@ export default function Header() {
           aria-label="メニュー"
         >
           <span
-            className={`absolute w-full h-0.5 bg-white rounded-full transition-all duration-300 origin-center ${
+            className={`absolute w-full bg-white rounded-full transition-all duration-300 origin-center ${
               isElastic ? "scale-y-150" : ""
             } ${
               menuOpen ? "rotate-45" : "-translate-y-1.5"
             }`}
             style={{
+              height: "0.5px",
               transitionTimingFunction: isElastic ? "cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "ease-out",
             }}
           />
           <span
-            className={`absolute w-full h-0.5 bg-white rounded-full transition-all duration-300 origin-center ${
+            className={`absolute w-full bg-white rounded-full transition-all duration-300 origin-center ${
               isElastic ? "scale-y-150" : ""
             } ${
               menuOpen ? "-rotate-45" : "translate-y-1.5"
             }`}
             style={{
+              height: "0.75px",
               transitionTimingFunction: isElastic ? "cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "ease-out",
             }}
           />
