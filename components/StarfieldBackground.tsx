@@ -45,9 +45,10 @@ export default function StarfieldBackground() {
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
       style={{
         background: `
-          radial-gradient(ellipse at 50% 100%, rgba(59, 130, 246, 0.05), transparent 60%),
-          radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.03), transparent 50%),
-          linear-gradient(to bottom, #0a0f1a 0%, #0f172a 50%, #0a0f1a 100%)
+          radial-gradient(ellipse at 80% 20%, rgba(255, 50, 80, 0.4), transparent 50%),
+          radial-gradient(ellipse at 20% 80%, rgba(0, 220, 220, 0.35), transparent 45%),
+          radial-gradient(ellipse at 50% 50%, rgba(180, 0, 100, 0.25), transparent 60%),
+          linear-gradient(135deg, #1a0a1a 0%, #2d0a1a 25%, #0a1a2d 50%, #0a2d2d 75%, #1a1a2d 100%)
         `,
       }}
     >
