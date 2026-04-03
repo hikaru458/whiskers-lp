@@ -63,12 +63,13 @@ const fragmentShader = `
     float blur = sin(diagonal.x * 8.0 + uTime * 0.5) * 0.5 + 0.5;
     blur = pow(blur, 2.0);
     
-    // ★ ビート同期（オプション - 外部からuBeatを渡すことで鼓動感を強調）
-    float beatPulse = 1.0 + uBeat * 0.3; // キックで1.3倍までスケールアップ
+    // ★ 自己完結型の鼓動（2〜3秒周期でゆったり「呼吸」）
+    float autoBeat = sin(uTime * 0.5) * 0.5 + 0.5;
+    float beatPulse = 1.0 + autoBeat * 0.1; // 変化幅を抑える（1.1倍程度）
     
-    // ★ 液体が混ざり合うようなFBMノイズ（ビート同期あり）
-    float liquid = fbm(uv * 3.0 * beatPulse + vec2(uTime * 0.1, 0.0));
-    float liquid2 = fbm(uv * 5.0 * beatPulse - vec2(0.0, uTime * 0.15));
+    // ★ 液体が混ざり合うようなFBMノイズ（環境音レベルの動き）
+    float liquid = fbm(uv * 3.0 * beatPulse + vec2(uTime * 0.03, 0.0));
+    float liquid2 = fbm(uv * 5.0 * beatPulse - vec2(0.0, uTime * 0.05));
     
     // ★ 光の指向性（左上が明るく、右下が暗い）
     vec2 lightDir = normalize(vec2(-1.0, -1.0));
@@ -116,8 +117,8 @@ const fragmentShader = `
     // ★ 暗部の引き締め（コントラスト強調）
     color = pow(color, vec3(1.3));
     
-    // ★ 色収差（RGB Shift）- ハイテク・サイバーな質感
-    float rgbShift = 0.008 + uBeat * 0.004; // ビートで強調
+    // ★ 色収差（RGB Shift）- 「デジタルな空気感」として常時微細な揺らぎ
+    float rgbShift = 0.003 + sin(uTime * 0.2) * 0.002; // 固定〜ゆっくり変化
     vec2 shiftDir = normalize(vec2(1.0, -0.5)); // 斜め方向にシフト
     
     // 赤チャンネルを少しずらす
@@ -152,7 +153,6 @@ export default function WhiskersBackground() {
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uBeat: { value: 0 },
     uResolution: { value: new THREE.Vector2(1, 1) },
   }), []);
 
