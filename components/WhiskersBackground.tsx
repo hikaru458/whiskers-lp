@@ -76,22 +76,24 @@ const fragmentShader = `
     vec3 lavender = vec3(0.7, 0.55, 0.9);
     
     // ★ カラーブレンド
-    float redMask = smoothstep(0.3, 0.7, uv.y + liquid * 0.3);
+    float redMask = smoothstep(0.3, 0.7, uv.y + liquid * 0.15);
     float cyanMask = 1.0 - redMask;
     
-    // 対角線ベースのグラデーション
+    // 対角線ベースのグラデーション - ノイズを均等に適用
     float diagonalGrad = (uv.x + (1.0 - uv.y)) * 0.5;
-    diagonalGrad += liquid * 0.2;
+    // 全領域でノイズを強制的に適用（右下でもピンクにならないよう調整）
+    float noiseBlend = liquid * 0.15 + 0.5; // 0.35〜0.65の範囲に正規化
+    diagonalGrad = mix(diagonalGrad, noiseBlend, 0.4);
     
     // メインカラーミックス
     vec3 color = mix(vividRed, turquoise, diagonalGrad);
     
     // ラベンダーアクセント（中央から左上）
     float lavenderMask = smoothstep(0.4, 0.8, 1.0 - uv.x + uv.y * 0.5);
-    color = mix(color, lavender, lavenderMask * liquid * 0.6);
+    color = mix(color, lavender, lavenderMask * liquid * 0.3);
     
     // ソフトホワイトハイライト（左上）
-    float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y + liquid2 * 0.3);
+    float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y + liquid2 * 0.15);
     color = mix(color, softWhite, whiteMask * 0.0); // 白ハイライトを完全に消す
     
     // ★ 光の輝き（左上から）- 控えめに
