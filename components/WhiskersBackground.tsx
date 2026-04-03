@@ -160,11 +160,14 @@ export default function WhiskersBackground() {
     uniforms.uTime.value = state.clock.getElapsedTime();
   });
 
-  // ★ 距離 -10 の位置で「実際に必要な幅・高さ」を取得
   const { width, height } = viewport.getCurrentViewport(camera, [0, 0, -10]);
 
+  // ★ 1.02倍だけ大きくする（2%拡大）
+  const SAFE_WIDTH = width * 1.02;
+  const SAFE_HEIGHT = height * 1.02;
+
   return (
-    <mesh ref={meshRef} scale={[width, height, 1]} position={[0, 0, -10]}>
+    <mesh scale={[SAFE_WIDTH, SAFE_HEIGHT, 1]} position={[0, 0, -10]}>
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
         vertexShader={vertexShader}
