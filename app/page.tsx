@@ -7,6 +7,7 @@ import PhotoPanel from "@/components/PhotoPanel";
 import Scene from "@/components/Scene";
 import FadeInSection from "@/components/FadeInSection";
 import GlassPhotoPanel from "@/components/GlassPhotoPanel";
+import WhiskersBackground from "@/components/WhiskersBackground";
 
 // 6セクションのデータ
 const SECTIONS = [
@@ -62,6 +63,7 @@ export default function Home() {
         >
           <ambientLight intensity={0.5} />
           <Suspense fallback={null}>
+            <WhiskersBackground />
             <Scene />
           </Suspense>
         </Canvas>
