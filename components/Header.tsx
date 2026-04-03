@@ -54,6 +54,8 @@ export default function Header() {
       button.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMenuOpen(false);
     
