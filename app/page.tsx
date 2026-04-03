@@ -6,9 +6,7 @@ import Header from "@/components/Header";
 import PhotoPanel from "@/components/PhotoPanel";
 import Scene from "@/components/Scene";
 import FadeInSection from "@/components/FadeInSection";
-import ScrollFog from "@/components/ScrollFog";
 import GlassPhotoPanel from "@/components/GlassPhotoPanel";
-import WhiskersBackground from "@/components/WhiskersBackground";
 
 // 6セクションのデータ
 const SECTIONS = [
@@ -55,16 +53,15 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-white relative">
-      {/* 3D背景シーン（シェーダー背景 + Scene） */}
+      {/* 3D背景シーン */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Canvas
-          camera={{ position: [0, 0, 5], fov: 60 }}
+          camera={{ position: [0, 0, 8], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ antialias: false }}
         >
           <ambientLight intensity={0.5} />
           <Suspense fallback={null}>
-            <WhiskersBackground />
             <Scene />
           </Suspense>
         </Canvas>
@@ -72,9 +69,6 @@ export default function Home() {
 
       {/* ヘッダー */}
       <Header />
-
-      {/* 霧レイヤー - スクロールで濃くなる空気感 */}
-      <ScrollFog />
 
       {/* 6セクション - PCでは左右交互 */}
       <div className="pc-scroll-container hidden md:block h-screen overflow-y-scroll snap-y snap-mandatory" style={{ scrollBehavior: 'smooth' }}>
