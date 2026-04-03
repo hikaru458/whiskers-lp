@@ -53,6 +53,7 @@ const FrontGlass = memo(function FrontGlass({
       roughness: 0.2,
       metalness: 0,
       side: THREE.DoubleSide,
+      depthWrite: false,
     });
   }, []);
 
