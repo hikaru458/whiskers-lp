@@ -106,28 +106,34 @@ export default function GlassPhotoPanel({
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* PC版 */}
-      <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
+      <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl">
         {/* 写真（Three.js・4/5固定） */}
         <div
-          className={`relative aspect-[4/5] overflow-hidden bg-black ${
+          className={`relative aspect-[4/5] bg-black ${
             isImageLeft ? "order-1" : "order-2"
           }`}
         >
-          <Canvas
-            camera={{ position: [0, 0, 2], fov: 45 }}
-            gl={{ 
-              antialias: false, 
-              powerPreference: "high-performance",
-            }}
-            frameloop="demand"
-            dpr={[1, 1.5]}
-            className="absolute inset-0"
-            onCreated={({ gl }) => {
-              gl.setClearColor(0x000000, 1); // 黒背景、不透明
-            }}
+          {/* clip-wrapper: Canvas をクリップする専用レイヤー */}
+          <div
+            className="absolute inset-0 overflow-hidden"
+            style={{ borderRadius: 'inherit' }}
           >
-            <GlassPanelScene imageSrc={imageSrc} />
-          </Canvas>
+            <Canvas
+              camera={{ position: [0, 0, 2], fov: 45 }}
+              gl={{ 
+                antialias: false, 
+                powerPreference: "high-performance",
+              }}
+              frameloop="demand"
+              dpr={[1, 1.5]}
+              className="absolute inset-0"
+              onCreated={({ gl }) => {
+                gl.setClearColor(0x000000, 1); // 黒背景、不透明
+              }}
+            >
+              <GlassPanelScene imageSrc={imageSrc} />
+            </Canvas>
+          </div>
         </div>
 
         {/* テキストパネル - 引き算の美学 */}
