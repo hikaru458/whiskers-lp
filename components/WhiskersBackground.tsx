@@ -148,14 +148,12 @@ const fragmentShader = `
 `;
 
 export default function WhiskersBackground() {
-  const { camera, size } = useThree();
+  const { viewport, size } = useThree();
   const meshRef = useRef<THREE.Mesh>(null);
 
-  // ★ カメラFOVから背景Planeの必要サイズを自動計算
-  const distance = 10; // Plane の Z 位置（position.z = -10 の場合）
-  const vFov = (camera.fov * Math.PI) / 180; // 垂直FOV（ラジアン）
-  const height = 2 * Math.tan(vFov / 2) * distance;
-  const width = height * camera.aspect;
+  // ★ viewport を使用して背景Planeのサイズを自動計算
+  const width = viewport.width;
+  const height = viewport.height;
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
@@ -171,7 +169,7 @@ export default function WhiskersBackground() {
   });
 
   return (
-    <mesh ref={meshRef} scale={[width, height, 1]} position={[0, 0, -10]}>
+    <mesh ref={meshRef} scale={[width * 2, height * 2, 1]} position={[0, 0, -10]}>
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
         vertexShader={vertexShader}
