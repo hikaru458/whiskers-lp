@@ -59,7 +59,7 @@ export default function Home() {
         <Canvas
           camera={{ position: [0, 0, 8], fov: 45 }}
           dpr={[1, 1.5]}
-          gl={{ antialias: false }}
+          gl={{ antialias: false, alpha: true }}
         >
           <ambientLight intensity={0.5} />
           <Suspense fallback={null}>
