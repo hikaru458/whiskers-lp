@@ -34,18 +34,6 @@ const fragmentShader = `
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
 
-  // FBM（フラクタルブラウン運動）
-  float fbm(vec2 p) {
-    float value = 0.0;
-    float amplitude = 0.5;
-    for (int i = 0; i < 6; i++) {
-      value += amplitude * noise(p);
-      p *= 2.0;
-      amplitude *= 0.5;
-    }
-    return value;
-  }
-
   // 回転関数
   vec2 rotate(vec2 p, float angle) {
     float s = sin(angle);
@@ -59,17 +47,9 @@ const fragmentShader = `
     // ★ 対角線の動き（左下→右上）
     vec2 diagonal = rotate(uv - 0.5, 0.785); // 45度回転
     
-    // ★ モーションブラー効果
-    float blur = sin(diagonal.x * 8.0 + uTime * 0.5) * 0.5 + 0.5;
-    blur = pow(blur, 2.0);
-    
     // ★ 自己完結型の鼓動（2〜3秒周期でゆったり「呼吸」）
     float autoBeat = sin(uTime * 0.5) * 0.5 + 0.5;
     float beatPulse = 1.0 + autoBeat * 0.1; // 変化幅を抑える（1.1倍程度）
-    
-    // ★ 液体が混ざり合うようなFBMノイズ（環境音レベルの動き）
-    float liquid = fbm(uv * 3.0 * beatPulse + vec2(uTime * 0.03, 0.0));
-    float liquid2 = fbm(uv * 5.0 * beatPulse - vec2(0.0, uTime * 0.05));
     
     // ★ 光の指向性（左上が明るく、右下が暗い）
     vec2 lightDir = normalize(vec2(-1.0, -1.0));
@@ -87,22 +67,21 @@ const fragmentShader = `
     vec3 lavender = vec3(0.7, 0.55, 0.9);
     
     // ★ カラーブレンド
-    float redMask = smoothstep(0.3, 0.7, uv.y + liquid * 0.3);
+    float redMask = smoothstep(0.3, 0.7, uv.y);
     float cyanMask = 1.0 - redMask;
     
     // 対角線ベースのグラデーション
     float diagonalGrad = (uv.x + (1.0 - uv.y)) * 0.5;
-    diagonalGrad += liquid * 0.2;
     
     // メインカラーミックス
     vec3 color = mix(vividRed, turquoise, diagonalGrad);
     
     // ラベンダーアクセント（中央から左上）
     float lavenderMask = smoothstep(0.4, 0.8, 1.0 - uv.x + uv.y * 0.5);
-    color = mix(color, lavender, lavenderMask * liquid * 0.6);
+    color = mix(color, lavender, lavenderMask * 0.6);
     
     // ソフトホワイトハイライト（左上）
-    float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y + liquid2 * 0.3);
+    float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y);
     color = mix(color, softWhite, whiteMask * 0.0); // 白ハイライトを完全に消す
     
     // ★ 光の輝き（左上から）- 控えめに
