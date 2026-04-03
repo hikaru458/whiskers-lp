@@ -121,15 +121,17 @@ const fragmentShader = `
     float rgbShift = 0.003 + sin(uTime * 0.2) * 0.002; // 固定〜ゆっくり変化
     vec2 shiftDir = normalize(vec2(1.0, -0.5)); // 斜め方向にシフト
     
-    // 赤チャンネルを少しずらす
-    float redShifted = smoothstep(0.3, 0.7, (uv + shiftDir * rgbShift).y + liquid * 0.3);
-    float redCyanGrad = ((uv + shiftDir * rgbShift).x + (1.0 - (uv + shiftDir * rgbShift).y)) * 0.5;
+    // 赤チャンネルを少しずらす（UV座標を0.0〜1.0にクランプ）
+    vec2 redUV = clamp(uv + shiftDir * rgbShift, 0.0, 1.0);
+    float redShifted = smoothstep(0.3, 0.7, redUV.y + liquid * 0.3);
+    float redCyanGrad = (redUV.x + (1.0 - redUV.y)) * 0.5;
     redCyanGrad += liquid * 0.2;
     vec3 colorR = mix(vividRed, turquoise, redCyanGrad);
     
-    // 青チャンネルを逆方向にずらす
-    float blueShifted = smoothstep(0.3, 0.7, (uv - shiftDir * rgbShift).y + liquid * 0.3);
-    float blueCyanGrad = ((uv - shiftDir * rgbShift).x + (1.0 - (uv - shiftDir * rgbShift).y)) * 0.5;
+    // 青チャンネルを逆方向にずらす（UV座標を0.0〜1.0にクランプ）
+    vec2 blueUV = clamp(uv - shiftDir * rgbShift, 0.0, 1.0);
+    float blueShifted = smoothstep(0.3, 0.7, blueUV.y + liquid * 0.3);
+    float blueCyanGrad = (blueUV.x + (1.0 - blueUV.y)) * 0.5;
     blueCyanGrad += liquid * 0.2;
     vec3 colorB = mix(vividRed, turquoise, blueCyanGrad);
     
