@@ -87,7 +87,6 @@ const GlassPanelScene = memo(function GlassPanelScene({
     <>
       <ambientLight intensity={0.5} />
       <PhotoLayer texture={texture} width={FIXED_WIDTH} height={FIXED_HEIGHT} />
-      <FrontGlass width={FIXED_WIDTH} height={FIXED_HEIGHT} />
       <Preload all />
     </>
   );
