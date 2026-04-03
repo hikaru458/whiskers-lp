@@ -15,7 +15,7 @@ export default function GlassPhotoPanel({
   imageSrc,
   title,
   description,
-  linkText = "→ 詳細",
+  linkText = "隧ｳ邏ｰ",
   linkHref = "#",
   imagePosition = "left",
 }: GlassPhotoPanelProps) {
@@ -23,9 +23,7 @@ export default function GlassPhotoPanel({
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* PC版 */}
       <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
-        {/* 写真（標準のnext/image） */}
         <div
           className={`relative aspect-[4/5] bg-black ${
             isImageLeft ? "order-1" : "order-2"
@@ -40,7 +38,6 @@ export default function GlassPhotoPanel({
           />
         </div>
 
-        {/* テキストパネル - 引き算の美学 */}
         <div
           className={`relative flex flex-col justify-center p-8 ${
             isImageLeft ? "order-2" : "order-1"
@@ -67,7 +64,6 @@ export default function GlassPhotoPanel({
         </div>
       </div>
 
-      {/* スマホ版 */}
       <div className="md:hidden rounded-2xl overflow-hidden">
         <div className="relative aspect-square overflow-hidden">
           <Image
