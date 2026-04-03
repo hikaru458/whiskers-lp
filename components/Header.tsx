@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isElastic, setIsElastic] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 });
 
   const navItems = [
     { label: "Gallery", href: "#gallery" },
@@ -13,7 +16,44 @@ export default function Header() {
     { label: "FAQ", href: "#faq" },
   ];
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  // マグネティック効果
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = button.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const distX = e.clientX - centerX;
+      const distY = e.clientY - centerY;
+      const distance = Math.sqrt(distX * distX + distY * distY);
+      
+      const magneticRadius = 100;
+      if (distance < magneticRadius) {
+        const strength = (magneticRadius - distance) / magneticRadius;
+        setMagneticOffset({
+          x: distX * strength * 0.3,
+          y: distY * strength * 0.3,
+        });
+      } else {
+        setMagneticOffset({ x: 0, y: 0 });
+      }
+    };
+
+    const handleMouseLeave = () => {
+      setMagneticOffset({ x: 0, y: 0 });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    button.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      button.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
     e.preventDefault();
     setMenuOpen(false);
     
@@ -51,6 +91,13 @@ export default function Header() {
     });
   };
 
+  // 開閉時に弾性変形をトリガー
+  const toggleMenu = () => {
+    setIsElastic(true);
+    setMenuOpen(!menuOpen);
+    setTimeout(() => setIsElastic(false), 300);
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -59,26 +106,36 @@ export default function Header() {
           Whiskers
         </span>
 
-        {/* ハンバーガーメニュー - PC/スマホ共通 */}
+        {/* ハンバーガーメニュー - 2本線 + マグネティック + 弾性 */}
         <button
-          className="relative w-8 h-6 flex flex-col justify-between"
-          onClick={() => setMenuOpen(!menuOpen)}
+          ref={buttonRef}
+          className="relative w-8 h-6 flex flex-col justify-center items-center"
+          onClick={toggleMenu}
           aria-label="メニュー"
+          style={{
+            transform: `translate(${magneticOffset.x}px, ${magneticOffset.y}px)`,
+            transition: magneticOffset.x === 0 && magneticOffset.y === 0 ? "transform 0.3s ease-out" : "transform 0.1s ease-out",
+          }}
         >
           <span
-            className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-              menuOpen ? "rotate-45 translate-y-2.5" : ""
+            className={`absolute w-full h-0.5 bg-white rounded-full transition-all duration-300 origin-center ${
+              isElastic ? "scale-y-150" : ""
+            } ${
+              menuOpen ? "rotate-45" : "-translate-y-1.5"
             }`}
+            style={{
+              transitionTimingFunction: isElastic ? "cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "ease-out",
+            }}
           />
           <span
-            className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-              menuOpen ? "opacity-0" : ""
+            className={`absolute w-full h-0.5 bg-white rounded-full transition-all duration-300 origin-center ${
+              isElastic ? "scale-y-150" : ""
+            } ${
+              menuOpen ? "-rotate-45" : "translate-y-1.5"
             }`}
-          />
-          <span
-            className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-              menuOpen ? "-rotate-45 -translate-y-2.5" : ""
-            }`}
+            style={{
+              transitionTimingFunction: isElastic ? "cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "ease-out",
+            }}
           />
         </button>
       </div>
