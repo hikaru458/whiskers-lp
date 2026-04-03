@@ -45,12 +45,25 @@ export default function StarfieldBackground() {
       className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
       style={{
         background: `
-          radial-gradient(ellipse at 80% 20%, rgba(255, 80, 120, 0.5), transparent 55%),
-          radial-gradient(ellipse at 20% 70%, rgba(0, 220, 255, 0.45), transparent 50%),
-          radial-gradient(ellipse at 60% 60%, rgba(255, 150, 200, 0.4), transparent 60%),
-          radial-gradient(ellipse at 30% 30%, rgba(100, 200, 255, 0.35), transparent 50%),
-          linear-gradient(135deg, #ff6b9d 0%, #c44569 20%, #2d8bc9 40%, #00d2ff 60%, #3a7bd5 80%, #00d2ff 100%)
+          /* 左上：鮮やかなレッド〜ピンク */
+          radial-gradient(ellipse at 20% 20%, rgba(255, 59, 92, 0.6) 0%, transparent 50%),
+          /* 中央：深いブルー光（奥行き演出） */
+          radial-gradient(circle at 50% 50%, rgba(30, 58, 255, 0.4) 0%, transparent 60%),
+          /* 右下：紫〜バイオレット */
+          radial-gradient(ellipse at 80% 80%, rgba(122, 59, 255, 0.55) 0%, transparent 50%),
+          /* 主軸グラデーション：赤 → 青 → 紫 */
+          linear-gradient(145deg, 
+            #FF3B5C 0%,     /* 左上：レッドピンク */
+            #FF4B8C 15%,    /* ピンク */
+            #8B5CF6 35%,    /* 中間：バイオレット */
+            #1E3AFF 50%,    /* 中央：深いブルー（最も明るい） */
+            #5B4DFF 65%,    /* 青紫 */
+            #7A3BFF 80%,    /* 右下：紫 */
+            #6366F1 100%     /* 紫系で締める */
+          )
         `,
+        /* わずかに霧がかったディフューズ感 */
+        filter: "contrast(1.05) saturate(1.1)",
       }}
     >
       {/* 最小限グリッド - 水平線のみ */}
