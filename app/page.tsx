@@ -59,6 +59,9 @@ export default function Home() {
           camera={{ position: [0, 0, 8], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ antialias: false, alpha: true }}
+          onCreated={({ gl }) => {
+            gl.setClearColor(0x000000, 0); // 完全透明
+          }}
         >
           <ambientLight intensity={0.5} />
           <Suspense fallback={null}>
