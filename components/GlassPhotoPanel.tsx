@@ -30,7 +30,7 @@ const PhotoLayer = memo(function PhotoLayer({
   return (
     <mesh position={[0, 0, 0]} renderOrder={1}>
       <planeGeometry args={[width, height]} />
-      <meshBasicMaterial map={texture} toneMapped={false} alphaTest={0.5} side={THREE.DoubleSide} />
+      <meshBasicMaterial map={texture} toneMapped={false} transparent={false} side={THREE.DoubleSide} />
     </mesh>
   );
 });
