@@ -58,10 +58,10 @@ export default function Home() {
         <Canvas
           camera={{ position: [0, 0, 8], fov: 45 }}
           dpr={[1, 1.5]}
-          gl={{ antialias: false, alpha: true }}
+          gl={{ antialias: false, alpha: false }}
           style={{ width: '100vw', height: '100vh' }}
           onCreated={({ gl }) => {
-            gl.setClearColor(0x000000, 0); // 完全透明
+            gl.setClearColor(0x000000, 1); // 不透明
           }}
         >
           <ambientLight intensity={0.5} />
