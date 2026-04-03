@@ -105,11 +105,6 @@ const fragmentShader = `
     float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y + liquid2 * 0.3);
     color = mix(color, softWhite, whiteMask * 0.0); // 白ハイライトを完全に消す
     
-    // ★ モーションブラー効果を追加
-    float motionBlur = sin(uv.x * 20.0 + uTime * 2.0) * 0.5 + 0.5;
-    motionBlur *= sin(uv.y * 15.0 - uTime * 1.5) * 0.5 + 0.5;
-    color += liquid * 0.15;
-    
     // ★ 光の輝き（左上から）- 控えめに
     float glow = smoothstep(0.6, 0.0, length(uv - vec2(0.15, 0.85)));
     color += softWhite * glow * 0.03; // glowの白を弱くする
