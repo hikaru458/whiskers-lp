@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [magneticOffset, setMagneticOffset] = useState({ x: 0, y: 0 });
 
   const navItems = [
     { label: "Gallery", href: "#gallery" },
@@ -15,45 +13,6 @@ export default function Header() {
     { label: "Product", href: "#product" },
     { label: "FAQ", href: "#faq" },
   ];
-
-  // マグネティック効果
-  useEffect(() => {
-    const button = buttonRef.current;
-    if (!button) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = button.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      
-      const distX = e.clientX - centerX;
-      const distY = e.clientY - centerY;
-      const distance = Math.sqrt(distX * distX + distY * distY);
-      
-      const magneticRadius = 100;
-      if (distance < magneticRadius) {
-        const strength = (magneticRadius - distance) / magneticRadius;
-        setMagneticOffset({
-          x: distX * strength * 0.3,
-          y: distY * strength * 0.3,
-        });
-      } else {
-        setMagneticOffset({ x: 0, y: 0 });
-      }
-    };
-
-    const handleMouseLeave = () => {
-      setMagneticOffset({ x: 0, y: 0 });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    button.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      button.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -108,16 +67,11 @@ export default function Header() {
           Whiskers
         </span>
 
-        {/* ハンバーガーメニュー - 2本線 + マグネティック + 弾性 */}
+        {/* ハンバーガーメニュー - 2本線 + 弾性 */}
         <button
-          ref={buttonRef}
           className="relative w-8 h-6 flex flex-col justify-center items-center"
           onClick={toggleMenu}
           aria-label="メニュー"
-          style={{
-            transform: `translate(${magneticOffset.x}px, ${magneticOffset.y}px)`,
-            transition: magneticOffset.x === 0 && magneticOffset.y === 0 ? "transform 0.3s ease-out" : "transform 0.1s ease-out",
-          }}
         >
           <span
             className={`absolute w-full h-0.5 bg-white rounded-full transition-all duration-300 origin-center ${
