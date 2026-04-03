@@ -76,30 +76,30 @@ const fragmentShader = `
     float light = dot(normalize(uv - 0.5), lightDir) * 0.5 + 0.5;
     light = pow(light, 0.7);
     
-    // ★ カラーパレット
+    // ★ カラーパレット（スマホ壁紙の忠実再現）
     // 鮮烈なビビッドレッド
     vec3 vividRed = vec3(0.95, 0.1, 0.15);
-    // 深いターコイズブルー（シアン）
-    vec3 turquoise = vec3(0.05, 0.75, 0.85);
+    // マゼンタ
+    vec3 magenta = vec3(0.95, 0.25, 0.55);
+    // パープル
+    vec3 purple = vec3(0.50, 0.25, 0.95);
+    // 深い青
+    vec3 deepBlue = vec3(0.10, 0.25, 0.95);
     // ソフトホワイト（光が透過したような）
     vec3 softWhite = vec3(0.95, 0.95, 1.0);
-    // ラベンダーパープル（中間色）
-    vec3 lavender = vec3(0.7, 0.55, 0.9);
     
-    // ★ カラーブレンド
-    float redMask = smoothstep(0.3, 0.7, uv.y + liquid * 0.3);
-    float cyanMask = 1.0 - redMask;
+    // ★ カラーブレンド（赤→マゼンタ→紫→青）
+    float grad = (uv.x + (1.0 - uv.y)) * 0.5;
+    grad += liquid * 0.2;
     
-    // 対角線ベースのグラデーション
-    float diagonalGrad = (uv.x + (1.0 - uv.y)) * 0.5;
-    diagonalGrad += liquid * 0.2;
-    
-    // メインカラーミックス
-    vec3 color = mix(vividRed, turquoise, diagonalGrad);
-    
-    // ラベンダーアクセント（中央から左上）
-    float lavenderMask = smoothstep(0.4, 0.8, 1.0 - uv.x + uv.y * 0.5);
-    color = mix(color, lavender, lavenderMask * liquid * 0.6);
+    vec3 color;
+    if (grad < 0.33) {
+      color = mix(vividRed, magenta, grad / 0.33);
+    } else if (grad < 0.66) {
+      color = mix(magenta, purple, (grad - 0.33) / 0.33);
+    } else {
+      color = mix(purple, deepBlue, (grad - 1.0) / 0.34);
+    }
     
     // ソフトホワイトハイライト（左上）
     float whiteMask = smoothstep(0.8, 1.0, (1.0 - uv.x) * uv.y + liquid2 * 0.3);
@@ -122,16 +122,28 @@ const fragmentShader = `
     vec2 shiftDir = normalize(vec2(1.0, -0.5)); // 斜め方向にシフト
     
     // 赤チャンネルを少しずらす
-    float redShifted = smoothstep(0.3, 0.7, (uv + shiftDir * rgbShift).y + liquid * 0.3);
     float redCyanGrad = ((uv + shiftDir * rgbShift).x + (1.0 - (uv + shiftDir * rgbShift).y)) * 0.5;
     redCyanGrad += liquid * 0.2;
-    vec3 colorR = mix(vividRed, turquoise, redCyanGrad);
+    vec3 colorR;
+    if (redCyanGrad < 0.33) {
+      colorR = mix(vividRed, magenta, redCyanGrad / 0.33);
+    } else if (redCyanGrad < 0.66) {
+      colorR = mix(magenta, purple, (redCyanGrad - 0.33) / 0.33);
+    } else {
+      colorR = mix(purple, deepBlue, (redCyanGrad - 0.33) / 0.34);
+    }
     
     // 青チャンネルを逆方向にずらす
-    float blueShifted = smoothstep(0.3, 0.7, (uv - shiftDir * rgbShift).y + liquid * 0.3);
     float blueCyanGrad = ((uv - shiftDir * rgbShift).x + (1.0 - (uv - shiftDir * rgbShift).y)) * 0.5;
     blueCyanGrad += liquid * 0.2;
-    vec3 colorB = mix(vividRed, turquoise, blueCyanGrad);
+    vec3 colorB;
+    if (blueCyanGrad < 0.33) {
+      colorB = mix(vividRed, magenta, blueCyanGrad / 0.33);
+    } else if (blueCyanGrad < 0.66) {
+      colorB = mix(magenta, purple, (blueCyanGrad - 0.33) / 0.33);
+    } else {
+      colorB = mix(purple, deepBlue, (blueCyanGrad - 0.33) / 0.34);
+    }
     
     // RGBチャンネルを合成
     color = vec3(colorR.r, color.g, colorB.b);
