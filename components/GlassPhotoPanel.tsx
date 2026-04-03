@@ -108,7 +108,7 @@ export default function GlassPhotoPanel({
       <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
         {/* 写真（Three.js・4/5固定） */}
         <div
-          className={`relative aspect-[4/5] overflow-hidden ${
+          className={`relative aspect-[4/5] overflow-hidden bg-black ${
             isImageLeft ? "order-1" : "order-2"
           }`}
         >
