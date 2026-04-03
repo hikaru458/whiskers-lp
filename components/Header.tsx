@@ -80,7 +80,7 @@ export default function Header() {
               menuOpen ? "rotate-45" : "-translate-y-1.5"
             }`}
             style={{
-              height: "0.5px",
+              height: "0.75px",
               transitionTimingFunction: isElastic ? "cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "ease-out",
             }}
           />
@@ -91,7 +91,7 @@ export default function Header() {
               menuOpen ? "-rotate-45" : "translate-y-1.5"
             }`}
             style={{
-              height: "0.75px",
+              height: "0.5px",
               transitionTimingFunction: isElastic ? "cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "ease-out",
             }}
           />
