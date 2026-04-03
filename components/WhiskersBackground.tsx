@@ -117,27 +117,6 @@ const fragmentShader = `
     // ★ 暗部の引き締め（コントラスト強調）
     color = pow(color, vec3(1.3));
     
-    // ★ 色収差（RGB Shift）- 「デジタルな空気感」として常時微細な揺らぎ
-    float rgbShift = 0.003 + sin(uTime * 0.2) * 0.002; // 固定〜ゆっくり変化
-    vec2 shiftDir = normalize(vec2(1.0, -0.5)); // 斜め方向にシフト
-    
-    // 赤チャンネルを少しずらす（UV座標を0.0〜1.0にクランプ）
-    vec2 redUV = clamp(uv + shiftDir * rgbShift, 0.0, 1.0);
-    float redShifted = smoothstep(0.3, 0.7, redUV.y + liquid * 0.3);
-    float redCyanGrad = (redUV.x + (1.0 - redUV.y)) * 0.5;
-    redCyanGrad += liquid * 0.2;
-    vec3 colorR = mix(vividRed, turquoise, redCyanGrad);
-    
-    // 青チャンネルを逆方向にずらす（UV座標を0.0〜1.0にクランプ）
-    vec2 blueUV = clamp(uv - shiftDir * rgbShift, 0.0, 1.0);
-    float blueShifted = smoothstep(0.3, 0.7, blueUV.y + liquid * 0.3);
-    float blueCyanGrad = (blueUV.x + (1.0 - blueUV.y)) * 0.5;
-    blueCyanGrad += liquid * 0.2;
-    vec3 colorB = mix(vividRed, turquoise, blueCyanGrad);
-    
-    // RGBチャンネルを合成
-    color = vec3(colorR.r, color.g, colorB.b);
-    
     // ★ デジタルノイズ感（わずかに）
     float digitalNoise = hash(uv * 1000.0 + uTime) * 0.03;
     color += digitalNoise;
