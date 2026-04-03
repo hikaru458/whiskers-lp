@@ -121,6 +121,9 @@ export default function GlassPhotoPanel({
             frameloop="demand"
             dpr={[1, 1.5]}
             className="absolute inset-0"
+            onCreated={({ gl }) => {
+              gl.setClearColor(0x000000, 1); // 黒背景、不透明
+            }}
           >
             <GlassPanelScene imageSrc={imageSrc} />
           </Canvas>
