@@ -20,8 +20,6 @@ export default function Header() {
     const id = href.replace("#", "");
     const isPc = window.innerWidth >= 768;
     
-    console.log(`[Nav] Clicked: ${href}, isPc: ${isPc}`);
-    
     // PC/モバイル両方のIDパターンを生成
     const pcId = `${id}-pc`;
     const mobileId = id;
@@ -30,12 +28,8 @@ export default function Header() {
     const primaryId = isPc ? pcId : mobileId;
     const fallbackId = isPc ? mobileId : pcId;
     
-    console.log(`[Nav] Looking for: ${primaryId} or ${fallbackId}`);
-    
     // 要素を取得（優先ID → fallbackID の順）
     let element = document.getElementById(primaryId) || document.getElementById(fallbackId);
-    
-    console.log(`[Nav] Found element:`, element?.id || "NOT FOUND");
     
     // 要素が見つからない場合は処理中断
     if (!element) {
@@ -43,44 +37,18 @@ export default function Header() {
       return;
     }
     
-    // PC の場合は遅延なしで即スクロール（pcContainer.scrollToを使用、セクション中央揃え）
-    if (isPc) {
-      const pcContainer = document.querySelector('.pc-scroll-container') as HTMLElement | null;
-      if (pcContainer) {
-        const header = document.querySelector("header");
-        const headerHeight = header?.offsetHeight ?? 80;
+    // 通常のページスクロール（PC/モバイル共通）
+    const header = document.querySelector("header");
+    const headerHeight = header?.offsetHeight ?? 80;
 
-        // セクションの中央位置
-        const sectionCenter = element.offsetTop + element.offsetHeight / 2;
+    const rect = element.getBoundingClientRect();
+    const scrollY = window.scrollY;
+    const targetY = rect.top + scrollY - headerHeight;
 
-        // コンテナの中央位置（ヘッダー分を引く）
-        const containerCenter = (pcContainer.clientHeight - headerHeight) / 2;
-
-        // スクロール位置 = セクション中央 - コンテナ中央
-        const targetTop = sectionCenter - containerCenter;
-
-        pcContainer.scrollTo({
-          top: Math.max(0, targetTop),
-          behavior: "smooth",
-        });
-      }
-      return;
-    }
-
-    // スマホだけ遅延スクロール
-    setTimeout(() => {
-      const header = document.querySelector("header");
-      const headerHeight = header?.offsetHeight ?? 80;
-
-      const rect = element.getBoundingClientRect();
-      const scrollY = window.scrollY;
-      const targetY = rect.top + scrollY - headerHeight;
-
-      window.scrollTo({
-        top: Math.max(0, targetY),
-        behavior: "smooth",
-      });
-    }, 300);
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: "smooth",
+    });
   };
 
   return (
