@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import { useTexture, Preload } from "@react-three/drei";
 import * as THREE from "three";
 import Image from "next/image";
 
@@ -16,44 +16,61 @@ interface GlassPhotoPanelProps {
 }
 
 /* -------------------------------------------------------
-   Layer 1: Photo（auto-fit・シンプル）
+   Layer 1: Photo（memo化・軽量化）
 ------------------------------------------------------- */
-function PhotoLayer({ imageSrc, width, height }: { imageSrc: string; width: number; height: number }) {
-  const texture = useTexture(imageSrc);
-
+const PhotoLayer = memo(function PhotoLayer({ 
+  texture, 
+  width, 
+  height 
+}: { 
+  texture: THREE.Texture; 
+  width: number; 
+  height: number 
+}) {
   return (
     <mesh position={[0, 0, 0]} renderOrder={1}>
       <planeGeometry args={[width, height]} />
       <meshBasicMaterial map={texture} toneMapped={false} />
     </mesh>
   );
-}
+});
 
 /* -------------------------------------------------------
-   Layer 2: Front Glass（透明グレーパネル）
+   Layer 2: Front Glass（memo化）
 ------------------------------------------------------- */
-function FrontGlass({ width, height }: { width: number; height: number }) {
+const FrontGlass = memo(function FrontGlass({ 
+  width, 
+  height 
+}: { 
+  width: number; 
+  height: number 
+}) {
+  const material = useMemo(() => {
+    return new THREE.MeshPhysicalMaterial({
+      color: "#ffffff",
+      transparent: true,
+      opacity: 0.15,
+      roughness: 0.2,
+      metalness: 0,
+      side: THREE.DoubleSide,
+    });
+  }, []);
+
   return (
-    <mesh position={[0, 0, 0.05]} renderOrder={2}>
+    <mesh position={[0, 0, 0.05]} renderOrder={2} material={material}>
       <planeGeometry args={[width, height]} />
-      <meshPhysicalMaterial
-        color="#ffffff"
-        transparent
-        opacity={0.15}
-        roughness={0.2}
-        metalness={0}
-        transmission={0}
-        thickness={0}
-        side={THREE.DoubleSide}
-      />
     </mesh>
   );
-}
+});
 
 /* -------------------------------------------------------
-   Combined Scene（2レイヤー・4/5固定）
+   Combined Scene（軽量化・メモ化）
 ------------------------------------------------------- */
-function GlassPanelScene({ imageSrc }: { imageSrc: string }) {
+const GlassPanelScene = memo(function GlassPanelScene({ 
+  imageSrc 
+}: { 
+  imageSrc: string 
+}) {
   const { camera } = useThree();
   const texture = useTexture(imageSrc);
 
@@ -68,12 +85,13 @@ function GlassPanelScene({ imageSrc }: { imageSrc: string }) {
 
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <PhotoLayer imageSrc={imageSrc} width={FIXED_WIDTH} height={FIXED_HEIGHT} />
+      <ambientLight intensity={0.5} />
+      <PhotoLayer texture={texture} width={FIXED_WIDTH} height={FIXED_HEIGHT} />
       <FrontGlass width={FIXED_WIDTH} height={FIXED_HEIGHT} />
+      <Preload all />
     </>
   );
-}
+});
 
 export default function GlassPhotoPanel({
   imageSrc,
@@ -97,7 +115,13 @@ export default function GlassPhotoPanel({
         >
           <Canvas
             camera={{ position: [0, 0, 2], fov: 45 }}
-            gl={{ antialias: true, alpha: true }}
+            gl={{ 
+              antialias: false, 
+              alpha: true,
+              powerPreference: "high-performance",
+            }}
+            frameloop="demand"
+            dpr={[1, 1.5]}
             className="absolute inset-0"
           >
             <GlassPanelScene imageSrc={imageSrc} />
