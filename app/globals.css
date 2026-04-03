@@ -48,49 +48,6 @@ body {
   font-family: "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", var(--font-playfair), "Yu Mincho", "Noto Serif JP", serif;
 }
 
-/* Cat paw prints animation */
-@keyframes paw-walk {
-  0% {
-    transform: translateX(-50px) rotate(-15deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.3;
-  }
-  90% {
-    opacity: 0.3;
-  }
-  100% {
-    transform: translateX(calc(100vw + 50px)) rotate(-15deg);
-    opacity: 0;
-  }
-}
-
-@keyframes paw-walk-reverse {
-  0% {
-    transform: translateX(50px) rotate(15deg) scaleX(-1);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.3;
-  }
-  90% {
-    opacity: 0.3;
-  }
-  100% {
-    transform: translateX(calc(-100vw - 50px)) rotate(15deg) scaleX(-1);
-    opacity: 0;
-  }
-}
-
-.animate-paw-walk-slow {
-  animation: paw-walk linear infinite;
-}
-
-.animate-paw-walk-reverse-slow {
-  animation: paw-walk-reverse linear infinite;
-}
-
 /* Stagger slide-in animation for navigation menu */
 @keyframes slideIn {
   0% {
