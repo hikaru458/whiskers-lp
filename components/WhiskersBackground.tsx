@@ -110,9 +110,9 @@ const fragmentShader = `
     motionBlur *= sin(uv.y * 15.0 - uTime * 1.5) * 0.5 + 0.5;
     color += liquid * 0.15;
     
-    // ★ 光の輝き（左上から）
-    float glow = smoothstep(0.5, 0.0, length(uv - vec2(0.1, 0.9)));
-    color += softWhite * glow * 0.4;
+    // ★ 光の輝き（左上から）- 控えめに
+    float glow = smoothstep(0.6, 0.0, length(uv - vec2(0.15, 0.85)));
+    color += softWhite * glow * 0.15;
     
     // ★ 暗部の引き締め（コントラスト強調）
     color = pow(color, vec3(1.3));
@@ -165,7 +165,7 @@ export default function WhiskersBackground() {
   });
 
   return (
-    <mesh ref={meshRef} scale={[viewport.width, viewport.height, 1]} position={[0, 0, -2]}>
+    <mesh ref={meshRef} scale={[viewport.width * 2, viewport.height * 2, 1]} position={[0, 0, -10]}>
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
         vertexShader={vertexShader}
