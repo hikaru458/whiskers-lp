@@ -44,13 +44,6 @@ const fragmentShader = `
   void main() {
     vec2 uv = vUv;
     
-    // ★ 対角線の動き（左下→右上）
-    vec2 diagonal = rotate(uv - 0.5, 0.785); // 45度回転
-    
-    // ★ モーションブラー効果
-    float blur = sin(diagonal.x * 8.0 + uTime * 0.5) * 0.5 + 0.5;
-    blur = pow(blur, 2.0);
-    
     // ★ 光の指向性（左上が明るく、右下が暗い）
     vec2 lightDir = normalize(vec2(-1.0, -1.0));
     float light = dot(normalize(uv - 0.5), lightDir) * 0.5 + 0.5;
@@ -90,23 +83,6 @@ const fragmentShader = `
     
     // ★ 暗部の引き締め（コントラスト強調）
     color = pow(color, vec3(1.3));
-    
-    // ★ 色収差（RGB Shift）- 「デジタルな空気感」として常時微細な揺らぎ
-    float rgbShift = 0.003 + sin(uTime * 0.2) * 0.002; // 固定〜ゆっくり変化
-    vec2 shiftDir = normalize(vec2(1.0, -0.5)); // 斜め方向にシフト
-    
-    // 赤チャンネルを少しずらす（UV座標を0.0〜1.0にクランプ）
-    vec2 redUV = clamp(uv + shiftDir * rgbShift, 0.0, 1.0);
-    float redCyanGrad = (redUV.x + (1.0 - redUV.y)) * 0.5;
-    vec3 colorR = mix(vividRed, turquoise, redCyanGrad);
-    
-    // 青チャンネルを逆方向にずらす（UV座標を0.0〜1.0にクランプ）
-    vec2 blueUV = clamp(uv - shiftDir * rgbShift, 0.0, 1.0);
-    float blueCyanGrad = (blueUV.x + (1.0 - blueUV.y)) * 0.5;
-    vec3 colorB = mix(vividRed, turquoise, blueCyanGrad);
-    
-    // RGBチャンネルを合成
-    color = vec3(colorR.r, color.g, colorB.b);
     
     // ★ デジタルノイズ感（わずかに）
     float digitalNoise = hash(uv * 1000.0 + uTime) * 0.03;
