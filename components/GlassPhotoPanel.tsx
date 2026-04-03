@@ -36,35 +36,6 @@ const PhotoLayer = memo(function PhotoLayer({
 });
 
 /* -------------------------------------------------------
-   Layer 2: Front Glass（memo化）
-------------------------------------------------------- */
-const FrontGlass = memo(function FrontGlass({ 
-  width, 
-  height 
-}: { 
-  width: number; 
-  height: number 
-}) {
-  const material = useMemo(() => {
-    return new THREE.MeshPhysicalMaterial({
-      color: "#ffffff",
-      transparent: true,
-      opacity: 0.15,
-      roughness: 0.2,
-      metalness: 0,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-    });
-  }, []);
-
-  return (
-    <mesh position={[0, 0, 0.05]} renderOrder={2} material={material}>
-      <planeGeometry args={[width, height]} />
-    </mesh>
-  );
-});
-
-/* -------------------------------------------------------
    Combined Scene（軽量化・メモ化）
 ------------------------------------------------------- */
 const GlassPanelScene = memo(function GlassPanelScene({ 
