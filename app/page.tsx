@@ -144,7 +144,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <FadeInSection>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-              CAMPFIREで支援を募集中
+              支援を募集中
             </h2>
             <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
               Whiskersを一緒に作り上げてくださる仲間を募集しています。<br />
@@ -152,12 +152,12 @@ export default function Home() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <div className="text-3xl font-bold text-white mb-2">¥3,000</div>
-                <div className="text-sm text-white/60">限定デジタル壁紙</div>
-              </div>
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
                 <div className="text-3xl font-bold text-white mb-2">¥30,000</div>
                 <div className="text-sm text-white/60">ベータ版先行利用権</div>
+              </div>
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="text-3xl font-bold text-white mb-2">¥100,000</div>
+                <div className="text-sm text-white/60">プラットフォーム内広告枠1ヶ月</div>
               </div>
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
                 <div className="text-3xl font-bold text-white mb-2">¥300,000</div>
