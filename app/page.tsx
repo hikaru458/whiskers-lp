@@ -77,16 +77,16 @@ export default function Home() {
 
       {/* Heroセクション */}
       <section id="hero" className="relative z-10 h-screen flex flex-col items-center pt-24 px-6">
-        <div className="flex flex-col sm:flex-row items-center gap-4 mt-4 mb-16">
+        <div className="flex flex-col items-center gap-3 mt-4 mb-16">
           <a
             href="#business"
-            className="px-6 py-3 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+            className="px-5 py-2 rounded-full text-xs md:text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
           >
             企業様向け
           </a>
           <a
             href="#creators"
-            className="px-6 py-3 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+            className="px-5 py-2 rounded-full text-xs md:text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
           >
             クリエイター様向け
           </a>
