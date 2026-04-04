@@ -80,38 +80,6 @@ export default function Header() {
           </span>
         </div>
 
-        {/* 企業様・クリエイター向けボタン - PC */}
-        <div className="hidden md:flex items-center gap-4 mx-auto">
-          <a
-            href="#business"
-            className="px-4 py-2 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
-          >
-            企業様向け
-          </a>
-          <a
-            href="#creators"
-            className="px-4 py-2 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
-          >
-            クリエイター様向け
-          </a>
-        </div>
-
-        {/* 企業様・クリエイター向けボタン - スマホ（中央に表示） */}
-        <div className="flex md:hidden items-center gap-2 absolute left-1/2 -translate-x-1/2">
-          <a
-            href="#business"
-            className="px-3 py-1.5 rounded-full text-xs font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
-          >
-            企業様向け
-          </a>
-          <a
-            href="#creators"
-            className="px-3 py-1.5 rounded-full text-xs font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
-          >
-            クリエイター様向け
-          </a>
-        </div>
-
         {/* ハンバーガーメニュー - 2本線 + 弾性 */}
         <button
           className="relative w-8 h-6 flex flex-col justify-center items-center ml-auto"

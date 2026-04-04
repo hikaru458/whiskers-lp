@@ -80,9 +80,23 @@ export default function Home() {
         <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
           Whiskers
         </h1>
-        <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl">
+        <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl mb-8">
           企業とクリエイターをつなぐ<br />コンテスト型UGCプラットフォーム
         </p>
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <a
+            href="#business"
+            className="px-6 py-3 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+          >
+            企業様向け
+          </a>
+          <a
+            href="#creators"
+            className="px-6 py-3 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+          >
+            クリエイター様向け
+          </a>
+        </div>
       </section>
 
       {/* 6セクション - PC版 */}
