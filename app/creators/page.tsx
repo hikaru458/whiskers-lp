@@ -11,7 +11,6 @@ import {
   Star,
   CheckCircle
 } from "lucide-react";
-import { CatLogo } from "@/components/CatLogo";
 
 // モッククリエイターデータ
 const creators = [

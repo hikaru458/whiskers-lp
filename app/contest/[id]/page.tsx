@@ -4,17 +4,16 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { 
   ArrowLeft, 
-  Calendar, 
-  Users, 
-  Trophy, 
+  Play, 
+  Heart, 
+  Eye, 
+  User,
   Building2,
-  ArrowRight,
-  CheckCircle,
-  FileText,
-  Clock,
-  Gift
+  Award,
+  Share2,
+  Download,
+  CheckCircle
 } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
 
 // モックコンテストデータ - contest/page.tsx と同期
 const contestData: Record<string, {

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, Gift, Calendar, Users, ArrowRight, Plus, Film, Palette, PenTool, Music } from "lucide-react";
-import { CatLogo } from "@/components/CatLogo";
 
 // モックデータ - 企業登録商品
 const products = [

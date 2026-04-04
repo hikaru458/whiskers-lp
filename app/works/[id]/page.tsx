@@ -12,9 +12,10 @@ import {
   Award,
   Share2,
   Download,
-  CheckCircle
+  CheckCircle,
+  Filter,
+  ArrowRight
 } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
 
 // モック作品データ
 const worksData: Record<string, {

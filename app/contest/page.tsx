@@ -2,8 +2,24 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, Calendar, Gift, Users, ArrowRight, Palette, Film, PenTool, Music } from "lucide-react";
-import { CatLogo } from "@/components/CatLogo";
+import { 
+  Award, 
+  Film, 
+  Heart, 
+  Users,
+  ArrowRight,
+  ArrowLeft,
+  Star,
+  CheckCircle,
+  ArrowLeft, 
+  Calendar, 
+  Gift, 
+  Users, 
+  ArrowRight, 
+  Palette, 
+  PenTool, 
+  Music 
+} from "lucide-react";
 
 // モックデータ - 動画コンテスト
 const videoContests = [

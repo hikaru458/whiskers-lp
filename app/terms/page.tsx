@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, FileText, Shield } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
 
 export default function TermsPage() {
   return (

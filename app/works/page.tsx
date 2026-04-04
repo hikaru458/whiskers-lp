@@ -11,7 +11,6 @@ import {
   Award,
   ArrowRight
 } from "lucide-react";
-import { CatLogo } from "@/components/CatLogo";
 
 // モックUGCデータ - 部門別
 const ugcWorks = [

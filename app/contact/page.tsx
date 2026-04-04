@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, Send, User, Building2, Mail, MessageSquare, CheckCircle, Loader2 } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
 import { useState } from "react";
 
 // Google Apps Script URL - デプロイ後に書き換えてください

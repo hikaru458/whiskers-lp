@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, Shield, FileText } from "lucide-react";
-import { BrandLogo } from "@/components/BrandLogo";
 
 export default function PrivacyPage() {
   return (
