@@ -77,7 +77,7 @@ export default function Home() {
 
       {/* Heroセクション */}
       <section id="hero" className="relative z-10 h-screen flex flex-col items-center pt-24 px-6">
-        <div className="flex flex-col items-center gap-3 mt-4 mb-16">
+        <div className="flex flex-row items-center gap-3 mt-4 mb-16">
           <a
             href="#business"
             className="px-5 py-2 rounded-full text-xs md:text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
