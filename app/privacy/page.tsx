@@ -160,7 +160,6 @@ export default function PrivacyPage() {
               <span className="text-sm text-gray-500">— 創造をつなぐ</span>
             </div>
             <div className="flex flex-col items-center gap-4">
-              <BrandLogo />
               <span className="text-sm text-gray-500">© 2024 Whiskers. All rights reserved.</span>
             </div>
           </div>

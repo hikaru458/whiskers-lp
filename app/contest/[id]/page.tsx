@@ -12,7 +12,9 @@ import {
   Award,
   Share2,
   Download,
-  CheckCircle
+  CheckCircle,
+  Trophy,
+  Calendar
 } from "lucide-react";
 
 // モックコンテストデータ - contest/page.tsx と同期
@@ -501,7 +503,6 @@ export default function ContestDetailPage() {
               <span className="text-sm text-gray-500">— 創造をつなぐ</span>
             </div>
             <div className="flex flex-col items-center gap-4">
-              <BrandLogo />
               <span className="text-sm text-gray-500">© 2024 Whiskers. All rights reserved.</span>
             </div>
           </div>
