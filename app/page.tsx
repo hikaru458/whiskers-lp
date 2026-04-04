@@ -75,12 +75,8 @@ export default function Home() {
       {/* ヘッダー */}
       <Header />
 
-      {/* 6セクション - PCでは左右交互 */}
+      {/* 6セクション - 統合版 */}
       <div className="hidden md:block">
-        {/* Heroセクション */}
-        <section id="hero" className="relative z-10 h-screen flex flex-col items-center justify-center px-6">
-        </section>
-
         {SECTIONS.map((section, index) => {
           const isEven = index % 2 === 0;
           const isReversed = !isEven;
@@ -108,10 +104,6 @@ export default function Home() {
 
       {/* スマホ版: 通常スクロール */}
       <div className="md:hidden">
-        {/* Heroセクション */}
-        <section id="hero" className="relative z-10 min-h-[100svh] flex flex-col items-center justify-center px-6">
-        </section>
-
         {SECTIONS.map((section, index) => {
           const isEven = index % 2 === 0;
           const isReversed = !isEven;
