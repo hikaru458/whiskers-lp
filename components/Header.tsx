@@ -22,21 +22,24 @@ export default function Header() {
     const target = href;
     const isMobile = window.innerWidth < 768;
     const prefix = isMobile ? "sp-" : "pc-";
+    const targetId = prefix + target;
 
-    const element = document.getElementById(prefix + target);
-    if (!element) return;
+    console.log(`[Nav] Target: ${target}, isMobile: ${isMobile}, Looking for ID: ${targetId}`);
 
-    const header = document.getElementById("whiskers-header");
-    const headerHeight = header?.offsetHeight ?? 80;
+    const element = document.getElementById(targetId);
+    if (!element) {
+      console.warn(`[Nav] Section not found: ${targetId}`);
+      // フォールバック: pc-またはsp-なしのIDも探す
+      const fallbackElement = document.getElementById(target);
+      if (fallbackElement) {
+        console.log(`[Nav] Found fallback ID: ${target}`);
+        fallbackElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
 
-    const rect = element.getBoundingClientRect();
-    const scrollY = window.scrollY;
-    const targetY = rect.top + scrollY - headerHeight;
-
-    window.scrollTo({
-      top: Math.max(0, targetY),
-      behavior: "smooth"
-    });
+    console.log(`[Nav] Found element: ${targetId}, scrolling...`);
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   // 開閉時に弾性変形をトリガー
