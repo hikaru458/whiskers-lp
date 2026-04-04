@@ -84,7 +84,7 @@ export default function Home() {
           return (
             <section
               key={`pc-${section.title}`}
-              id={`${section.title.toLowerCase()}`}
+              id={`pc-${section.title.toLowerCase()}`}
               className="relative z-10 h-screen flex items-center py-20 px-6"
             >
               <div className="max-w-6xl mx-auto w-full">
@@ -111,7 +111,7 @@ export default function Home() {
           return (
             <section
               key={`mobile-${section.title}`}
-              id={section.title.toLowerCase()}
+              id={`sp-${section.title.toLowerCase()}`}
               className="relative z-10 min-h-[100svh] flex items-center py-20 px-6"
             >
               <div className="max-w-6xl mx-auto w-full">

@@ -18,19 +18,18 @@ export default function Header() {
     e.preventDefault();
     setMenuOpen(false);
     
-    const baseId = href.replace("#", "");
-    const pcId = `${baseId}-pc`;
+    const target = href.replace("#", "");
+    const isMobile = window.innerWidth < 768;
+    const prefix = isMobile ? "sp-" : "pc-";
     
-    // PC版とモバイル版の両方を探す
-    let element = document.getElementById(baseId) || document.getElementById(pcId);
+    const element = document.getElementById(prefix + target);
     
-    // 要素が見つからない場合は処理中断
     if (!element) {
-      console.warn(`[Nav] Section not found: ${baseId} or ${pcId}`);
+      console.warn(`[Nav] Section not found: ${prefix}${target}`);
       return;
     }
     
-    // 通常のページスクロール（PC/モバイル共通）
+    // ヘッダー高さを考慮してスクロール
     const header = document.querySelector("header");
     const headerHeight = header?.offsetHeight ?? 80;
 

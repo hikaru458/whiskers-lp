@@ -43,8 +43,8 @@ export default function GlassPhotoPanel({
             isImageLeft ? "order-2" : "order-1"
           }`}
           style={{
-            background: "rgba(15, 23, 42, 0.95)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.30) 100%)",
+            backdropFilter: "blur(20px)",
           }}
         >
           <div className="space-y-4">
