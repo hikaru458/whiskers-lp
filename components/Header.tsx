@@ -7,30 +7,26 @@ export default function Header() {
   const [isElastic, setIsElastic] = useState(false);
 
   const navItems = [
-    { label: "Gallery", href: "#gallery" },
-    { label: "Creator", href: "#creator" },
-    { label: "Contest", href: "#contest" },
-    { label: "Product", href: "#product" },
-    { label: "FAQ", href: "#faq" },
+    { label: "Gallery", href: "gallery" },
+    { label: "Creator", href: "creator" },
+    { label: "Contest", href: "contest" },
+    { label: "Product", href: "product" },
+    { label: "FAQ", href: "faq" },
+    { label: "Contact", href: "contact" }
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMenuOpen(false);
-    
-    const target = href.replace("#", "");
+
+    const target = href;
     const isMobile = window.innerWidth < 768;
     const prefix = isMobile ? "sp-" : "pc-";
-    
+
     const element = document.getElementById(prefix + target);
-    
-    if (!element) {
-      console.warn(`[Nav] Section not found: ${prefix}${target}`);
-      return;
-    }
-    
-    // ヘッダー高さを考慮してスクロール
-    const header = document.querySelector("header");
+    if (!element) return;
+
+    const header = document.getElementById("whiskers-header");
     const headerHeight = header?.offsetHeight ?? 80;
 
     const rect = element.getBoundingClientRect();
@@ -39,7 +35,7 @@ export default function Header() {
 
     window.scrollTo({
       top: Math.max(0, targetY),
-      behavior: "smooth",
+      behavior: "smooth"
     });
   };
 
@@ -51,7 +47,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5">
+    <header id="whiskers-header" className="fixed top-0 left-0 right-0 z-50 px-6 py-5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* ロゴ */}
         <span className="text-lg font-bold tracking-[0.15em] text-white">
