@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Header from "@/components/Header";
 import PhotoPanel from "@/components/PhotoPanel";
@@ -68,9 +68,7 @@ export default function Home() {
           }}
         >
           <ambientLight intensity={0.5} />
-          <Suspense fallback={null}>
-            <WhiskersBackground />
-          </Suspense>
+          <WhiskersBackground />
         </Canvas>
       </div>
 
