@@ -51,7 +51,7 @@ export default function Header() {
 
   return (
     <header id="whiskers-header" className="fixed top-0 left-0 right-0 z-50 px-6 py-5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="max-w-7xl mx-auto flex items-center">
         {/* ロゴ */}
         <div className="flex items-center gap-3">
           <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@ export default function Header() {
 
         {/* ハンバーガーメニュー - 2本線 + 弾性 */}
         <button
-          className="relative w-8 h-6 flex flex-col justify-center items-center"
+          className="relative w-8 h-6 flex flex-col justify-center items-center ml-auto"
           onClick={toggleMenu}
           aria-label="メニュー"
         >
