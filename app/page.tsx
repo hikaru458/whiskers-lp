@@ -75,7 +75,17 @@ export default function Home() {
       {/* ヘッダー */}
       <Header />
 
-      {/* 6セクション - 統合版 */}
+      {/* Heroセクション */}
+      <section id="hero" className="relative z-10 h-screen flex flex-col items-center justify-center px-6">
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+          Whiskers
+        </h1>
+        <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl">
+          企業とクリエイターをつなぐ<br />コンテスト型UGCプラットフォーム
+        </p>
+      </section>
+
+      {/* 6セクション - PC版 */}
       <div className="hidden md:block">
         {SECTIONS.map((section, index) => {
           const isEven = index % 2 === 0;
