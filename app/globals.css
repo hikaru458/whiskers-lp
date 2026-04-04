@@ -23,8 +23,6 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-playfair: var(--font-playfair);
-  --font-zen: "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", serif;
-  --font-elegant: "Hiragino Mincho ProN W3", "Hiragino Mincho Pro W3", var(--font-playfair), "Yu Mincho", "Noto Serif JP", serif;
 }
 
 @media (prefers-color-scheme: dark) {
