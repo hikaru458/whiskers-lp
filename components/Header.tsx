@@ -81,7 +81,7 @@ export default function Header() {
         </div>
 
         {/* 企業様・クリエイター向けボタン - PC */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4 ml-8">
           <a
             href="#business"
             className="px-4 py-2 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
