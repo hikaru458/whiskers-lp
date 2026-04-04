@@ -111,6 +111,24 @@ export default function Header() {
         </button>
       </div>
 
+      {/* サブヘッダー - 企業様・クリエイター向けボタン */}
+      <div className="max-w-7xl mx-auto flex items-center justify-center py-3 border-t border-white/10">
+        <div className="flex flex-row items-center gap-3">
+          <a
+            href="#business"
+            className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium text-white/80 border border-white/30 hover:border-white/50 hover:bg-white/10 hover:text-white transition-all duration-300"
+          >
+            企業様向け
+          </a>
+          <a
+            href="#creators"
+            className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium text-white/80 border border-white/30 hover:border-white/50 hover:bg-white/10 hover:text-white transition-all duration-300"
+          >
+            クリエイター様向け
+          </a>
+        </div>
+      </div>
+
       {/* メニュー - PC/スマホ共通 */}
       {menuOpen && (
         <nav
