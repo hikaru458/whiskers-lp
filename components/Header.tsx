@@ -7,11 +7,11 @@ export default function Header() {
   const [isElastic, setIsElastic] = useState(false);
 
   const navItems = [
-    { label: "Gallery", href: "#gallery-pc" },
-    { label: "Creator", href: "#creator-pc" },
-    { label: "Contest", href: "#contest-pc" },
-    { label: "Product", href: "#product-pc" },
-    { label: "FAQ", href: "#faq-pc" },
+    { label: "Gallery", href: "#gallery" },
+    { label: "Creator", href: "#creator" },
+    { label: "Contest", href: "#contest" },
+    { label: "Product", href: "#product" },
+    { label: "FAQ", href: "#faq" },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -19,22 +19,13 @@ export default function Header() {
     setMenuOpen(false);
     
     const id = href.replace("#", "");
-    const isPc = window.innerWidth >= 768;
     
-    // PC/モバイル両方のIDパターンを生成
-    const pcId = `${id}-pc`;
-    const mobileId = id;
-    
-    // 優先的に現在の画面幅に合ったIDを探す
-    const primaryId = isPc ? pcId : mobileId;
-    const fallbackId = isPc ? mobileId : pcId;
-    
-    // 要素を取得（優先ID → fallbackID の順）
-    let element = document.getElementById(primaryId) || document.getElementById(fallbackId);
+    // 統一されたIDで要素を取得
+    let element = document.getElementById(id);
     
     // 要素が見つからない場合は処理中断
     if (!element) {
-      console.warn(`[Nav] Section not found: ${primaryId} or ${fallbackId}`);
+      console.warn(`[Nav] Section not found: ${id}`);
       return;
     }
     
