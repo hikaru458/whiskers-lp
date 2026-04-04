@@ -80,6 +80,19 @@ export default function Header() {
           </span>
         </div>
 
+        {/* CAMPFIRE支援ボタン */}
+        <a
+          href="https://camp-fire.jp/projects/view/XXXXX"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+          </svg>
+          支援する
+        </a>
+
         {/* ハンバーガーメニュー - 2本線 + 弾性 */}
         <button
           className="relative w-8 h-6 flex flex-col justify-center items-center"
@@ -136,6 +149,19 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
+            {/* CAMPFIRE支援リンク - モバイル */}
+            <a
+              href="https://camp-fire.jp/projects/view/XXXXX"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-white hover:text-white/80 transition-colors py-3 text-right opacity-0 animate-slideIn border-t border-white/20 mt-2 pt-2"
+              style={{
+                animationDelay: `${navItems.length * 0.05}s`,
+                animationFillMode: "forwards",
+              }}
+            >
+              CAMPFIREで支援する
+            </a>
           </div>
         </nav>
       )}

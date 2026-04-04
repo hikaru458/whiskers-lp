@@ -139,6 +139,46 @@ export default function Home() {
         })}
       </div>
 
+      {/* Crowdfundingセクション */}
+      <section id="crowdfunding" className="relative z-10 py-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <FadeInSection>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+              CAMPFIREで支援を募集中
+            </h2>
+            <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+              Whiskersを一緒に作り上げてくださる仲間を募集しています。<br />
+              クラウドファンディングで目標300万円を目指しています。
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="text-3xl font-bold text-white mb-2">¥3,000</div>
+                <div className="text-sm text-white/60">限定デジタル壁紙</div>
+              </div>
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="text-3xl font-bold text-white mb-2">¥30,000</div>
+                <div className="text-sm text-white/60">ベータ版先行利用権</div>
+              </div>
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="text-3xl font-bold text-white mb-2">¥300,000</div>
+                <div className="text-sm text-white/60">年間無料 + アンバサダー</div>
+              </div>
+            </div>
+            <a
+              href="https://camp-fire.jp/projects/view/XXXXX"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-medium"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+              </svg>
+              CAMPFIREで支援する
+            </a>
+          </FadeInSection>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="relative z-10 py-10 px-6 border-t border-white/10">
         <div className="max-w-6xl mx-auto">
