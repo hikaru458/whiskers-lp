@@ -8,6 +8,7 @@ import {
   Heart, 
   Eye, 
   User,
+  UsersRound,
   Building2,
   Award,
   Share2,
@@ -381,7 +382,7 @@ export default function ContestDetailPage() {
             </div>
             <div className="bg-[#f5f5f5] p-4 rounded-xl">
               <div className="flex items-center gap-2 text-gray-600 mb-1">
-                <Users className="w-4 h-4" />
+                <UsersRound className="w-4 h-4" />
                 <span className="text-sm">参加者</span>
               </div>
               <p className="text-xl font-bold text-[#1a1a2e]">{contest.participants}名</p>
