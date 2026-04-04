@@ -11,11 +11,8 @@ import {
   ArrowLeft,
   Star,
   CheckCircle,
-  ArrowLeft, 
   Calendar, 
   Gift, 
-  Users, 
-  ArrowRight, 
   Palette, 
   PenTool, 
   Music 
