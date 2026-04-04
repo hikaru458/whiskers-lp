@@ -16,7 +16,8 @@ import {
   CheckCircle,
   Trophy,
   Calendar,
-  FileText
+  FileText,
+  Gift
 } from "lucide-react";
 
 // モックコンテストデータ - contest/page.tsx と同期
