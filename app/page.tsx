@@ -77,13 +77,7 @@ export default function Home() {
 
       {/* Heroセクション */}
       <section id="hero" className="relative z-10 h-screen flex flex-col items-center justify-center px-6">
-        <h1 
-          className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent"
-          style={{ 
-            filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.15)) drop-shadow(0 2px 8px rgba(0,0,0,0.1))',
-            textShadow: '0 2px 30px rgba(255,255,255,0.1)'
-          }}
-        >
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
           Whiskers
         </h1>
         <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl">

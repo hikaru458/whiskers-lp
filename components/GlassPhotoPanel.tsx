@@ -23,10 +23,8 @@ export default function GlassPhotoPanel({
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* PC版 - UPP風ガラスエフェクト */}
-      <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-[40px] overflow-hidden shadow-2xl" style={{ boxShadow: '0 30px 60px -15px rgba(0,0,0,0.6), 0 10px 20px -5px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4)' }}>
-        {/* 色収差効果 - 青→赤 */}
-        <div className="absolute inset-0 rounded-[40px] pointer-events-none" style={{ boxShadow: 'inset 1px 0 0.5px rgba(0,100,255,0.3), inset -1px 0 0.5px rgba(255,50,50,0.3)' }} />
+      {/* PC版 - iOSフォルダ風 */}
+      <div className="hidden md:grid md:grid-cols-2 gap-0 rounded-[40px] overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3)' }}>
         <div
           className={`relative aspect-[4/5] bg-black ${
             isImageLeft ? "order-1" : "order-2"
@@ -46,26 +44,20 @@ export default function GlassPhotoPanel({
             isImageLeft ? "order-2" : "order-1"
           }`}
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.03) 100%)',
-            backdropFilter: 'blur(45px) saturate(200%)',
-            WebkitBackdropFilter: 'blur(45px) saturate(200%)',
-            borderTop: '1.5px solid rgba(255,255,255,0.35)',
-            borderLeft: '1.5px solid rgba(255,255,255,0.2)',
-            borderRight: '1.5px solid rgba(255,255,255,0.1)',
-            borderBottom: '1.5px solid rgba(255,255,255,0.05)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 100%)',
+            backdropFilter: 'blur(40px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+            borderTop: '1px solid rgba(255,255,255,0.3)',
+            borderLeft: '1px solid rgba(255,255,255,0.15)',
+            borderRight: '1px solid rgba(255,255,255,0.08)',
+            borderBottom: '1px solid rgba(255,255,255,0.03)',
           }}
         >
-          {/* 角ハイライト - ソフトブルーム */}
-          <div className="absolute top-2 left-2 w-16 h-16 rounded-full blur-[2px] opacity-60" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%)' }} />
-          <div className="absolute top-2 right-2 w-12 h-12 rounded-full blur-[1.5px] opacity-40" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%)' }} />
-          {/* 内部反射 */}
-          <div className="absolute inset-0 rounded-[40px] pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.05) 100%)' }} />
           {/* 上部の光のライン - iOS風 */}
           <div 
             className="absolute top-0 left-4 right-4 h-[1px]"
             style={{
               background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)',
-              boxShadow: '0 0 2px rgba(255,255,255,0.4)',
             }}
           />
           <div className="space-y-4">
@@ -85,10 +77,8 @@ export default function GlassPhotoPanel({
         </div>
       </div>
 
-      {/* モバイル版 - UPP風ガラスエフェクト */}
-      <div className="md:hidden rounded-[32px] overflow-hidden shadow-2xl" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 8px 16px -4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4)' }}>
-        {/* 色収差効果 - 青→赤 */}
-        <div className="absolute inset-0 rounded-[32px] pointer-events-none" style={{ boxShadow: 'inset 0.5px 0 0.5px rgba(0,100,255,0.25), inset -0.5px 0 0.5px rgba(255,50,50,0.25)' }} />
+      {/* モバイル版 - iOSフォルダ風 */}
+      <div className="md:hidden rounded-[32px] overflow-hidden shadow-2xl" style={{ boxShadow: '0 20px 40px -10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3)' }}>
         <div className="relative aspect-square overflow-hidden">
           <Image
             src={imageSrc}
@@ -101,22 +91,17 @@ export default function GlassPhotoPanel({
         <div
           className="p-6 relative"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.03) 100%)',
-            backdropFilter: 'blur(35px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(35px) saturate(180%)',
-            borderTop: '1.5px solid rgba(255,255,255,0.3)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 100%)',
+            backdropFilter: 'blur(30px) saturate(150%)',
+            WebkitBackdropFilter: 'blur(30px) saturate(150%)',
+            borderTop: '1px solid rgba(255,255,255,0.25)',
           }}
         >
-          {/* 角ハイライト - ソフトブルーム */}
-          <div className="absolute top-2 left-2 w-12 h-12 rounded-full blur-[1.5px] opacity-50" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%)' }} />
-          {/* 内部反射 */}
-          <div className="absolute inset-0 rounded-[32px] pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.03) 100%)' }} />
           {/* 上部の光のライン - iOS風 */}
           <div 
             className="absolute top-0 left-4 right-4 h-[1px]"
             style={{
               background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)',
-              boxShadow: '0 0 2px rgba(255,255,255,0.3)',
             }}
           />
           <div className="space-y-3">
