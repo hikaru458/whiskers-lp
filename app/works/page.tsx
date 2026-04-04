@@ -159,7 +159,6 @@ export default function GalleryPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center gap-3 group">
-              <CatLogo className="w-10 h-10 shadow-lg rounded-xl group-hover:scale-110 transition-transform" />
               <span className="text-2xl font-bold bg-gradient-to-r from-[#1a1a2e] to-[#4a4a5e] bg-clip-text text-transparent">
                 Whiskers
               </span>
@@ -372,7 +371,6 @@ export default function GalleryPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              <CatLogo className="w-10 h-10 shadow-lg rounded-xl group-hover:scale-110 transition-transform" />
               <div>
                 <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
                 <span className="text-sm text-gray-500 ml-2">— 創造をつなぐ</span>
