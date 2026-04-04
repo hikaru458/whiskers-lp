@@ -7,11 +7,11 @@ export default function Header() {
   const [isElastic, setIsElastic] = useState(false);
 
   const navItems = [
-    { label: "Gallery", href: "#gallery" },
-    { label: "Creator", href: "#creator" },
-    { label: "Contest", href: "#contest" },
-    { label: "Product", href: "#product" },
-    { label: "FAQ", href: "#faq" },
+    { label: "Gallery", href: "#gallery-pc" },
+    { label: "Creator", href: "#creator-pc" },
+    { label: "Contest", href: "#contest-pc" },
+    { label: "Product", href: "#product-pc" },
+    { label: "FAQ", href: "#faq-pc" },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
