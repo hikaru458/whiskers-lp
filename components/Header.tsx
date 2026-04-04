@@ -18,14 +18,15 @@ export default function Header() {
     e.preventDefault();
     setMenuOpen(false);
     
-    const id = href.replace("#", "");
+    const baseId = href.replace("#", "");
+    const pcId = `${baseId}-pc`;
     
-    // 統一されたIDで要素を取得
-    let element = document.getElementById(id);
+    // PC版とモバイル版の両方を探す
+    let element = document.getElementById(baseId) || document.getElementById(pcId);
     
     // 要素が見つからない場合は処理中断
     if (!element) {
-      console.warn(`[Nav] Section not found: ${id}`);
+      console.warn(`[Nav] Section not found: ${baseId} or ${pcId}`);
       return;
     }
     
