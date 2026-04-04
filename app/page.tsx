@@ -77,13 +77,7 @@ export default function Home() {
 
       {/* Heroセクション */}
       <section id="hero" className="relative z-10 h-screen flex flex-col items-center justify-center px-6">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
-          Whiskers
-        </h1>
-        <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl mb-8">
-          企業とクリエイターをつなぐ<br />コンテスト型UGCプラットフォーム
-        </p>
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
           <a
             href="#business"
             className="px-6 py-3 rounded-full text-sm font-medium text-white border border-white/40 hover:border-white/60 hover:bg-white/10 transition-all duration-300"
@@ -97,6 +91,12 @@ export default function Home() {
             クリエイター様向け
           </a>
         </div>
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+          Whiskers
+        </h1>
+        <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl">
+          企業とクリエイターをつなぐ<br />コンテスト型UGCプラットフォーム
+        </p>
       </section>
 
       {/* 6セクション - PC版 */}
