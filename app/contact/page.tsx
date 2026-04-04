@@ -340,7 +340,6 @@ export default function ContactPage() {
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-[#1a1a2e]">Whiskers</span>
               <div className="flex flex-col items-center gap-4">
-                <BrandLogo />
                 <span className="text-sm text-gray-500"> 2024 Whiskers. All rights reserved.</span>
               </div>
             </div>
