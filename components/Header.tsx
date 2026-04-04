@@ -80,7 +80,7 @@ export default function Header() {
           </span>
         </div>
 
-        {/* CAMPFIRE支援ボタン */}
+        {/* 支援ボタン - PC */}
         <a
           href="https://camp-fire.jp/projects/view/XXXXX"
           target="_blank"
@@ -149,7 +149,7 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
-            {/* CAMPFIRE支援リンク - モバイル */}
+            {/* 支援リンク - モバイル */}
             <a
               href="https://camp-fire.jp/projects/view/XXXXX"
               target="_blank"
@@ -160,7 +160,7 @@ export default function Header() {
                 animationFillMode: "forwards",
               }}
             >
-              CAMPFIREで支援する
+              支援する
             </a>
           </div>
         </nav>
