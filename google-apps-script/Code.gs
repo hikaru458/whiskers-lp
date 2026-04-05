@@ -17,8 +17,8 @@ function doPost(e) {
       }));
     }
     
-    // メールアドレス形式チェック
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    // メールアドレス形式チェック（TLDホワイトリスト方式）
+    var emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|net|org|jp|co\.jp|ne\.jp|or\.jp|go\.jp|ac\.jp|ed\.jp|io|ai|co|me|info|biz|dev)$/i;
     if (!emailRegex.test(params.email)) {
       return ContentService.createTextOutput(JSON.stringify({
         success: false,
