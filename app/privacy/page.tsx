@@ -13,15 +13,18 @@ const WhiskersBackground = dynamic(
 export default function PrivacyPage() {
   return (
     <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll">
-      {/* 3D Background - Same as LP */}
-      <div className="fixed inset-0 z-0">
+      {/* 3D Background - Fixed behind content */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <Canvas>
           <WhiskersBackground />
         </Canvas>
       </div>
 
-      {/* Header - LP Design */}
-      <Header />
+      {/* Scrollable Content */}
+      <div className="relative z-10 h-screen overflow-y-auto">
+        <main className="min-h-screen">
+          {/* Header - LP Design */}
+          <Header />
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">

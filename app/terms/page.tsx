@@ -14,16 +14,17 @@ export default function TermsPage() {
   return (
     <div className="relative min-h-screen bg-black text-white">
       {/* 3D Background - Fixed behind content */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <Canvas>
           <WhiskersBackground />
         </Canvas>
       </div>
 
-      {/* Scrollable Content */}
-      <main className="relative z-10 min-h-screen overflow-x-hidden overflow-y-auto">
-        {/* Header - LP Design */}
-        <Header />
+      {/* Scrollable Content Wrapper */}
+      <div className="relative z-10 h-screen overflow-y-auto">
+        <div className="min-h-screen">
+          {/* Header - LP Design */}
+          <Header />
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
@@ -132,10 +133,7 @@ export default function TermsPage() {
             {/* Footer removed - back button in header */}
           </div>
         </div>
-
-        {/* Footer spacing */}
-        <div className="h-20" />
-      </main>
+      </div>
     </div>
   );
 }

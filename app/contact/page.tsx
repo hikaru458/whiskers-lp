@@ -34,8 +34,8 @@ export default function ContactPage() {
 
   return (
     <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll">
-      {/* 3D Background - Same as LP */}
-      <div className="fixed inset-0 z-0">
+      {/* 3D Background - Fixed behind content */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <Canvas>
           <WhiskersBackground />
         </Canvas>
