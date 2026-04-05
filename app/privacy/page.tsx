@@ -17,7 +17,7 @@ export default function PrivacyPage() {
       <Header variant="light" />
 
       {/* Content */}
-      <div className="relative z-10 pt-16 pb-20 px-6">
+      <div className="relative z-10 pt-24 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-gray-900">
             プライバシーポリシー
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
             </p>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">1. 収集する情報</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">1. 収集する情報</h2>
               <p className="text-gray-700 mb-4">当サービスは、以下の情報を取得します。</p>
               
               <h3 className="text-lg font-medium mb-2 text-gray-800">（1）ユーザーが登録時に提供する情報</h3>
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">2. 個人情報の利用目的（個情法21条対応）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">2. 個人情報の利用目的（個情法21条対応）</h2>
               <p className="text-gray-700 mb-4">当サービスは、取得した情報を以下の目的で利用します。</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>サービス提供・アカウント管理のため</li>
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">3. 作品データの取り扱い（UGC特有の規定）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">3. 作品データの取り扱い（UGC特有の規定）</h2>
               <div className="space-y-4 text-gray-700">
                 <p><strong>（1）投稿作品の権利：</strong>投稿作品の著作権はクリエイターに帰属します。企業が採用した作品については、利用規約に基づき企業に利用権を付与します。</p>
                 <p><strong>（2）AIによる自動チェック：</strong>不適切コンテンツ（暴力・アダルト・著作権侵害等）を検出するため、AIによる自動解析を行う場合があります。</p>
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">4. 個人情報の第三者提供</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">4. 個人情報の第三者提供</h2>
               <p className="text-gray-700 mb-4">当サービスは、以下の場合を除き、個人情報を第三者に提供しません。</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>本人の同意がある場合</li>
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">5. 個人情報の管理</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">5. 個人情報の管理</h2>
               <p className="text-gray-700 mb-4">当サービスは、個人情報の漏洩・紛失・改ざんを防止するため、以下の安全管理措置を講じます。</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>通信の暗号化（HTTPS）</li>
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">6. Cookie（クッキー）等の利用と同意取得</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">6. Cookie（クッキー）等の利用と同意取得</h2>
               <p className="text-gray-700 mb-4">当サービスは、以下の目的でCookieを使用します。</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700 mb-4">
                 <li>ログイン状態の維持</li>
@@ -146,7 +146,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">7. 外部サービス・越境データ移転（個情法24条対応）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">7. 外部サービス・越境データ移転（個情法24条対応）</h2>
               <p className="text-gray-700 mb-4">当サービスは以下の外部サービスを利用する場合があります。</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700 mb-4">
                 <li>AWS / GCP / Supabase（海外サーバーを含む）</li>
@@ -158,7 +158,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">8. 個人情報の保存期間（個情法19条対応）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">8. 個人情報の保存期間（個情法19条対応）</h2>
               <p className="text-gray-700 mb-4">当サービスは、利用目的に必要な範囲を超えて個人情報を保管しません。</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
@@ -195,7 +195,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">9. 個人情報の開示・訂正・削除（対応期限明記）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">9. 個人情報の開示・訂正・削除（対応期限明記）</h2>
               <p className="text-gray-700 mb-4">ユーザーは以下の請求を行うことができます。</p>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>自身の個人情報の開示</li>
@@ -207,7 +207,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">10. 未成年ユーザーの利用（報酬受領の特則）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">10. 未成年ユーザーの利用（報酬受領の特則）</h2>
               <div className="space-y-4 text-gray-700">
                 <p><strong>18歳未満のユーザー：</strong>保護者の同意を得た上で利用してください。報酬を受け取る場合は、保護者の同意書を必須とします。</p>
                 <p><strong>同意書の取得方法：</strong>電子署名による同意書提出、保護者のメールアドレスによる承認、または当サービスが指定するフォームでの同意手続きが必要です。</p>
@@ -216,14 +216,14 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">11. プライバシーポリシーの変更</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">11. プライバシーポリシーの変更</h2>
               <p className="text-gray-700">
                 本ポリシーの内容は、必要に応じて変更される場合があります。重要な変更がある場合は、当サービス上で告知します。
               </p>
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-orange-500">12. お問い合わせ窓口（対応期限明記）</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">12. お問い合わせ窓口（対応期限明記）</h2>
               <p className="text-gray-700 mb-4">プライバシーに関するお問い合わせは、以下までご連絡ください。</p>
               <div className="space-y-2 text-gray-700">
                 <p>・ （メールアドレス）</p>
