@@ -10,6 +10,9 @@ const WhiskersBackground = dynamic(
   { ssr: false }
 );
 
+// GAS Web App URL - 環境変数から取得
+const GAS_WEBAPP_URL = process.env.NEXT_PUBLIC_GAS_WEBAPP_URL || "";
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -19,17 +22,53 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage("");
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({ name: "", email: "", type: "general", message: "" });
+    try {
+      // GAS URLが設定されていない場合はエラー
+      if (!GAS_WEBAPP_URL) {
+        throw new Error("GAS_WEBAPP_URLが設定されていません。env.example.txtを参照してください。");
+      }
+      
+      // GASにデータを送信
+      const params = new URLSearchParams({
+        name: formData.name,
+        email: formData.email,
+        type: formData.type,
+        message: formData.message,
+      });
+      
+      const response = await fetch(`${GAS_WEBAPP_URL}?${params.toString()}`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setIsSubmitted(true);
+        setFormData({ name: "", email: "", type: "general", message: "" });
+      } else {
+        setErrorMessage(data.message || "送信に失敗しました。");
+      }
+    } catch (error) {
+      console.error("送信エラー:", error);
+      setErrorMessage(error instanceof Error ? error.message : "送信に失敗しました。");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -75,6 +114,11 @@ export default function ContactPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
+              {errorMessage && (
+                <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200">
+                  {errorMessage}
+                </div>
+              )}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
                   お名前 <span className="text-red-400">*</span>
