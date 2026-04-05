@@ -14,14 +14,14 @@ export default function PrivacyPage() {
   return (
     <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll" style={{ willChange: 'transform' }}>
       {/* 3D Background - positioned behind content */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="sticky top-0 z-0 overflow-hidden" style={{ height: '100vh' }}>
         <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           <WhiskersBackground />
         </Canvas>
       </div>
 
-      {/* Scrollable Content - on top of background */}
-      <div className="relative z-10 min-h-screen overflow-y-auto" style={{ isolation: 'isolate' }}>
+      {/* Content - Separate compositing layer */}
+      <div className="relative z-10 min-h-screen" style={{ transform: 'translateZ(0)' }}>
         <main className="min-h-screen">
           {/* Header - LP Design */}
           <Header />
