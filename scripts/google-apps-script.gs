@@ -124,17 +124,3 @@ function getTypeLabel(type) {
   };
   return labels[type] || type;
 }
-
-// テスト用関数
-function testDoPost() {
-  const e = {
-    parameter: {
-      name: 'テスト太郎',
-      email: 'test@example.com',
-      type: 'general',
-      message: 'これはテストメッセージです。'
-    }
-  };
-  const result = doPost(e);
-  console.log(result.getContent());
-}

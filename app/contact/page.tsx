@@ -34,17 +34,18 @@ export default function ContactPage() {
         throw new Error("GAS_WEBAPP_URLが設定されていません。");
       }
       
-      // URLパラメータ方式で送信（CORSエラーを回避）
-      const params = new URLSearchParams({
-        name: formData.name,
-        email: formData.email,
-        type: formData.type,
-        message: formData.message
-      });
-      
-      const response = await fetch(`${GAS_WEBAPP_URL}?${params.toString()}`, {
+      // POST bodyで送信（CORS対応）
+      const response = await fetch(GAS_WEBAPP_URL, {
         method: "POST",
-        mode: "cors"
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          name: formData.name,
+          email: formData.email,
+          type: formData.type,
+          message: formData.message,
+        }),
       });
       
       if (!response.ok) {

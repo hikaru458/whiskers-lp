@@ -10,128 +10,110 @@
  * 6. デプロイ後のURLをコピーし、Vercelの環境変数に設定
  */
 
-// CORS対応ヘッダー
-function getCorsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json"
-  };
-}
+const SHEET_NAME = 'お問い合わせ';
 
-// プリフライトリクエスト（OPTIONS）処理
+// --- CORS: OPTIONS（プリフライト） ---
 function doOptions(e) {
-  var output = ContentService.createTextOutput(JSON.stringify({}));
-  output.setMimeType(ContentService.MimeType.JSON);
-  output.setHeaders(getCorsHeaders());
-  return output;
+  return ContentService
+    .createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
-// メイン処理（POSTリクエスト）
+// --- POST ---
 function doPost(e) {
   try {
-    // POSTデータを取得
-    const data = JSON.parse(e.postData.contents);
-    
-    // スプレッドシートを取得（アクティブなシート）
-    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = spreadsheet.getActiveSheet();
-    
-    // ヘッダー行がない場合は作成
-    if (sheet.getRange(1, 1).getValue() === "") {
-      const headers = [
-        "タイムスタンプ",
-        "タイプ", 
-        "お名前",
-        "会社名/SNSアカウント",
-        "メールアドレス",
-        "お問い合わせ種別",
-        "お問い合わせ内容",
-        "ステータス"
-      ];
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      sheet.getRange(1, 1, 1, headers.length)
-        .setFontWeight("bold")
-        .setBackground("#ff6b35")
-        .setFontColor("white");
+    const params = e.parameter;
+
+    if (!params.name || !params.email || !params.message) {
+      return createResponse(false, '必須項目が入力されていません。');
     }
-    
-    // データを整形
-    const rowData = [
-      new Date(),                           // タイムスタンプ
-      data.type === "brand" ? "企業様" : "クリエイター様",  // タイプ
-      data.name || "",                      // お名前
-      data.company || "",                   // 会社名/SNSアカウント
-      data.email || "",                     // メールアドレス
-      data.category || "",                  // お問い合わせ種別
-      data.message || "",                   // お問い合わせ内容
-      "未対応"                              // ステータス
-    ];
-    
-    // スプレッドシートに追加
-    sheet.appendRow(rowData);
-    
-    // 成功レスポンス
-    return ContentService.createTextOutput(JSON.stringify({
-      result: "success",
-      message: "お問い合わせを受け付けました"
-    }))
-    .setResponseHeaders(getCorsHeaders())
-    .setMimeType(ContentService.MimeType.JSON);
-    
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(params.email)) {
+      return createResponse(false, 'メールアドレスの形式が正しくありません。');
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      return createResponse(false, 'シートが見つかりません: ' + SHEET_NAME);
+    }
+
+    sheet.appendRow([
+      new Date(),
+      params.name,
+      params.email,
+      getTypeLabel(params.type || 'general'),  // ← 日本語変換
+      params.message,
+      '未対応'
+    ]);
+
+    sendNotification({
+      name: params.name,
+      email: params.email,
+      type: getTypeLabel(params.type || 'general'),  // ← 日本語変換
+      message: params.message
+    });
+
+    return createResponse(true, 'お問い合わせを受け付けました。');
+
   } catch (error) {
-    console.error("Error:", error);
-    
-    return ContentService.createTextOutput(JSON.stringify({
-      result: "error",
-      message: error.toString()
-    }))
-    .setResponseHeaders(getCorsHeaders())
-    .setMimeType(ContentService.MimeType.JSON);
+    console.error('Error:', error);
+    return createResponse(false, 'エラーが発生しました: ' + error.message);
   }
 }
 
-// GETリクエスト（テスト用）
-function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    result: "success",
-    message: "GASが正常に動作しています"
-  }))
-  .setResponseHeaders(getCorsHeaders())
-  .setMimeType(ContentService.MimeType.JSON);
+// --- 共通レスポンス（CORS付き） ---
+function createResponse(success, message) {
+  const output = JSON.stringify({ success, message });
+
+  return ContentService
+    .createTextOutput(output)
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
-// スプレッドシートの行数を取得する関数（管理用）
-function getSubmissionCount() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  return sheet.getLastRow() - 1; // ヘッダーを除く
-}
-
-// メール通知機能（オプション：Gmailで通知を受け取りたい場合）
-function sendNotificationEmail(formData) {
-  const recipient = "hello@whiskers.jp"; // 通知先メールアドレス
-  const subject = `【Whiskersお問い合わせ】${formData.name}様より`;
-  
-  const body = `
+// --- メール通知（任意） ---
+function sendNotification(params) {
+  try {
+    const recipient = 'your-email@example.com';
+    const subject = '【Whiskers】新しいお問い合わせがありました';
+    const body = `
 新しいお問い合わせが届きました。
 
-━━━━━━━━━━━━━━━━━━━━━━
-【お問い合わせ内容】
-━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━
+【お名前】
+${params.name}
 
-タイプ: ${formData.type === "brand" ? "企業様" : "クリエイター様"}
-お名前: ${formData.name}
-${formData.company ? `会社名/SNS: ${formData.company}\n` : ""}メールアドレス: ${formData.email}
-お問い合わせ種別: ${formData.category}
+【メールアドレス】
+${params.email}
 
-【お問い合わせ内容】
-${formData.message}
+【お問い合わせ種別】
+${getTypeLabel(params.type)}
 
-━━━━━━━━━━━━━━━━━━━━━━
+【メッセージ】
+${params.message}
+━━━━━━━━━━━━━━━━━━━━
 
 スプレッドシートで確認してください。
-  `;
-  
-  MailApp.sendEmail(recipient, subject, body);
+    `;
+    GmailApp.sendEmail(recipient, subject, body);
+  } catch (e) {
+    console.error('メール送信エラー:', e);
+  }
+}
+
+function getTypeLabel(type) {
+  const labels = {
+    general: '一般的なお問い合わせ',
+    business: '企業様向けお問い合わせ',
+    creator: 'クリエイター様向けお問い合わせ',
+    media: '取材・メディア関連',
+    other: 'その他'
+  };
+  return labels[type] || type;
 }
