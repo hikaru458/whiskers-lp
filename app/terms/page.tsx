@@ -21,7 +21,7 @@ export default function TermsPage() {
       </div>
 
       {/* Scrollable Content - on top of background */}
-      <div className="relative z-10 min-h-screen overflow-y-auto">
+      <div className="relative z-10 min-h-screen overflow-y-auto" style={{ isolation: 'isolate' }}>
         <div className="min-h-screen">
           {/* Header - LP Design */}
           <Header />

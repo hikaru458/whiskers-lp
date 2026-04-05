@@ -20,8 +20,8 @@ export default function PrivacyPage() {
         </Canvas>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="relative z-10 h-screen overflow-y-auto">
+      {/* Scrollable Content - on top of background */}
+      <div className="relative z-10 min-h-screen overflow-y-auto" style={{ isolation: 'isolate' }}>
         <main className="min-h-screen">
           {/* Header - LP Design */}
           <Header />
