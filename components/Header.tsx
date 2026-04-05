@@ -4,11 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Header() {
+interface HeaderProps {
+  variant?: "dark" | "light";
+}
+
+export default function Header({ variant = "dark" }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const isLight = variant === "light";
 
   const navItems = [
     { label: "Gallery", href: "gallery" },
@@ -54,32 +59,32 @@ export default function Header() {
   };
 
   return (
-    <header id="whiskers-header" className="fixed top-0 left-0 right-0 z-50 px-6 py-5">
+    <header id="whiskers-header" className={`fixed top-0 left-0 right-0 z-50 px-6 py-5 ${isLight ? 'bg-white/80 backdrop-blur-sm' : ''}`}>
       <div className="max-w-7xl mx-auto flex items-center">
         {/* ロゴ */}
         <Link href="/" className="flex items-center gap-3">
           <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             {/* 猫耳 */}
-            <path d="M8 16Q12 4 16 12L20 16" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            <path d="M40 16Q36 4 32 12L28 16" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            <path d="M8 16Q12 4 16 12L20 16" stroke={isLight ? "black" : "white"} strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            <path d="M40 16Q36 4 32 12L28 16" stroke={isLight ? "black" : "white"} strokeWidth="1.5" fill="none" strokeLinecap="round"/>
             {/* 顔の輪郭 */}
-            <ellipse cx="24" cy="28" rx="18" ry="14" stroke="white" strokeWidth="1.5" fill="none"/>
+            <ellipse cx="24" cy="28" rx="18" ry="14" stroke={isLight ? "black" : "white"} strokeWidth="1.5" fill="none"/>
             {/* 目 */}
-            <path d="M16 24Q18 20 20 24Q18 28 16 24Z" fill="white"/>
-            <path d="M28 24Q30 20 32 24Q30 28 28 24Z" fill="white"/>
+            <path d="M16 24Q18 20 20 24Q18 28 16 24Z" fill={isLight ? "black" : "white"}/>
+            <path d="M28 24Q30 20 32 24Q30 28 28 24Z" fill={isLight ? "black" : "white"}/>
             {/* 鼻 */}
-            <path d="M24 28L22 30H26L24 28Z" fill="white"/>
+            <path d="M24 28L22 30H26L24 28Z" fill={isLight ? "black" : "white"}/>
             {/* 髭（3本×2） */}
-            <path d="M8 24Q14 26 18 28" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
-            <path d="M6 28Q12 30 18 32" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
-            <path d="M6 32Q12 34 18 36" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
-            <path d="M40 24Q34 26 30 28" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
-            <path d="M42 28Q36 30 30 32" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
-            <path d="M42 32Q36 34 30 36" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M8 24Q14 26 18 28" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M6 28Q12 30 18 32" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M6 32Q12 34 18 36" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M40 24Q34 26 30 28" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M42 28Q36 30 30 32" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M42 32Q36 34 30 36" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
             {/* 口元 */}
-            <path d="M22 34Q24 36 26 34" stroke="white" strokeWidth="1" strokeLinecap="round" fill="none"/>
+            <path d="M22 34Q24 36 26 34" stroke={isLight ? "black" : "white"} strokeWidth="1" strokeLinecap="round" fill="none"/>
           </svg>
-          <span className="text-lg font-bold tracking-[0.15em] text-white">
+          <span className={`text-lg font-bold tracking-[0.15em] ${isLight ? 'text-gray-900' : 'text-white'}`}>
             Whiskers
           </span>
         </Link>
@@ -92,7 +97,7 @@ export default function Header() {
             aria-label="メニュー"
           >
             <span
-              className={`absolute w-full bg-white rounded-full transition-all duration-300 origin-center ${
+              className={`absolute w-full ${isLight ? 'bg-gray-900' : 'bg-white'} rounded-full transition-all duration-300 origin-center ${
                 isElastic ? "scale-y-150" : ""
               } ${
                 menuOpen ? "rotate-45" : "-translate-y-1.5"
@@ -103,7 +108,7 @@ export default function Header() {
               }}
             />
             <span
-              className={`absolute w-full bg-white rounded-full transition-all duration-300 origin-center ${
+              className={`absolute w-full ${isLight ? 'bg-gray-900' : 'bg-white'} rounded-full transition-all duration-300 origin-center ${
                 isElastic ? "scale-y-150" : ""
               } ${
                 menuOpen ? "-rotate-45" : "translate-y-1.5"
@@ -117,7 +122,7 @@ export default function Header() {
         ) : (
           <Link 
             href="/" 
-            className="ml-auto px-4 py-2 text-sm text-white/80 hover:text-white transition-colors flex items-center gap-2"
+            className={`ml-auto px-4 py-2 text-sm flex items-center gap-2 ${isLight ? 'text-gray-600 hover:text-gray-900' : 'text-white/80 hover:text-white'} transition-colors`}
           >
             ← トップページに戻る
           </Link>
