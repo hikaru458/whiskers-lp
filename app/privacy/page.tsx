@@ -12,7 +12,7 @@ const WhiskersBackground = dynamic(
 
 export default function PrivacyPage() {
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-y-auto" style={{ willChange: 'transform' }}>
+    <div className="relative min-h-screen text-white overflow-y-auto" style={{ willChange: 'transform' }}>
       {/* 3D Background - absolute behind content */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 pt-24 pb-20 px-6">
+      <div className="relative z-10 pt-16 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             プライバシーポリシー
