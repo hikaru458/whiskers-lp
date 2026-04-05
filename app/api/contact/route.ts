@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
-const GAS_WEBAPP_URL = process.env.NEXT_PUBLIC_GAS_WEBAPP_URL || "";
+// 環境変数が機能しない場合のため直接URLを設定
+const GAS_WEBAPP_URL = process.env.NEXT_PUBLIC_GAS_WEBAPP_URL || 
+  "https://script.google.com/macros/s/AKfycbzUOWe1RouwBV9jU1rNrmmE6GKTf34rleyrtwxyAPkeml9ivBc-_xk6vNC0ON6KxlC8Aw/exec";
 
 export async function POST(request: Request) {
   try {
