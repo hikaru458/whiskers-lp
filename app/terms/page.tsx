@@ -12,19 +12,18 @@ const WhiskersBackground = dynamic(
 
 export default function TermsPage() {
   return (
-    <div className="relative min-h-screen bg-black text-white">
-      {/* 3D Background - Fixed behind content, not covering scrollbar */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ width: 'calc(100vw - 12px)' }}>
-        <Canvas style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}>
+    <div className="relative min-h-screen bg-black text-white overflow-y-auto" style={{ willChange: 'transform' }}>
+      {/* 3D Background - positioned behind content */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           <WhiskersBackground />
         </Canvas>
       </div>
 
-      {/* Scrollable Content - on top of background */}
-      <div className="relative z-10 min-h-screen overflow-y-auto" style={{ isolation: 'isolate' }}>
-        <div className="min-h-screen">
-          {/* Header - LP Design */}
-          <Header />
+      {/* Content */}
+      <div className="relative z-10 min-h-screen">
+        {/* Header - LP Design */}
+        <Header />
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
