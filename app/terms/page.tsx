@@ -12,7 +12,7 @@ const WhiskersBackground = dynamic(
 
 export default function TermsPage() {
   return (
-    <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-auto">
+    <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll">
       {/* 3D Background - Same as LP */}
       <div className="fixed inset-0 z-0">
         <Canvas>
