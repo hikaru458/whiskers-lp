@@ -114,8 +114,8 @@ export default function ContactPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6 relative">
               {showConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                  <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                  <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-xl">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">この内容で送信しますか？</h3>
                     <div className="space-y-2 text-sm text-gray-600 mb-6">
                       <p><strong>お名前：</strong>{formData.name}</p>
@@ -123,7 +123,7 @@ export default function ContactPage() {
                       <p><strong>種別：</strong>{formData.type}</p>
                       <div>
                         <strong>内容：</strong>
-                        <div className="mt-1 p-3 bg-gray-50 rounded-lg max-h-32 overflow-y-auto whitespace-pre-wrap">
+                        <div className="mt-1 p-3 bg-gray-50 rounded-lg max-h-64 overflow-y-auto whitespace-pre-wrap break-words">
                           {formData.message}
                         </div>
                       </div>
