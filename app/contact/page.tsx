@@ -13,19 +13,6 @@ const WhiskersBackground = dynamic(
 // GAS Web App URL - 環境変数から取得
 const GAS_WEBAPP_URL = process.env.NEXT_PUBLIC_GAS_WEBAPP_URL || "";
 
-// お問い合わせ種別を既存GASの形式に変換
-const getInquiryType = (type: string) => {
-  const typeMap: Record<string, string> = {
-    general: "その他",
-    business: "導入相談",
-    creator: "クリエイター登録",
-    support: "トラブル対応",
-    privacy: "プライバシー関連",
-    other: "その他"
-  };
-  return typeMap[type] || type;
-};
-
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -47,23 +34,17 @@ export default function ContactPage() {
         throw new Error("GAS_WEBAPP_URLが設定されていません。");
       }
       
-      // 既存GASの形式にデータを整形（JSONボディ）
-      const payload = {
-        type: formData.type === "business" ? "brand" : "creator",
+      // URLパラメータ方式で送信（CORSエラーを回避）
+      const params = new URLSearchParams({
         name: formData.name,
-        company: "", // 既存フォームにはcompany欄がない
         email: formData.email,
-        category: getInquiryType(formData.type),
+        type: formData.type,
         message: formData.message
-      };
+      });
       
-      const response = await fetch(GAS_WEBAPP_URL, {
+      const response = await fetch(`${GAS_WEBAPP_URL}?${params.toString()}`, {
         method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
+        mode: "cors"
       });
       
       if (!response.ok) {
@@ -72,7 +53,7 @@ export default function ContactPage() {
       
       const data = await response.json();
       
-      if (data.result === "success") {
+      if (data.success) {
         setIsSubmitted(true);
         setFormData({ name: "", email: "", type: "general", message: "" });
       } else {
