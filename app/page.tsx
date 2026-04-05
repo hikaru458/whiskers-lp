@@ -414,10 +414,10 @@ export default function Home() {
             <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
               X
             </a>
-            <a href="/docs/terms-of-service.md" className="text-white/60 hover:text-white transition-colors">
+            <a href="/terms" className="text-white/60 hover:text-white transition-colors">
               利用規約
             </a>
-            <a href="/docs/privacy-policy.md" className="text-white/60 hover:text-white transition-colors">
+            <a href="/privacy" className="text-white/60 hover:text-white transition-colors">
               プライバシーポリシー
             </a>
             <a href="/contact" className="text-white/60 hover:text-white transition-colors">
