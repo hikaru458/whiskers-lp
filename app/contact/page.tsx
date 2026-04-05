@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { Canvas } from "@react-three/fiber";
 
 const WhiskersBackground = dynamic(
   () => import("@/components/WhiskersBackground"),
@@ -35,7 +36,9 @@ export default function ContactPage() {
     <main className="relative min-h-screen bg-black text-white overflow-x-hidden">
       {/* 3D Background - Same as LP */}
       <div className="fixed inset-0 z-0">
-        <WhiskersBackground />
+        <Canvas>
+          <WhiskersBackground />
+        </Canvas>
       </div>
 
       {/* Header */}
