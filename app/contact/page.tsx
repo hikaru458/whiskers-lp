@@ -30,9 +30,29 @@ export default function ContactPage() {
     setErrorMessage("");
     
     try {
-      if (!GAS_WEBAPP_URL) {
-        throw new Error("GAS_WEBAPP_URLが設定されていません。");
-      }
+      // メールアドレス検証（厳格）
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage("有効なメールアドレスを入力してください（例: user@example.com）");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // ドメイン部分の検証（最低2文字のTLD）
+    const emailParts = formData.email.split("@");
+    if (emailParts.length !== 2 || !emailParts[1].includes(".")) {
+      setErrorMessage("メールアドレスのドメイン部分が不正です");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    const domainParts = emailParts[1].split(".");
+    const tld = domainParts[domainParts.length - 1];
+    if (tld.length < 2) {
+      setErrorMessage("メールアドレスのドメインが不完全です（例: .com, .co.jp）");
+      setIsSubmitting(false);
+      return;
+    }
       
       // APIルート経由で送信（CORS回避）
       const response = await fetch("/api/contact", {
