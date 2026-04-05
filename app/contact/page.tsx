@@ -17,20 +17,32 @@ export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|net|org|jp|co\.jp|ne\.jp|or\.jp|go\.jp|ac\.jp|ed\.jp|io|ai|co|me|info|biz|dev)$/i;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setErrorMessage("");
     
-    try {
-      // メールアドレス検証（TLDホワイトリスト方式）
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|net|org|jp|co\.jp|ne\.jp|or\.jp|go\.jp|ac\.jp|ed\.jp|io|ai|co|me|info|biz|dev)$/i;
-    if (!emailRegex.test(formData.email)) {
+    // メールアドレス検証
+    if (!validateEmail(formData.email)) {
       setErrorMessage("有効なメールアドレスを入力してください（例: user@example.com）");
-      setIsSubmitting(false);
       return;
     }
-      
+    
+    // 確認ダイアログを表示
+    setShowConfirm(true);
+  };
+
+  const confirmSubmit = async () => {
+    setShowConfirm(false);
+    setIsSubmitting(true);
+    
+    try {
       // APIルート経由で送信（CORS回避）
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -100,7 +112,37 @@ export default function ContactPage() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 relative">
+              {showConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                  <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">この内容で送信しますか？</h3>
+                    <div className="space-y-2 text-sm text-gray-600 mb-6">
+                      <p><strong>お名前：</strong>{formData.name}</p>
+                      <p><strong>メール：</strong>{formData.email}</p>
+                      <p><strong>種別：</strong>{formData.type}</p>
+                      <p><strong>内容：</strong>{formData.message.substring(0, 50)}{formData.message.length > 50 ? '...' : ''}</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirm(false)}
+                        className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
+                      >
+                        キャンセル
+                      </button>
+                      <button
+                        type="button"
+                        onClick={confirmSubmit}
+                        disabled={isSubmitting}
+                        className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-medium hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50"
+                      >
+                        {isSubmitting ? "送信中..." : "送信する"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               {errorMessage && (
                 <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
                   {errorMessage}
