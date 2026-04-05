@@ -1,10 +1,23 @@
+"use client";
+
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const WhiskersBackground = dynamic(
+  () => import("@/components/WhiskersBackground"),
+  { ssr: false }
+);
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
+    <main className="relative min-h-screen bg-black text-white overflow-x-hidden">
+      {/* 3D Background - Same as LP */}
+      <div className="fixed inset-0 z-0">
+        <WhiskersBackground />
+      </div>
+
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-slate-950/80 backdrop-blur-md border-b border-white/10">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
             Whiskers
@@ -19,7 +32,7 @@ export default function TermsPage() {
       </header>
 
       {/* Content */}
-      <div className="pt-24 pb-20 px-6">
+      <div className="relative z-10 pt-24 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             利用規約
