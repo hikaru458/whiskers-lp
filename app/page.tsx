@@ -420,9 +420,6 @@ export default function Home() {
             <a href="/docs/privacy-policy.md" className="text-white/60 hover:text-white transition-colors">
               プライバシーポリシー
             </a>
-            <a href="/docs/business-plan.md" className="text-white/60 hover:text-white transition-colors">
-              事業計画書
-            </a>
             <a href="/contact" className="text-white/60 hover:text-white transition-colors">
               お問い合わせ
             </a>
