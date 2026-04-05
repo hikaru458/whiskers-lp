@@ -127,14 +127,7 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <div className="mt-16 pt-8 border-t border-white/10 text-center">
-              <Link 
-                href="/"
-                className="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-white font-medium hover:from-orange-600 hover:to-red-600 transition-all"
-              >
-                トップページに戻る
-              </Link>
-            </div>
+            {/* Footer removed - back button in header */}
           </div>
         </div>
       </div>
