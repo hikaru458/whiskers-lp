@@ -25,6 +25,8 @@ export default function PrivacyPage() {
         <div className="min-h-screen">
           {/* Header - LP Design */}
           <Header />
+        </div>
+      </div>
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
