@@ -1,25 +1,35 @@
 /**
  * Whiskers お問い合わせフォーム - Google Apps Script
  * 
- * セットアップ手順:
- * 1. Google スプレッドシートを作成
- * 2. 拡張機能 > Apps Script を開く
- * 3. このコードを貼り付け
- * 4. デプロイ > 新しいデプロイ > Webアプリ
- * 5. アクセス権: "すべて" に設定
- * 6. デプロイ後のURLをコピーし、Vercelの環境変数に設定
+ * 【重要】SHEET_ID を設定してください
+ * スプレッドシートURL: https://docs.google.com/spreadsheets/d/XXXXXXXXXXXX/edit
+ *                                           ↑ここがSHEET_ID
  */
 
+const SHEET_ID = '1E4nkcGkcSzTJ-WsvZo8L5Cx33GqvGiu3FGEC-0uBDT8';  // ← Whiskersお問い合わせシート
 const SHEET_NAME = 'お問い合わせ';
 
-// --- CORS: OPTIONS（プリフライト） ---
-function doOptions(e) {
-  return ContentService
-    .createTextOutput("")
-    .setMimeType(ContentService.MimeType.TEXT)
+// --- CORS 共通ヘッダー ---
+function setCors(output) {
+  return output
     .setHeader("Access-Control-Allow-Origin", "*")
     .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     .setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
+// --- OPTIONS（プリフライト） ---
+function doOptions(e) {
+  return setCors(
+    ContentService.createTextOutput("").setMimeType(ContentService.MimeType.TEXT)
+  );
+}
+
+// --- GET（Next.js が叩く場合がある） ---
+function doGet(e) {
+  return setCors(
+    ContentService.createTextOutput("Whiskers API OK")
+      .setMimeType(ContentService.MimeType.TEXT)
+  );
 }
 
 // --- POST ---
@@ -36,16 +46,24 @@ function doPost(e) {
       return createResponse(false, 'メールアドレスの形式が正しくありません。');
     }
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    // SHEET_ID が設定されていない場合はエラー
+    if (SHEET_ID.includes('<<')) {
+      return createResponse(false, 'GASエラー: SHEET_IDが設定されていません');
+    }
+
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
       return createResponse(false, 'シートが見つかりません: ' + SHEET_NAME);
     }
+
+    const typeLabel = getTypeLabel(params.type || 'general');
 
     sheet.appendRow([
       new Date(),
       params.name,
       params.email,
-      getTypeLabel(params.type || 'general'),  // ← 日本語変換
+      typeLabel,
       params.message,
       '未対応'
     ]);
@@ -53,7 +71,7 @@ function doPost(e) {
     sendNotification({
       name: params.name,
       email: params.email,
-      type: getTypeLabel(params.type || 'general'),  // ← 日本語変換
+      type: typeLabel,
       message: params.message
     });
 
@@ -65,19 +83,16 @@ function doPost(e) {
   }
 }
 
-// --- 共通レスポンス（CORS付き） ---
+// --- 共通レスポンス ---
 function createResponse(success, message) {
-  const output = JSON.stringify({ success, message });
+  const output = ContentService
+    .createTextOutput(JSON.stringify({ success, message }))
+    .setMimeType(ContentService.MimeType.JSON);
 
-  return ContentService
-    .createTextOutput(output)
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader("Access-Control-Allow-Origin", "*")
-    .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-    .setHeader("Access-Control-Allow-Headers", "Content-Type");
+  return setCors(output);
 }
 
-// --- メール通知（任意） ---
+// --- メール通知 ---
 function sendNotification(params) {
   try {
     const recipient = 'your-email@example.com';
@@ -93,7 +108,7 @@ ${params.name}
 ${params.email}
 
 【お問い合わせ種別】
-${getTypeLabel(params.type)}
+${params.type}
 
 【メッセージ】
 ${params.message}
@@ -107,6 +122,7 @@ ${params.message}
   }
 }
 
+// --- 種別ラベル変換 ---
 function getTypeLabel(type) {
   const labels = {
     general: '一般的なお問い合わせ',
