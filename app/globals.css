@@ -73,6 +73,11 @@ select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* Reserve space for scrollbar to prevent layout shift */
+.scrollbar-stable {
+  scrollbar-gutter: stable;
+}
+
 .animate-slideIn {
   animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
