@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Canvas } from "@react-three/fiber";
 import Header from "@/components/Header";
