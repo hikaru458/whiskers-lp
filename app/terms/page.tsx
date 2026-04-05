@@ -13,20 +13,20 @@ const WhiskersBackground = dynamic(
 export default function TermsPage() {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-y-auto" style={{ willChange: 'transform' }}>
-      {/* 3D Background - absolute behind content */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      {/* 3D Background - positioned behind content */}
+      <div className="sticky top-0 z-0 overflow-hidden" style={{ height: '100vh' }}>
         <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           <WhiskersBackground />
         </Canvas>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10 min-h-screen" style={{ transform: 'translateZ(0)' }}>
         {/* Header - LP Design */}
         <Header />
 
-      {/* Content */}
-      <div className="relative z-10 pt-24 pb-20 px-6">
+        {/* Main Content */}
+        <div className="relative z-10 pt-24 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             利用規約
