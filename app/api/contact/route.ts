@@ -1,54 +1,43 @@
-// Vercel API Route - Google Apps Script proxy
-// This route handles CORS issues by proxying requests to GAS
+import { NextResponse } from "next/server";
 
-import { NextRequest, NextResponse } from "next/server";
+const GAS_WEBAPP_URL = process.env.NEXT_PUBLIC_GAS_WEBAPP_URL || "";
 
-const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || "";
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    if (!GOOGLE_SCRIPT_URL) {
+    const formData = await request.json();
+    
+    if (!GAS_WEBAPP_URL) {
       return NextResponse.json(
-        { result: "error", message: "GAS URL not configured" },
+        { success: false, message: "GAS URLが設定されていません" },
         { status: 500 }
       );
     }
 
-    const body = await request.json();
-
-    // Forward request to Google Apps Script
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+    // URLパラメータを構築
+    const params = new URLSearchParams({
+      name: formData.name || "",
+      email: formData.email || "",
+      type: formData.type || "general",
+      message: formData.message || "",
     });
+
+    // サーバーサイドからGASを呼び出し（CORSなし）
+    const response = await fetch(`${GAS_WEBAPP_URL}?${params.toString()}`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error(`GAS error: ${response.status}`);
+    }
 
     const data = await response.json();
+    return NextResponse.json(data);
     
-    return NextResponse.json(data, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API error:", error);
     return NextResponse.json(
-      { result: "error", message: "Failed to submit form" },
+      { success: false, message: "サーバーエラーが発生しました" },
       { status: 500 }
     );
   }
-}
-
-export async function OPTIONS() {
-  return NextResponse.json({}, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
 }

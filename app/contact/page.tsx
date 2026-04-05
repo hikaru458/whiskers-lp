@@ -34,13 +34,13 @@ export default function ContactPage() {
         throw new Error("GAS_WEBAPP_URLが設定されていません。");
       }
       
-      // POST bodyで送信（CORS対応）
-      const response = await fetch(GAS_WEBAPP_URL, {
+      // APIルート経由で送信（CORS回避）
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
+        body: JSON.stringify({
           name: formData.name,
           email: formData.email,
           type: formData.type,
