@@ -114,7 +114,7 @@ export default function ContactPage() {
                   required
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-black focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-white/30 text-black focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all appearance-none cursor-pointer"
                 >
                   <option value="general">一般的なお問い合わせ</option>
                   <option value="business">企業様向けお問い合わせ</option>
