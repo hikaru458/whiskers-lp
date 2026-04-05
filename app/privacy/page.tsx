@@ -13,15 +13,15 @@ const WhiskersBackground = dynamic(
 export default function PrivacyPage() {
   return (
     <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll" style={{ willChange: 'transform' }}>
-      {/* 3D Background - positioned behind content */}
-      <div className="sticky top-0 z-0 overflow-hidden" style={{ height: '100vh' }}>
+      {/* 3D Background - absolute behind content */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           <WhiskersBackground />
         </Canvas>
       </div>
 
-      {/* Content - Separate compositing layer */}
-      <div className="relative z-10 min-h-screen" style={{ transform: 'translateZ(0)' }}>
+      {/* Content */}
+      <div className="relative z-10 min-h-screen">
         <main className="min-h-screen">
           {/* Header - LP Design */}
           <Header />

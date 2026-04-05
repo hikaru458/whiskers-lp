@@ -34,9 +34,9 @@ export default function ContactPage() {
 
   return (
     <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll">
-      {/* 3D Background - Fixed behind content, not covering scrollbar */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" style={{ width: 'calc(100vw - 12px)' }}>
-        <Canvas style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}>
+      {/* 3D Background - absolute behind content */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           <WhiskersBackground />
         </Canvas>
       </div>
