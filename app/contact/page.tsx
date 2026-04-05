@@ -114,7 +114,7 @@ export default function ContactPage() {
                   required
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-black focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all appearance-none cursor-pointer"
                 >
                   <option value="general">一般的なお問い合わせ</option>
                   <option value="business">企業様向けお問い合わせ</option>
@@ -153,33 +153,6 @@ export default function ContactPage() {
               </p>
             </form>
           )}
-
-          {/* Contact Info */}
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <h2 className="text-lg font-semibold mb-4 text-center">その他の連絡先</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
-                <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <p className="text-sm text-white/60 mb-1">メール</p>
-                <p className="text-white/80">contact@whiskers.jp</p>
-              </div>
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
-                <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                  </svg>
-                </div>
-                <p className="text-sm text-white/60 mb-1">X（Twitter）</p>
-                <a href="https://x.com/whiskers_jp" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-orange-400 transition-colors">
-                  @whiskers_jp
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </main>
