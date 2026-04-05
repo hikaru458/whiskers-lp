@@ -64,6 +64,8 @@ function getTypeLabel(type) {
     business: '企業様向けお問い合わせ',
     creator: 'クリエイター様向けお問い合わせ',
     media: '取材・メディア関連',
+    support: 'サポート・トラブル',
+    privacy: 'プライバシーに関するお問い合わせ',
     other: 'その他'
   };
   return labels[type] || type;
