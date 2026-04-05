@@ -121,7 +121,12 @@ export default function ContactPage() {
                       <p><strong>お名前：</strong>{formData.name}</p>
                       <p><strong>メール：</strong>{formData.email}</p>
                       <p><strong>種別：</strong>{formData.type}</p>
-                      <p><strong>内容：</strong>{formData.message.substring(0, 50)}{formData.message.length > 50 ? '...' : ''}</p>
+                      <div>
+                        <strong>内容：</strong>
+                        <div className="mt-1 p-3 bg-gray-50 rounded-lg max-h-32 overflow-y-auto whitespace-pre-wrap">
+                          {formData.message}
+                        </div>
+                      </div>
                     </div>
                     <div className="flex gap-3">
                       <button
