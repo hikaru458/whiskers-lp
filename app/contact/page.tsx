@@ -13,6 +13,19 @@ const WhiskersBackground = dynamic(
 // GAS Web App URL - 環境変数から取得
 const GAS_WEBAPP_URL = process.env.NEXT_PUBLIC_GAS_WEBAPP_URL || "";
 
+// お問い合わせ種別を既存GASの形式に変換
+const getInquiryType = (type: string) => {
+  const typeMap: Record<string, string> = {
+    general: "その他",
+    business: "導入相談",
+    creator: "クリエイター登録",
+    support: "トラブル対応",
+    privacy: "プライバシー関連",
+    other: "その他"
+  };
+  return typeMap[type] || type;
+};
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -30,25 +43,27 @@ export default function ContactPage() {
     setErrorMessage("");
     
     try {
-      // GAS URLが設定されていない場合はエラー
       if (!GAS_WEBAPP_URL) {
-        throw new Error("GAS_WEBAPP_URLが設定されていません。env.example.txtを参照してください。");
+        throw new Error("GAS_WEBAPP_URLが設定されていません。");
       }
       
-      // GASにデータを送信
-      const params = new URLSearchParams({
+      // 既存GASの形式にデータを整形（JSONボディ）
+      const payload = {
+        type: formData.type === "business" ? "brand" : "creator",
         name: formData.name,
+        company: "", // 既存フォームにはcompany欄がない
         email: formData.email,
-        type: formData.type,
-        message: formData.message,
-      });
+        category: getInquiryType(formData.type),
+        message: formData.message
+      };
       
-      const response = await fetch(`${GAS_WEBAPP_URL}?${params.toString()}`, {
+      const response = await fetch(GAS_WEBAPP_URL, {
         method: "POST",
         mode: "cors",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json"
         },
+        body: JSON.stringify(payload)
       });
       
       if (!response.ok) {
@@ -57,7 +72,7 @@ export default function ContactPage() {
       
       const data = await response.json();
       
-      if (data.success) {
+      if (data.result === "success") {
         setIsSubmitted(true);
         setFormData({ name: "", email: "", type: "general", message: "" });
       } else {
