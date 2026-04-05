@@ -12,16 +12,18 @@ const WhiskersBackground = dynamic(
 
 export default function TermsPage() {
   return (
-    <main className="relative min-h-screen bg-black text-white overflow-x-hidden overflow-y-scroll">
-      {/* 3D Background - Same as LP */}
-      <div className="fixed inset-0 z-0">
+    <div className="relative min-h-screen bg-black text-white">
+      {/* 3D Background - Fixed behind content */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
         <Canvas>
           <WhiskersBackground />
         </Canvas>
       </div>
 
-      {/* Header - LP Design */}
-      <Header />
+      {/* Scrollable Content */}
+      <main className="relative z-10 min-h-screen overflow-x-hidden overflow-y-auto">
+        {/* Header - LP Design */}
+        <Header />
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
@@ -130,7 +132,10 @@ export default function TermsPage() {
             {/* Footer removed - back button in header */}
           </div>
         </div>
-      </div>
-    </main>
+
+        {/* Footer spacing */}
+        <div className="h-20" />
+      </main>
+    </div>
   );
 }
