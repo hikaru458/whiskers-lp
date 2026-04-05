@@ -19,6 +19,19 @@ export default function ContactPage() {
 
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const getTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      general: '一般的なお問い合わせ',
+      business: '企業様向けお問い合わせ',
+      creator: 'クリエイター様向けお問い合わせ',
+      media: '取材・メディア関連',
+      support: 'サポート・トラブル',
+      privacy: 'プライバシーに関するお問い合わせ',
+      other: 'その他'
+    };
+    return labels[type] || type;
+  };
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|net|org|jp|co\.jp|ne\.jp|or\.jp|go\.jp|ac\.jp|ed\.jp|io|ai|co|me|info|biz|dev)$/i;
     return emailRegex.test(email);
@@ -120,7 +133,7 @@ export default function ContactPage() {
                     <div className="space-y-2 text-sm text-gray-600 mb-6">
                       <p><strong>お名前：</strong>{formData.name}</p>
                       <p><strong>メール：</strong>{formData.email}</p>
-                      <p><strong>種別：</strong>{formData.type}</p>
+                      <p><strong>種別：</strong>{getTypeLabel(formData.type)}</p>
                       <div>
                         <strong>内容：</strong>
                         <div className="mt-1 p-3 bg-gray-50 rounded-lg max-h-64 overflow-y-auto whitespace-pre-wrap break-words">
