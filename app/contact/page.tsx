@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Canvas } from "@react-three/fiber";
+import Header from "@/components/Header";
 
 const WhiskersBackground = dynamic(
   () => import("@/components/WhiskersBackground"),
@@ -41,20 +41,8 @@ export default function ContactPage() {
         </Canvas>
       </div>
 
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-            Whiskers
-          </Link>
-          <Link 
-            href="/" 
-            className="px-4 py-2 text-sm text-white/80 hover:text-white transition-colors"
-          >
-            ← トップページに戻る
-          </Link>
-        </div>
-      </header>
+      {/* Header - LP Design */}
+      <Header />
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
