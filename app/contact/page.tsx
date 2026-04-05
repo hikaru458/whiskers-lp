@@ -164,6 +164,7 @@ export default function ContactPage() {
                   <option value="general">一般的なお問い合わせ</option>
                   <option value="business">企業様向けお問い合わせ</option>
                   <option value="creator">クリエイター様向けお問い合わせ</option>
+                  <option value="media">取材・メディア関連</option>
                   <option value="support">サポート・トラブル</option>
                   <option value="privacy">プライバシーに関するお問い合わせ</option>
                   <option value="other">その他</option>
