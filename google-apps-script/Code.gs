@@ -17,6 +17,15 @@ function doPost(e) {
       }));
     }
     
+    // メールアドレス形式チェック
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(params.email)) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'メールアドレスの形式が正しくありません。'
+      }));
+    }
+    
     // スプレッドシートに書き込み
     var ss = SpreadsheetApp.openById(SHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);

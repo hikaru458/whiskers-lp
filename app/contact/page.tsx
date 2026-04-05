@@ -30,26 +30,10 @@ export default function ContactPage() {
     setErrorMessage("");
     
     try {
-      // メールアドレス検証（厳格）
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      // メールアドレス検証（TLDホワイトリスト方式）
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.(com|net|org|jp|co\.jp|ne\.jp|or\.jp|go\.jp|ac\.jp|ed\.jp|io|ai|co|me|info|biz|dev)$/i;
     if (!emailRegex.test(formData.email)) {
       setErrorMessage("有効なメールアドレスを入力してください（例: user@example.com）");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    // ドメイン部分の検証（最低2文字のTLD）
-    const emailParts = formData.email.split("@");
-    if (emailParts.length !== 2 || !emailParts[1].includes(".")) {
-      setErrorMessage("メールアドレスのドメイン部分が不正です");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    const domainParts = emailParts[1].split(".");
-    const tld = domainParts[domainParts.length - 1];
-    if (tld.length < 2) {
-      setErrorMessage("メールアドレスのドメインが不完全です（例: .com, .co.jp）");
       setIsSubmitting(false);
       return;
     }
