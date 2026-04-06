@@ -528,6 +528,141 @@ export default function Home() {
       {/* 企業向けのみ表示 */}
       {target === "biz" && (
         <>
+          {/* 他社比較表（企業向けのみ） */}
+          <section id="comparison" className="relative z-10 py-20 px-6">
+            <div className="max-w-4xl mx-auto">
+              <FadeInSection>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+                  他サービスとの比較
+                </h2>
+                <p className="text-white/50 text-center mb-12 text-sm">
+                  なぜWhiskersが選ばれるのか
+                </p>
+
+                <div
+                  className="relative rounded-2xl overflow-hidden"
+                  style={{
+                    background: 'rgba(255,255,255,0.04)',
+                    backdropFilter: 'blur(20px) saturate(150%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    boxShadow: '0 8px 32px -8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12)',
+                  }}
+                >
+                  {/* 光のライン */}
+                  <div
+                    className="absolute top-0 left-4 right-4 h-[1px]"
+                    style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)' }}
+                  />
+
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                        {/* 項目列 */}
+                        <th className="p-4 text-left" style={{ width: '32%' }} />
+                        {/* 従来型：インフルエンサーマーケ */}
+                        <th className="p-4 text-center text-xs font-normal" style={{ color: 'rgba(255,255,255,0.35)', width: '23%' }}>
+                          インフルエンサー<br />マーケ会社
+                        </th>
+                        {/* 従来型：クラウドソーシング */}
+                        <th className="p-4 text-center text-xs font-normal" style={{ color: 'rgba(255,255,255,0.35)', width: '23%' }}>
+                          クラウド<br />ソーシング
+                        </th>
+                        {/* Whiskers列 */}
+                        <th
+                          className="p-4 text-center"
+                          style={{
+                            width: '22%',
+                            background: 'rgba(249,115,22,0.1)',
+                            borderLeft: '1px solid rgba(249,115,22,0.25)',
+                            borderRight: '1px solid rgba(249,115,22,0.25)',
+                          }}
+                        >
+                          <div className="text-sm font-semibold text-white mb-1.5">Whiskers</div>
+                          <div
+                            className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium"
+                            style={{ background: 'rgba(249,115,22,0.2)', color: 'rgba(249,115,22,0.95)', border: '1px solid rgba(249,115,22,0.3)' }}
+                          >
+                            おすすめ
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        {
+                          label: "フォロワー数不問",
+                          others: ["✕", "✕"],
+                          whiskers: "✓",
+                        },
+                        {
+                          label: "不採用なら費用ゼロ",
+                          others: ["✕", "✕"],
+                          whiskers: "✓",
+                        },
+                        {
+                          label: "投稿数無制限",
+                          others: ["✕", "△"],
+                          whiskers: "✓",
+                        },
+                        {
+                          label: "ステマ規制への自動対応",
+                          others: ["△", "✕"],
+                          whiskers: "✓",
+                        },
+                        {
+                          label: "成果報酬型の課金",
+                          others: ["✕", "✕"],
+                          whiskers: "✓",
+                        },
+                        {
+                          label: "新人クリエイター参加可",
+                          others: ["✕", "✓"],
+                          whiskers: "✓",
+                        },
+                        {
+                          label: "報酬額の透明性",
+                          others: ["△", "△"],
+                          whiskers: "✓",
+                        },
+                      ].map((row, i) => (
+                        <tr
+                          key={i}
+                          style={{ borderBottom: i < 6 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}
+                        >
+                          <td className="p-4 text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                            {row.label}
+                          </td>
+                          {row.others.map((val, j) => (
+                            <td key={j} className="p-4 text-center text-sm" style={{ color: val === "✓" ? '#4ade80' : val === "△" ? 'rgba(255,200,100,0.7)' : 'rgba(255,255,255,0.2)' }}>
+                              {val}
+                            </td>
+                          ))}
+                          <td
+                            className="p-4 text-center text-sm font-medium"
+                            style={{
+                              background: 'rgba(249,115,22,0.07)',
+                              borderLeft: '1px solid rgba(249,115,22,0.2)',
+                              borderRight: '1px solid rgba(249,115,22,0.2)',
+                              color: '#4ade80',
+                            }}
+                          >
+                            {row.whiskers}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 注釈 */}
+                <p className="text-center text-xs mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                  ※ 各サービスの一般的な特徴をもとにした比較です。サービス内容は変更される場合があります。
+                </p>
+              </FadeInSection>
+            </div>
+          </section>
+
           {/* 料金プラン */}
           <section id="pricing" className="relative z-10 py-20 px-6">
   <div className="max-w-4xl mx-auto">

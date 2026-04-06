@@ -21,6 +21,7 @@ export default function Header({ variant = "dark" }: HeaderProps) {
     ? [
         { label: "仕組み",       href: "how-it-works" },
         { label: "企業向け",     href: "business" },
+        { label: "他社比較",     href: "comparison" },
         { label: "料金プラン",   href: "pricing" },
         { label: "FAQ",          href: "faq" },
         { label: "お問い合わせ", href: "contact" },
