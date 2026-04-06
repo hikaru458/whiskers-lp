@@ -454,7 +454,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-10 px-6 border-t border-white/10">
+      <footer id="contact" className="relative z-10 py-10 px-6 border-t border-white/10">
         <div className="max-w-6xl mx-auto">
           {/* フッターリンク */}
           <div className="flex flex-wrap justify-center gap-6 mb-6 text-sm">

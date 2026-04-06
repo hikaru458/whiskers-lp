@@ -19,45 +19,39 @@ export default function Header({ variant = "dark" }: HeaderProps) {
 
   const navItems = target === "biz"
     ? [
-        { label: "仕組み",     href: "how-it-works" },
-        { label: "導入事例",   href: "pc-gallery" },
-        { label: "料金プラン", href: "pricing" },
-        { label: "FAQ",        href: "faq" },
+        { label: "仕組み",       href: "how-it-works" },
+        { label: "企業向け",     href: "business" },
+        { label: "料金プラン",   href: "pricing" },
+        { label: "ステマ規制",   href: "stema" },
         { label: "お問い合わせ", href: "contact" },
       ]
     : [
-        { label: "参加の流れ",   href: "how-it-works" },
-        { label: "作品ギャラリー", href: "pc-gallery" },
-        { label: "報酬・条件",   href: "pc-reward" },
-        { label: "FAQ",          href: "faq" },
-        { label: "無料登録",     href: "register" },
+        { label: "仕組み",         href: "how-it-works" },
+        { label: "クリエイター向け", href: "creators" },
+        { label: "支援を募集中",   href: "crowdfunding" },
+        { label: "お問い合わせ",   href: "contact" },
       ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMenuOpen(false);
 
-    const target = href;
-    const isMobile = window.innerWidth < 768;
-    const prefix = isMobile ? "sp-" : "pc-";
-    const targetId = prefix + target;
+    // 1. そのままのIDで検索
+    let element = document.getElementById(href);
 
-    console.log(`[Nav] Target: ${target}, isMobile: ${isMobile}, Looking for ID: ${targetId}`);
-
-    const element = document.getElementById(targetId);
+    // 2. PCプレフィックス付きで検索
     if (!element) {
-      console.warn(`[Nav] Section not found: ${targetId}`);
-      // フォールバック: pc-またはsp-なしのIDも探す
-      const fallbackElement = document.getElementById(target);
-      if (fallbackElement) {
-        console.log(`[Nav] Found fallback ID: ${target}`);
-        fallbackElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      return;
+      element = document.getElementById("pc-" + href);
     }
 
-    console.log(`[Nav] Found element: ${targetId}, scrolling...`);
-    element.scrollIntoView({ behavior: "smooth", block: "start" });
+    // 3. SPプレフィックス付きで検索
+    if (!element) {
+      element = document.getElementById("sp-" + href);
+    }
+
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   // 開閉時に弾性変形をトリガー
