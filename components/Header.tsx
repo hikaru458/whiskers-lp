@@ -22,14 +22,15 @@ export default function Header({ variant = "dark" }: HeaderProps) {
         { label: "仕組み",       href: "how-it-works" },
         { label: "企業向け",     href: "business" },
         { label: "料金プラン",   href: "pricing" },
-        { label: "ステマ規制",   href: "stema" },
+        { label: "FAQ",          href: "faq" },
         { label: "お問い合わせ", href: "contact" },
       ]
     : [
-        { label: "仕組み",         href: "how-it-works" },
+        { label: "仕組み",           href: "how-it-works" },
         { label: "クリエイター向け", href: "creators" },
-        { label: "支援を募集中",   href: "crowdfunding" },
-        { label: "お問い合わせ",   href: "contact" },
+        { label: "FAQ",              href: "faq" },
+        { label: "支援を募集中",     href: "crowdfunding" },
+        { label: "お問い合わせ",     href: "contact" },
       ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {

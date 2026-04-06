@@ -71,6 +71,111 @@ const CREATOR_SECTIONS = [
   },
 ];
 
+const BIZ_FAQ = [
+  {
+    question: "どのような企業が利用できますか？",
+    answer: "商品・サービスを持つすべての企業が対象です。美容、食品、EC、アパレル、アプリなど業種は問いません。BtoC・BtoBどちらも対応しています。",
+  },
+  {
+    question: "コンテストの開催費用はどのくらいかかりますか？",
+    answer: "月額プランはライト（¥150,000）・スタンダード（¥300,000）・プロ（¥500,000）の3種類です。投稿数は無制限で、採用した作品だけに費用が発生します。追加採用は1件50,000円（クリエイターへの報酬30,000円込み）です。",
+  },
+  {
+    question: "気に入った作品がなかった場合はどうなりますか？",
+    answer: "採用は任意です。コンテストに投稿があっても、気に入らなければ採用しなくてOKです。採用しなかった場合、採用費用は発生しません。",
+  },
+  {
+    question: "採用した作品の利用権はいつまでですか？",
+    answer: "プランによって異なります。ライトは契約期間中のみ、スタンダードは採用後1年間、プロは採用後3年間利用できます。期間終了後は延長契約も可能です。",
+  },
+  {
+    question: "ステマ規制への対応は具体的にどうなっていますか？",
+    answer: "投稿時にAIが広告表記の有無を自動チェックし、「PR」「広告」などの表記が抜けている場合は即座にクリエイターへ通知します。企業・クリエイター・プラットフォームの責任範囲も規約で明確に定めています。",
+  },
+  {
+    question: "コンテストの告知や集客はどうすればいいですか？",
+    answer: "Whiskersのプラットフォーム内で登録クリエイターへ自動通知されます。また、SNS向けの告知素材の提供や、拡散サポートもご相談いただけます。",
+  },
+];
+
+const CREATOR_FAQ = [
+  {
+    question: "参加に必要なフォロワー数や実績はありますか？",
+    answer: "一切不要です。フォロワー数・過去実績・所属事務所は審査に関係ありません。投稿した作品のクオリティだけで採用が決まります。",
+  },
+  {
+    question: "報酬はいくらですか？いつ振り込まれますか？",
+    answer: "採用1作品につき30,000円（税込）を保証しています。採用確定から5営業日以内に登録口座へ振り込まれます。",
+  },
+  {
+    question: "採用されなかった場合、作品はどうなりますか？",
+    answer: "不採用の作品はポートフォリオとして活用いただけます。企業への著作権の移転は採用された作品のみで、不採用の場合は完全にあなたの所有物です。",
+  },
+  {
+    question: "1つのコンテストに複数作品を投稿できますか？",
+    answer: "はい、投稿数に制限はありません。複数のアプローチで作品を投稿することで採用率が上がります。",
+  },
+  {
+    question: "どんなジャンル・形式の作品が求められますか？",
+    answer: "コンテストごとに企業から指定があります。写真・動画・イラスト・テキストなど形式はさまざまです。コンテスト一覧で募集内容を確認してから参加できます。",
+  },
+  {
+    question: "未成年でも参加できますか？",
+    answer: "18歳未満の方は保護者の同意が必要です。報酬の受け取りには本人名義の銀行口座が必要となります。",
+  },
+];
+
+function FAQItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className="relative rounded-2xl overflow-hidden cursor-pointer"
+      style={{
+        background: 'rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.15)',
+      }}
+      onClick={() => setOpen(!open)}
+    >
+      {/* 上部の光のライン（GlassPhotoPanelと統一） */}
+      <div
+        className="absolute top-0 left-4 right-4 h-[1px]"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+        }}
+      />
+      {/* 質問行 */}
+      <div className="flex items-center justify-between px-6 py-5 gap-4">
+        <span className="text-white/90 font-light text-base leading-relaxed">
+          {question}
+        </span>
+        <span
+          className="text-white/60 text-xl flex-shrink-0 transition-transform duration-300"
+          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}
+        >
+          +
+        </span>
+      </div>
+      {/* 回答（アコーディオン） */}
+      <div
+        className="overflow-hidden transition-all duration-300"
+        style={{ maxHeight: open ? '300px' : '0px' }}
+      >
+        <div
+          className="px-6 pb-5"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          <p className="text-white/60 text-sm leading-relaxed pt-4">
+            {answer}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { target } = useTarget();
   const [mounted, setMounted] = useState(false);
@@ -414,6 +519,27 @@ export default function Home() {
         </div>
       </section>
       )}
+
+      {/* FAQ セクション（ターゲット別） */}
+      <section id="faq" className="relative z-10 py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <FadeInSection>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+              よくある質問
+            </h2>
+            <p className="text-white/60 text-center mb-12">
+              {target === "biz"
+                ? "企業様からよくいただくご質問です。"
+                : "クリエイターの方からよくいただくご質問です。"}
+            </p>
+            <div className="space-y-3">
+              {(target === "biz" ? BIZ_FAQ : CREATOR_FAQ).map((item, index) => (
+                <FAQItem key={index} question={item.question} answer={item.answer} />
+              ))}
+            </div>
+          </FadeInSection>
+        </div>
+      </section>
       <section id="crowdfunding" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <FadeInSection>
