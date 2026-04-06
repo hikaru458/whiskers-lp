@@ -241,13 +241,29 @@ export default function Home() {
         <h1 className="text-5xl md:text-7xl font-bold mb-6 text-center bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
           Whiskers
         </h1>
-        <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl">
+        <div className="text-center max-w-2xl">
           {target === "biz" ? (
-            <>広告費を抑えて、<br />確実に使えるUGCを獲得。</>
+            <>
+              <p className="text-2xl md:text-3xl font-light text-white/90 leading-snug mb-3">
+                広告費を抑えて、<br />
+                <span className="font-semibold text-white">確実に使えるUGCだけ</span>を手に入れる。
+              </p>
+              <p className="text-sm md:text-base text-white/55 leading-relaxed">
+                投稿数無制限・完全選考制のコンテスト型UGCプラットフォーム
+              </p>
+            </>
           ) : (
-            <>フォロワー数は関係ない。<br />実力で評価されるUGC制作の場。</>
+            <>
+              <p className="text-2xl md:text-3xl font-light text-white/90 leading-snug mb-3">
+                フォロワー数は関係ない。<br />
+                <span className="font-semibold text-white">作品の力だけ</span>で評価される場所。
+              </p>
+              <p className="text-sm md:text-base text-white/55 leading-relaxed">
+                採用1本 ¥30,000保証・登録無料のUGCコンテスト
+              </p>
+            </>
           )}
-        </p>
+        </div>
         <div className="flex mt-8">
           <div className="flex border border-white/20 rounded-full overflow-hidden mx-auto">
             <button
@@ -273,6 +289,16 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Hero直下CTA */}
+      <div className="relative z-10 flex justify-center pb-16 px-6">
+        <a
+          href="/contact"
+          className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-medium shadow-lg"
+        >
+          {target === "biz" ? "無料で相談する →" : "無料で登録する →"}
+        </a>
+      </div>
 
       {/* サービスの仕組み */}
       <section id="how-it-works" className="relative z-10 py-20 px-6">
@@ -367,167 +393,86 @@ export default function Home() {
       {/* 企業向けのみ表示 */}
       {target === "biz" && (
         <>
-          {/* 企業向けセクション */}
-          <section id="business" className="relative z-10 py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <FadeInSection>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-white">
-              企業様向け
-            </h2>
-            <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              広告費を抑えて、確実に使えるUGCを獲得。
-              フォロワー数に関係なく、実力で選考します。
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="text-xl font-semibold text-white mb-3">選考制で品質担保</h3>
-                <p className="text-white/60">たくさんの投稿の中から気に入った作品だけを採用。品質が不安定な依頼型とは異なり、納得のいく作品だけに課金します。</p>
-              </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="text-xl font-semibold text-white mb-3">ステマ規制対応済み</h3>
-                <p className="text-white/60">2023年10月施行の景品表示法改正に対応。広告表記の自動チェック機能で、法的リスクを軽減します。</p>
-              </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="text-xl font-semibold text-white mb-3">成果物ベースの課金</h3>
-                <p className="text-white/60">投稿数は無制限。採用した作品だけに費用が発生するため、予算を無駄にしません。</p>
-              </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="text-xl font-semibold text-white mb-3">多様な業種に対応</h3>
-                <p className="text-white/60">美容、食品、EC、アパレルなど業種を問わず活用可能。商品・サービスを持つすべての企業が対象です。</p>
-              </div>
-            </div>
-          </FadeInSection>
-        </div>
-      </section>
-
           {/* 料金プラン */}
           <section id="pricing" className="relative z-10 py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <FadeInSection>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
-              料金プラン
-            </h2>
-            <p className="text-lg text-white/60 text-center mb-12 max-w-2xl mx-auto">
-              投稿数は無制限。採用した作品だけに費用が発生します。
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* ライト */}
-              <div className="p-8 rounded-2xl bg-white/5 border border-white/10 flex flex-col">
-                <div className="text-sm font-medium text-white/60 mb-2">ライト</div>
-                <div className="text-4xl font-bold text-white mb-2">¥150,000<span className="text-lg font-normal text-white/60">/月</span></div>
-                <p className="text-sm text-white/50 mb-6">小規模企業・初期導入向け</p>
-                <ul className="space-y-3 mb-8 flex-1">
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    月3件まで採用可能
-                  </li>
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    投稿数無制限
-                  </li>
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    契約期間中のみ利用権
-                  </li>
-                </ul>
-                <a href="#contact" className="w-full py-3 rounded-full border border-white/30 text-white hover:bg-white/10 transition-all text-center">
-                  お問い合わせ
-                </a>
-              </div>
-              {/* スタンダード */}
-              <div className="p-8 rounded-2xl bg-gradient-to-b from-white/10 to-white/5 border border-white/20 flex flex-col relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-xs font-medium text-white">
-                  おすすめ
-                </div>
-                <div className="text-sm font-medium text-white/60 mb-2">スタンダード</div>
-                <div className="text-4xl font-bold text-white mb-2">¥300,000<span className="text-lg font-normal text-white/60">/月</span></div>
-                <p className="text-sm text-white/50 mb-6">成長企業・定期UGC向け</p>
-                <ul className="space-y-3 mb-8 flex-1">
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    月10件まで採用可能
-                  </li>
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    投稿数無制限
-                  </li>
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    採用後1年間利用権
-                  </li>
-                </ul>
-                <a href="#contact" className="w-full py-3 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 transition-all text-center">
-                  お問い合わせ
-                </a>
-              </div>
-              {/* プロ */}
-              <div className="p-8 rounded-2xl bg-white/5 border border-white/10 flex flex-col">
-                <div className="text-sm font-medium text-white/60 mb-2">プロ</div>
-                <div className="text-4xl font-bold text-white mb-2">¥500,000<span className="text-lg font-normal text-white/60">/月</span></div>
-                <p className="text-sm text-white/50 mb-6">大規模企業・大量UGC向け</p>
-                <ul className="space-y-3 mb-8 flex-1">
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    採用数無制限
-                  </li>
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    投稿数無制限
-                  </li>
-                  <li className="flex items-center gap-2 text-sm text-white/80">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    採用後3年間利用権
-                  </li>
-                </ul>
-                <a href="#contact" className="w-full py-3 rounded-full border border-white/30 text-white hover:bg-white/10 transition-all text-center">
-                  お問い合わせ
-                </a>
-              </div>
-            </div>
-            <p className="text-center text-sm text-white/50 mt-8">
-              ※追加採用は1件50,000円（報酬30,000円込み）
-            </p>
-          </FadeInSection>
-        </div>
-      </section>
+  <div className="max-w-4xl mx-auto">
+    <FadeInSection>
+      <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+        料金プラン
+      </h2>
+      <p className="text-white/60 text-center mb-12 max-w-xl mx-auto">
+        投稿数は無制限。採用した作品だけに費用が発生します。
+      </p>
 
-          {/* ステマ規制対応 */}
-          <section id="stema" className="relative z-10 py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <FadeInSection>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-white">
-              ステマ規制対応
-            </h2>
-            <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              2023年10月施行の景品表示法改正に完全対応。
-              法的リスクを軽減し、安心してUGCを活用できます。
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center">
-                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">自動チェック機能</h3>
-                <p className="text-sm text-white/60">AIによる広告表記の有無を自動チェック。不備がある場合は即座に通知します。</p>
-              </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">明確な表記義務</h3>
-                <p className="text-sm text-white/60">「PR」「広告」「提供：企業名」など、適切な表記をガイドラインで明確に定めています。</p>
-              </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10 text-center">
-                <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">責任範囲の明確化</h3>
-                <p className="text-sm text-white/60">企業・クリエイター・プラットフォームの責任範囲を規約で明確に定めています。</p>
-              </div>
+      {/* 比較テーブル */}
+      <div className="rounded-2xl overflow-hidden border border-white/10">
+        {/* ヘッダー行 */}
+        <div className="grid grid-cols-4 text-center">
+          <div className="p-4 border-r border-white/10" />
+          <div className="p-4 border-r border-white/10">
+            <div className="text-xs text-white/50 mb-1">ライト</div>
+            <div className="text-xl font-bold text-white">¥150,000</div>
+            <div className="text-xs text-white/40">/月</div>
+          </div>
+          <div className="p-4 border-r border-white/10 relative bg-white/5">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-xs font-medium text-white whitespace-nowrap">
+              おすすめ
             </div>
-          </FadeInSection>
+            <div className="text-xs text-white/50 mb-1">スタンダード</div>
+            <div className="text-xl font-bold text-white">¥300,000</div>
+            <div className="text-xs text-white/40">/月</div>
+          </div>
+          <div className="p-4">
+            <div className="text-xs text-white/50 mb-1">プロ</div>
+            <div className="text-xl font-bold text-white">¥500,000</div>
+            <div className="text-xs text-white/40">/月</div>
+          </div>
         </div>
-      </section>
+
+        {/* 項目行 */}
+        {[
+          { label: "月間採用可能数", values: ["3件", "10件", "無制限"] },
+          { label: "投稿数", values: ["無制限", "無制限", "無制限"] },
+          { label: "利用権期間", values: ["契約期間中", "採用後1年", "採用後3年"] },
+          { label: "追加採用", values: ["1件¥50,000", "1件¥50,000", "1件¥50,000"] },
+        ].map((row, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-4 text-center border-t border-white/10"
+          >
+            <div className="p-4 text-left text-sm text-white/60 border-r border-white/10 flex items-center">
+              {row.label}
+            </div>
+            <div className="p-4 text-sm text-white/80 border-r border-white/10 flex items-center justify-center">
+              {row.values[0]}
+            </div>
+            <div className="p-4 text-sm text-white border-r border-white/10 flex items-center justify-center font-medium bg-white/5">
+              {row.values[1]}
+            </div>
+            <div className="p-4 text-sm text-white/80 flex items-center justify-center">
+              {row.values[2]}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-center text-xs text-white/40 mt-4">
+        ※追加採用の報酬30,000円込み
+      </p>
+
+      {/* 料金表直下CTA */}
+      <div className="mt-10 text-center">
+        <p className="text-white/60 text-sm mb-4">まずはお気軽にご相談ください</p>
+        <a
+          href="/contact"
+          className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-medium"
+        >
+          無料で相談する →
+        </a>
+      </div>
+    </FadeInSection>
+  </div>
+</section>
         </>
       )}
 
@@ -586,40 +531,37 @@ export default function Home() {
           </FadeInSection>
         </div>
       </section>
-      <section id="crowdfunding" className="relative z-10 py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+
+      {/* フッター直前CTA */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-2xl mx-auto text-center">
           <FadeInSection>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-              支援を募集中
-            </h2>
-            <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
-              Whiskersを一緒に作り上げてくださる仲間を募集しています。<br />
-              クラウドファンディングで目標300万円を目指しています。
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <div className="text-3xl font-bold text-white mb-2">¥30,000</div>
-                <div className="text-sm text-white/60">ベータ版先行利用権</div>
-              </div>
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <div className="text-3xl font-bold text-white mb-2">¥100,000</div>
-                <div className="text-sm text-white/60">プラットフォーム内広告枠1ヶ月</div>
-              </div>
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <div className="text-3xl font-bold text-white mb-2">¥300,000</div>
-                <div className="text-sm text-white/60">年間無料 + アンバサダー</div>
-              </div>
-            </div>
+            {target === "biz" ? (
+              <>
+                <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
+                  まず、話を聞いてみませんか？
+                </h2>
+                <p className="text-white/60 mb-8 leading-relaxed">
+                  導入前のご質問・他社との比較検討など、<br className="hidden md:block" />
+                  どんなご相談もお気軽にどうぞ。
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl md:text-3xl font-light text-white mb-4">
+                  あなたの作品を、企業に届けよう。
+                </h2>
+                <p className="text-white/60 mb-8 leading-relaxed">
+                  登録・参加費は無料。<br className="hidden md:block" />
+                  今すぐコンテストに参加できます。
+                </p>
+              </>
+            )}
             <a
-              href="https://camp-fire.jp/projects/view/XXXXX"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-medium"
+              href="/contact"
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-full text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-medium text-lg"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
-              </svg>
-              支援する
+              {target === "biz" ? "無料で相談する →" : "無料で登録する →"}
             </a>
           </FadeInSection>
         </div>
