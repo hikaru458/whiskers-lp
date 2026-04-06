@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTarget } from "@/lib/TargetContext";
 
 interface HeaderProps {
   variant?: "dark" | "light";
@@ -12,17 +13,25 @@ export default function Header({ variant = "dark" }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
   const pathname = usePathname();
+  const { target, setTarget } = useTarget();
   const isHomePage = pathname === "/";
   const isLight = variant === "light";
 
-  const navItems = [
-    { label: "Gallery", href: "gallery" },
-    { label: "Creator", href: "creator" },
-    { label: "Contest", href: "contest" },
-    { label: "Product", href: "product" },
-    { label: "FAQ", href: "faq" },
-    { label: "Contact", href: "contact" }
-  ];
+  const navItems = target === "biz"
+    ? [
+        { label: "仕組み",     href: "how-it-works" },
+        { label: "導入事例",   href: "pc-gallery" },
+        { label: "料金プラン", href: "pricing" },
+        { label: "FAQ",        href: "faq" },
+        { label: "お問い合わせ", href: "contact" },
+      ]
+    : [
+        { label: "参加の流れ",   href: "how-it-works" },
+        { label: "作品ギャラリー", href: "pc-gallery" },
+        { label: "報酬・条件",   href: "pc-reward" },
+        { label: "FAQ",          href: "faq" },
+        { label: "無料登録",     href: "register" },
+      ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -132,19 +141,27 @@ export default function Header({ variant = "dark" }: HeaderProps) {
       {/* サブヘッダー - LPのみ表示 */}
       {isHomePage && (
         <div className="max-w-7xl mx-auto flex items-center justify-center py-3 border-t border-white/10">
-          <div className="flex flex-row items-center gap-3">
-            <a
-              href="#business"
-              className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium text-white/80 border border-white/30 hover:border-white/50 hover:bg-white/10 hover:text-white transition-all duration-300"
+          <div className="flex border border-white/20 rounded-full overflow-hidden">
+            <button
+              onClick={() => setTarget("biz")}
+              className={`px-5 py-1.5 text-xs font-medium transition-all duration-300 ${
+                target === "biz"
+                  ? "bg-white/20 text-white"
+                  : "text-white/60 hover:text-white"
+              }`}
             >
-              企業様向け
-            </a>
-            <a
-              href="#creators"
-              className="px-4 py-1.5 rounded-full text-xs md:text-sm font-medium text-white/80 border border-white/30 hover:border-white/50 hover:bg-white/10 hover:text-white transition-all duration-300"
+              企業の方
+            </button>
+            <button
+              onClick={() => setTarget("creator")}
+              className={`px-5 py-1.5 text-xs font-medium transition-all duration-300 ${
+                target === "creator"
+                  ? "bg-white/20 text-white"
+                  : "text-white/60 hover:text-white"
+              }`}
             >
-              クリエイター様向け
-            </a>
+              クリエイターの方
+            </button>
           </div>
         </div>
       )}

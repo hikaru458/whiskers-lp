@@ -7,42 +7,72 @@ import PhotoPanel from "@/components/PhotoPanel";
 import FadeInSection from "@/components/FadeInSection";
 import GlassPhotoPanel from "@/components/GlassPhotoPanel";
 import WhiskersBackground from "@/components/WhiskersBackground";
+import { useTarget } from "@/lib/TargetContext";
 
-// 6セクションのデータ
-const SECTIONS = [
+const BIZ_SECTIONS = [
+  {
+    image: "/images/image_fx_0.jpg",
+    title: "導入事例",
+    description: "美容・食品・ECなど多業種での採用実績。コンテスト型だからこそ生まれた、想定外のクリエイティブをご紹介します。",
+    linkText: "事例を見る",
+    linkHref: "#business",
+  },
+  {
+    image: "/images/image_fx_1.jpg",
+    title: "選考制で品質担保",
+    description: "投稿数は無制限。気に入った作品だけを採用するから、予算を無駄にしません。",
+    linkText: "仕組みを見る",
+    linkHref: "#how-it-works",
+  },
+  {
+    image: "/images/image_fx_2.jpg",
+    title: "ステマ規制対応",
+    description: "2023年10月施行の景品表示法改正に完全対応。法的リスクを軽減し、安心してUGCを活用できます。",
+    linkText: "詳細を見る",
+    linkHref: "#stema",
+  },
+  {
+    image: "/images/juno_0.png",
+    title: "料金プラン",
+    description: "採用した作品だけに課金。月3件〜無制限まで、規模に合わせて選べます。",
+    linkText: "プランを見る",
+    linkHref: "#pricing",
+  },
+];
+
+const CREATOR_SECTIONS = [
   {
     image: "/images/image_fx_0.jpg",
     title: "Gallery",
     description: "クリエイターの作品が集まる場所。あなたの感性に触れる一枚を見つけてください。",
+    linkText: "ギャラリーを見る",
+    linkHref: "#gallery",
   },
   {
     image: "/images/image_fx_1.jpg",
-    title: "Creator",
-    description: "個性豊かなクリエイターたちが活躍する舞台。新しい才能との出会いが待っています。",
+    title: "実力主義の評価",
+    description: "フォロワー数・過去実績は不問。作品のクオリティだけで採用が決まります。",
+    linkText: "参加の流れ",
+    linkHref: "#how-it-works",
   },
   {
     image: "/images/image_fx_2.jpg",
-    title: "Contest",
-    description: "コンテストで才能を競い合う。賞金と名誉を手に入れよう。",
+    title: "採用で¥30,000",
+    description: "採用1作品につき30,000円を保証。採用確定から5営業日以内に振り込まれます。",
+    linkText: "報酬の詳細",
+    linkHref: "#reward",
   },
   {
     image: "/images/juno_0.png",
-    title: "Product",
-    description: "クリエイターに寄り添うツールとサービス。創作をもっと自由に。",
-  },
-  {
-    image: "/images/juno_1.png",
-    title: "FAQ",
-    description: "よくある質問と回答。ご不明点があればお気軽にお問い合わせください。",
-  },
-  {
-    image: "/images/juno_2.png",
-    title: "Contact",
-    description: "お問い合わせはこちらから。クリエイターとユーザー、双方の声をお待ちしています。",
+    title: "ポートフォリオ構築",
+    description: "企業からの採用実績が積み上がる。未経験からのキャリアスタートをサポートします。",
+    linkText: "無料で登録する",
+    linkHref: "#register",
   },
 ];
 
 export default function Home() {
+  const { target } = useTarget();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -50,6 +80,8 @@ export default function Home() {
   }, []);
 
   if (!mounted) return null;
+
+  const SECTIONS = target === "biz" ? BIZ_SECTIONS : CREATOR_SECTIONS;
 
   return (
     <main className="min-h-screen text-white relative">
@@ -81,7 +113,11 @@ export default function Home() {
           Whiskers
         </h1>
         <p className="text-lg md:text-xl text-white/80 text-center max-w-2xl">
-          企業とクリエイターをつなぐ<br />コンテスト型UGCプラットフォーム
+          {target === "biz" ? (
+            <>広告費を抑えて、<br />確実に使えるUGCを獲得。</>
+          ) : (
+            <>フォロワー数は関係ない。<br />実力で評価されるUGC制作の場。</>
+          )}
         </p>
       </section>
 
@@ -121,14 +157,14 @@ export default function Home() {
 
       {/* 6セクション - PC版 */}
       <div className="hidden md:block">
-        {SECTIONS.map((section, index) => {
+        {SECTIONS.map((section: typeof SECTIONS[0], index: number) => {
           const isEven = index % 2 === 0;
           const isReversed = !isEven;
 
           return (
             <section
               key={`pc-${section.title}`}
-              id={`pc-${section.title.toLowerCase()}`}
+              id={`pc-${section.title.toLowerCase().replace(/\s+/g, '-')}`}
               className="relative z-10 h-screen flex items-center py-20 px-6"
             >
               <div className="max-w-6xl mx-auto w-full">
@@ -138,6 +174,8 @@ export default function Home() {
                     title={section.title}
                     description={section.description}
                     imagePosition={isReversed ? "right" : "left"}
+                    linkText={section.linkText}
+                    linkHref={section.linkHref}
                   />
                 </FadeInSection>
               </div>
@@ -148,14 +186,14 @@ export default function Home() {
 
       {/* スマホ版: 通常スクロール */}
       <div className="md:hidden">
-        {SECTIONS.map((section, index) => {
+        {SECTIONS.map((section: typeof SECTIONS[0], index: number) => {
           const isEven = index % 2 === 0;
           const isReversed = !isEven;
 
           return (
             <section
               key={`mobile-${section.title}`}
-              id={`sp-${section.title.toLowerCase()}`}
+              id={`sp-${section.title.toLowerCase().replace(/\s+/g, '-')}`}
               className="relative z-10 min-h-[100svh] flex items-center py-20 px-6"
             >
               <div className="max-w-6xl mx-auto w-full">
@@ -165,6 +203,8 @@ export default function Home() {
                     title={section.title}
                     description={section.description}
                     imagePosition={isReversed ? "right" : "left"}
+                    linkText={section.linkText}
+                    linkHref={section.linkHref}
                   />
                 </FadeInSection>
               </div>
@@ -173,8 +213,11 @@ export default function Home() {
         })}
       </div>
 
-      {/* 企業向けセクション */}
-      <section id="business" className="relative z-10 py-20 px-6">
+      {/* 企業向けのみ表示 */}
+      {target === "biz" && (
+        <>
+          {/* 企業向けセクション */}
+          <section id="business" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeInSection>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-white">
@@ -206,8 +249,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 料金プラン */}
-      <section id="pricing" className="relative z-10 py-20 px-6">
+          {/* 料金プラン */}
+          <section id="pricing" className="relative z-10 py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <FadeInSection>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
@@ -297,8 +340,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ステマ規制対応 */}
-      <section id="stema" className="relative z-10 py-20 px-6">
+          {/* ステマ規制対応 */}
+          <section id="stema" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeInSection>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-white">
@@ -334,9 +377,12 @@ export default function Home() {
           </FadeInSection>
         </div>
       </section>
+        </>
+      )}
 
-      {/* クリエイター向けセクション */}
-      <section id="creators" className="relative z-10 py-20 px-6">
+      {/* クリエイター向けのみ表示 */}
+      {target === "creator" && (
+        <section id="creators" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeInSection>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-white">
@@ -367,6 +413,7 @@ export default function Home() {
           </FadeInSection>
         </div>
       </section>
+      )}
       <section id="crowdfunding" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <FadeInSection>
