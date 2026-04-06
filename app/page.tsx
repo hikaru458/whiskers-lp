@@ -154,16 +154,17 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
   return (
     <div
-      className="relative rounded-2xl overflow-hidden cursor-pointer"
+      className="relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-200"
       style={{
         background: 'rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        backdropFilter: 'blur(20px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
         border: '1px solid rgba(255,255,255,0.15)',
+        boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
       }}
       onClick={() => setOpen(!open)}
     >
-      {/* 上部の光のライン（GlassPhotoPanelと統一） */}
+      {/* 光のライン */}
       <div
         className="absolute top-0 left-4 right-4 h-[1px]"
         style={{
@@ -404,56 +405,106 @@ export default function Home() {
         投稿数は無制限。採用した作品だけに費用が発生します。
       </p>
 
-      {/* 比較テーブル */}
-      <div className="rounded-2xl overflow-hidden border border-white/10">
-        {/* ヘッダー行 */}
-        <div className="grid grid-cols-4 text-center">
-          <div className="p-4 border-r border-white/10" />
-          <div className="p-4 border-r border-white/10">
-            <div className="text-xs text-white/50 mb-1">ライト</div>
-            <div className="text-xl font-bold text-white">¥150,000</div>
-            <div className="text-xs text-white/40">/月</div>
-          </div>
-          <div className="p-4 border-r border-white/10 relative bg-white/5">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-xs font-medium text-white whitespace-nowrap">
-              おすすめ
+      {/* 料金比較テーブル */}
+      <div className="relative">
+        {/* おすすめバッジ（テーブルの外に出してoverflow問題を回避） */}
+        <div className="absolute -top-3 left-0 right-0 flex justify-center z-10" style={{ pointerEvents: 'none' }}>
+          <div className="grid grid-cols-4 w-full">
+            <div /> {/* ラベル列分の空白 */}
+            <div /> {/* ライト列分の空白 */}
+            <div className="flex justify-center">
+              <span className="px-4 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-xs font-medium text-white shadow-lg">
+                おすすめ
+              </span>
             </div>
-            <div className="text-xs text-white/50 mb-1">スタンダード</div>
-            <div className="text-xl font-bold text-white">¥300,000</div>
-            <div className="text-xs text-white/40">/月</div>
-          </div>
-          <div className="p-4">
-            <div className="text-xs text-white/50 mb-1">プロ</div>
-            <div className="text-xl font-bold text-white">¥500,000</div>
-            <div className="text-xs text-white/40">/月</div>
+            <div /> {/* プロ列分の空白 */}
           </div>
         </div>
 
-        {/* 項目行 */}
-        {[
-          { label: "月間採用可能数", values: ["3件", "10件", "無制限"] },
-          { label: "投稿数", values: ["無制限", "無制限", "無制限"] },
-          { label: "利用権期間", values: ["契約期間中", "採用後1年", "採用後3年"] },
-          { label: "追加採用", values: ["1件¥50,000", "1件¥50,000", "1件¥50,000"] },
-        ].map((row, i) => (
+        {/* テーブル本体 */}
+        <div
+          className="relative rounded-2xl pt-4"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            backdropFilter: 'blur(20px) saturate(150%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+          }}
+        >
+          {/* 光のライン */}
           <div
-            key={i}
-            className="grid grid-cols-4 text-center border-t border-white/10"
-          >
-            <div className="p-4 text-left text-sm text-white/60 border-r border-white/10 flex items-center">
-              {row.label}
+            className="absolute top-0 left-4 right-4 h-[1px]"
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+            }}
+          />
+
+          {/* ヘッダー行 */}
+          <div className="grid grid-cols-4 text-center">
+            <div className="p-4" />
+            <div className="p-4" style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="text-xs text-white/50 mb-1">ライト</div>
+              <div className="text-xl font-bold text-white">¥150,000</div>
+              <div className="text-xs text-white/40">/月</div>
             </div>
-            <div className="p-4 text-sm text-white/80 border-r border-white/10 flex items-center justify-center">
-              {row.values[0]}
+            <div
+              className="p-4"
+              style={{
+                borderRight: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.04)',
+              }}
+            >
+              <div className="text-xs text-white/50 mb-1">スタンダード</div>
+              <div className="text-xl font-bold text-white">¥300,000</div>
+              <div className="text-xs text-white/40">/月</div>
             </div>
-            <div className="p-4 text-sm text-white border-r border-white/10 flex items-center justify-center font-medium bg-white/5">
-              {row.values[1]}
-            </div>
-            <div className="p-4 text-sm text-white/80 flex items-center justify-center">
-              {row.values[2]}
+            <div className="p-4">
+              <div className="text-xs text-white/50 mb-1">プロ</div>
+              <div className="text-xl font-bold text-white">¥500,000</div>
+              <div className="text-xs text-white/40">/月</div>
             </div>
           </div>
-        ))}
+
+          {/* 項目行 */}
+          {[
+            { label: "月間採用可能数", values: ["3件", "10件", "無制限"] },
+            { label: "投稿数",         values: ["無制限", "無制限", "無制限"] },
+            { label: "利用権期間",     values: ["契約期間中", "採用後1年", "採用後3年"] },
+            { label: "追加採用",       values: ["1件¥50,000", "1件¥50,000", "1件¥50,000"] },
+          ].map((row, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-4 text-center"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <div
+                className="p-4 text-left text-sm text-white/60 flex items-center"
+                style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                {row.label}
+              </div>
+              <div
+                className="p-4 text-sm text-white/80 flex items-center justify-center"
+                style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                {row.values[0]}
+              </div>
+              <div
+                className="p-4 text-sm text-white font-medium flex items-center justify-center"
+                style={{
+                  borderRight: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.04)',
+                }}
+              >
+                {row.values[1]}
+              </div>
+              <div className="p-4 text-sm text-white/80 flex items-center justify-center">
+                {row.values[2]}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <p className="text-center text-xs text-white/40 mt-4">
@@ -489,19 +540,83 @@ export default function Home() {
               公正なUGC制作の場を提供します。
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <div
+                className="p-6 rounded-2xl relative overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(20px) saturate(150%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                }}
+              >
+                {/* 光のライン */}
+                <div
+                  className="absolute top-0 left-4 right-4 h-[1px]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                  }}
+                />
                 <h3 className="text-xl font-semibold text-white mb-3">実力主義の評価</h3>
                 <p className="text-white/60">フォロワー数や過去の実績は不問。作品のクオリティだけで採用が決まります。</p>
               </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <div
+                className="p-6 rounded-2xl relative overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(20px) saturate(150%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                }}
+              >
+                {/* 光のライン */}
+                <div
+                  className="absolute top-0 left-4 right-4 h-[1px]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                  }}
+                />
                 <h3 className="text-xl font-semibold text-white mb-3">明確な報酬体系</h3>
                 <p className="text-white/60">採用1作品につき30,000円（税込）を保証。採用確定から5営業日以内に振り込まれます。</p>
               </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <div
+                className="p-6 rounded-2xl relative overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(20px) saturate(150%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                }}
+              >
+                {/* 光のライン */}
+                <div
+                  className="absolute top-0 left-4 right-4 h-[1px]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                  }}
+                />
                 <h3 className="text-xl font-semibold text-white mb-3">ポートフォリオ構築</h3>
                 <p className="text-white/60">企業からの採用は実績として積み上がり。未経験からのキャリアスタートをサポートします。</p>
               </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <div
+                className="p-6 rounded-2xl relative overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(20px) saturate(150%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                }}
+              >
+                {/* 光のライン */}
+                <div
+                  className="absolute top-0 left-4 right-4 h-[1px]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                  }}
+                />
                 <h3 className="text-xl font-semibold text-white mb-3">公平な参加環境</h3>
                 <p className="text-white/60">インフルエンサー中心のマッチングサービスとは異なり、すべてのクリエイターに平等な機会を提供します。</p>
               </div>
