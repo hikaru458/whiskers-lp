@@ -133,34 +133,6 @@ export default function Header({ variant = "dark" }: HeaderProps) {
         )}
       </div>
 
-      {/* サブヘッダー - LPのみ表示 */}
-      {isHomePage && (
-        <div className="max-w-7xl mx-auto flex items-center justify-center py-3 border-t border-white/10">
-          <div className="flex border border-white/20 rounded-full overflow-hidden">
-            <button
-              onClick={() => setTarget("biz")}
-              className={`px-5 py-1.5 text-xs font-medium transition-all duration-300 ${
-                target === "biz"
-                  ? "bg-white/20 text-white"
-                  : "text-white/60 hover:text-white"
-              }`}
-            >
-              企業の方
-            </button>
-            <button
-              onClick={() => setTarget("creator")}
-              className={`px-5 py-1.5 text-xs font-medium transition-all duration-300 ${
-                target === "creator"
-                  ? "bg-white/20 text-white"
-                  : "text-white/60 hover:text-white"
-              }`}
-            >
-              クリエイターの方
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* メニュー - LPのみPC/スマホ共通 */}
       {isHomePage && menuOpen && (
         <nav

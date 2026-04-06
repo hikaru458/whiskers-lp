@@ -224,6 +224,30 @@ export default function Home() {
             <>フォロワー数は関係ない。<br />実力で評価されるUGC制作の場。</>
           )}
         </p>
+        <div className="flex mt-8">
+          <div className="flex border border-white/20 rounded-full overflow-hidden mx-auto">
+            <button
+              onClick={() => setTarget("biz")}
+              className={`px-6 py-2 text-sm font-medium transition-all duration-300 ${
+                target === "biz"
+                  ? "bg-white/20 text-white"
+                  : "text-white/50 hover:text-white"
+              }`}
+            >
+              企業の方
+            </button>
+            <button
+              onClick={() => setTarget("creator")}
+              className={`px-6 py-2 text-sm font-medium transition-all duration-300 ${
+                target === "creator"
+                  ? "bg-white/20 text-white"
+                  : "text-white/50 hover:text-white"
+              }`}
+            >
+              クリエイターの方
+            </button>
+          </div>
+        </div>
       </section>
 
       {/* サービスの仕組み */}
