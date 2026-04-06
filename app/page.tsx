@@ -177,7 +177,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function Home() {
-  const { target } = useTarget();
+  const { target, setTarget } = useTarget();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
