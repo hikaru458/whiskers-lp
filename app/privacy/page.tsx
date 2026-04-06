@@ -1,50 +1,54 @@
-"use client";
-
-import Link from "next/link";
-import dynamic from "next/dynamic";
-import { Canvas } from "@react-three/fiber";
 import Header from "@/components/Header";
-
-const WhiskersBackground = dynamic(
-  () => import("@/components/WhiskersBackground"),
-  { ssr: false }
-);
 
 export default function PrivacyPage() {
   return (
-    <div className="relative min-h-screen bg-white text-gray-900 overflow-y-auto">
-      {/* Header */}
+    <main className="relative min-h-screen overflow-x-hidden" style={{ background: '#f8f7f4' }}>
       <Header variant="light" />
 
-      {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-gray-900">
-            プライバシーポリシー
-          </h1>
-          
-          <div className="prose prose-lg max-w-none text-gray-700">
-            <p className="text-gray-500 text-center mb-12">
-              最終更新日：2026年〇月〇日
-            </p>
+        <div className="max-w-3xl mx-auto">
 
-            <p className="text-gray-700 mb-8">
-              Whiskers（以下「当サービス」）は、ユーザーの個人情報を適切に取り扱うことを重要な責務と考え、
-              「個人情報の保護に関する法律」（以下「個情法」）その他関連法令 に基づき、
-              以下のとおりプライバシーポリシー（以下「本ポリシー」）を定めます。
-            </p>
+          {/* ページタイトル */}
+          <div className="mb-12 pb-8" style={{ borderBottom: '1px solid #e8e6e1' }}>
+            <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: '#1a1a18' }}>
+              プライバシーポリシー
+            </h1>
+            <p className="text-sm" style={{ color: '#8a8880' }}>最終更新日：2026年〇月〇日</p>
+          </div>
 
-            <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-900">1. 収集する情報</h2>
-              <p className="text-gray-700 mb-4">当サービスは、以下の情報を取得します。</p>
+          {/* 前文 */}
+          <p className="text-sm leading-relaxed mb-10" style={{ color: '#3d3d3a', lineHeight: '1.9' }}>
+            Whiskers（以下「当サービス」）は、ユーザーの個人情報を適切に取り扱うことを重要な責務と考え、
+            「個人情報の保護に関する法律」（以下「個情法」）その他関連法令に基づき、
+            以下のとおりプライバシーポリシー（以下「本ポリシー」）を定めます。
+          </p>
+
+          {/* 条文エリア */}
+          <div className="space-y-10">
+
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1a1a18', borderLeft: '3px solid #f97316', paddingLeft: '12px' }}>
+                1. 収集する情報
+              </h2>
+              <p className="text-sm leading-relaxed mb-4" style={{ color: '#3d3d3a', lineHeight: '1.9' }}>当サービスは、以下の情報を取得します。</p>
               
-              <h3 className="text-lg font-medium mb-2 text-gray-800">（1）ユーザーが登録時に提供する情報</h3>
-              <ul className="list-disc list-inside space-y-1 text-gray-700 mb-6">
-                <li>氏名またはニックネーム</li>
-                <li>メールアドレス</li>
-                <li>パスワード</li>
-                <li>SNSアカウント（任意）</li>
-                <li>プロフィール情報（自己紹介、スキル等）</li>
+              <h3 className="text-sm font-medium mb-2" style={{ color: '#1a1a18' }}>（1）ユーザーが登録時に提供する情報</h3>
+              <ul className="space-y-1 mb-4">
+                <li className="text-sm leading-relaxed flex gap-3" style={{ color: '#3d3d3a' }}>
+                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: '#f97316', marginTop: '8px' }} />氏名またはニックネーム
+                </li>
+                <li className="text-sm leading-relaxed flex gap-3" style={{ color: '#3d3d3a' }}>
+                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: '#f97316', marginTop: '8px' }} />メールアドレス
+                </li>
+                <li className="text-sm leading-relaxed flex gap-3" style={{ color: '#3d3d3a' }}>
+                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: '#f97316', marginTop: '8px' }} />パスワード
+                </li>
+                <li className="text-sm leading-relaxed flex gap-3" style={{ color: '#3d3d3a' }}>
+                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: '#f97316', marginTop: '8px' }} />SNSアカウント（任意）
+                </li>
+                <li className="text-sm leading-relaxed flex gap-3" style={{ color: '#3d3d3a' }}>
+                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: '#f97316', marginTop: '8px' }} />プロフィール情報（自己紹介、スキル等）
+                </li>
               </ul>
 
               <h3 className="text-lg font-medium mb-2 text-gray-800">（2）クリエイターが投稿する情報</h3>
@@ -222,21 +226,36 @@ export default function PrivacyPage() {
               </p>
             </section>
 
-            <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-900">12. お問い合わせ窓口（対応期限明記）</h2>
-              <p className="text-gray-700 mb-4">プライバシーに関するお問い合わせは、以下までご連絡ください。</p>
-              <div className="space-y-2 text-gray-700">
-                <p>・ （メールアドレス）</p>
-                <p>・ （運営者名）</p>
-                <p>・ （所在地：バーチャルオフィス等、公開可能な住所を記載）</p>
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#1a1a18', borderLeft: '3px solid #f97316', paddingLeft: '12px' }}>
+                12. お問い合わせ窓口（対応期限明記）
+              </h2>
+              <p className="text-sm leading-relaxed mb-4" style={{ color: '#3d3d3a', lineHeight: '1.9' }}>プライバシーに関するお問い合わせは、以下までご連絡ください。</p>
+              <div className="space-y-2">
+                <p className="text-sm" style={{ color: '#3d3d3a' }}>・ （メールアドレス）</p>
+                <p className="text-sm" style={{ color: '#3d3d3a' }}>・ （運営者名）</p>
+                <p className="text-sm" style={{ color: '#3d3d3a' }}>・ （所在地：バーチャルオフィス等、公開可能な住所を記載）</p>
               </div>
-              <p className="text-gray-500 mt-4 text-sm">■ 対応期限：お問い合わせには 5営業日以内に回答します。</p>
+              <p className="text-sm mt-4" style={{ color: '#8a8880' }}>■ 対応期限：お問い合わせには 5営業日以内に回答します。</p>
             </section>
 
-            {/* Footer removed - back button in header */}
           </div>
+
+          {/* フッターリンク */}
+          <div className="mt-16 pt-8 flex gap-6" style={{ borderTop: '1px solid #e8e6e1' }}>
+            <a href="/terms" className="text-sm hover:underline" style={{ color: '#f97316' }}>
+              利用規約
+            </a>
+            <a href="/contact" className="text-sm hover:underline" style={{ color: '#f97316' }}>
+              お問い合わせ
+            </a>
+            <a href="/" className="text-sm hover:underline" style={{ color: '#8a8880' }}>
+              ← トップページに戻る
+            </a>
+          </div>
+
         </div>
       </div>
-    </div>
+    </main>
   );
 }

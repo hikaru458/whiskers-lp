@@ -91,35 +91,35 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-white text-gray-900 overflow-x-hidden overflow-y-scroll">
+    <main className="relative min-h-screen overflow-x-hidden overflow-y-scroll" style={{ background: '#f8f7f4', color: '#3d3d3a' }}>
       {/* Header */}
       <Header variant="light" />
 
       {/* Content */}
       <div className="relative z-10 pt-24 pb-20 px-6">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center" style={{ color: '#1a1a18' }}>
             お問い合わせ
           </h1>
-          <p className="text-gray-500 text-center mb-12">
+          <p className="text-center mb-12" style={{ color: '#8a8880' }}>
             ご質問・ご相談がございましたら、お気軽にお問い合わせください。
           </p>
 
           {isSubmitted ? (
-            <div className="p-8 rounded-2xl bg-gray-50 border border-gray-200 text-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+            <div className="p-8 rounded-2xl text-center" style={{ background: '#fff', border: '1px solid #e8e6e1' }}>
+              <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-xl font-semibold mb-2 text-gray-900">送信完了</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-xl font-semibold mb-2" style={{ color: '#1a1a18' }}>送信完了</h2>
+              <p className="mb-6" style={{ color: '#8a8880' }}>
                 お問い合わせありがとうございます。<br />
                 5営業日以内にご返信いたします。
               </p>
               <button
                 onClick={() => setIsSubmitted(false)}
-                className="px-6 py-2 bg-gray-900 rounded-full text-white hover:bg-gray-800 transition-all"
+                className="px-6 py-2 rounded-full text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all"
               >
                 新しいお問い合わせ
               </button>
@@ -127,16 +127,16 @@ export default function ContactPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6 relative">
               {showConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                  <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-xl">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">この内容で送信しますか？</h3>
-                    <div className="space-y-2 text-sm text-gray-600 mb-6">
-                      <p><strong>お名前：</strong>{formData.name}</p>
-                      <p><strong>メール：</strong>{formData.email}</p>
-                      <p><strong>種別：</strong>{getTypeLabel(formData.type)}</p>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                  <div className="rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-xl" style={{ background: '#fff' }}>
+                    <h3 className="text-lg font-semibold mb-4" style={{ color: '#1a1a18' }}>この内容で送信しますか？</h3>
+                    <div className="space-y-2 text-sm mb-6" style={{ color: '#8a8880' }}>
+                      <p><strong style={{ color: '#3d3d3a' }}>お名前：</strong>{formData.name}</p>
+                      <p><strong style={{ color: '#3d3d3a' }}>メール：</strong>{formData.email}</p>
+                      <p><strong style={{ color: '#3d3d3a' }}>種別：</strong>{getTypeLabel(formData.type)}</p>
                       <div>
-                        <strong>内容：</strong>
-                        <div className="mt-1 p-3 bg-gray-50 rounded-lg max-h-64 overflow-y-auto whitespace-pre-wrap break-words">
+                        <strong style={{ color: '#3d3d3a' }}>内容：</strong>
+                        <div className="mt-1 p-3 rounded-lg max-h-64 overflow-y-auto whitespace-pre-wrap break-words" style={{ background: '#f8f7f4', color: '#3d3d3a' }}>
                           {formData.message}
                         </div>
                       </div>
@@ -145,7 +145,8 @@ export default function ContactPage() {
                       <button
                         type="button"
                         onClick={() => setShowConfirm(false)}
-                        className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
+                        className="flex-1 py-3 rounded-xl transition-all"
+                        style={{ border: '1px solid #e8e6e1', color: '#3d3d3a', background: '#fff' }}
                       >
                         キャンセル
                       </button>
@@ -153,7 +154,7 @@ export default function ContactPage() {
                         type="button"
                         onClick={confirmSubmit}
                         disabled={isSubmitting}
-                        className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-medium hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50"
+                        className="flex-1 py-3 rounded-xl text-white font-medium bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50"
                       >
                         {isSubmitting ? "送信中..." : "送信する"}
                       </button>
@@ -167,7 +168,7 @@ export default function ContactPage() {
                 </div>
               )}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-medium mb-2" style={{ color: '#3d3d3a' }}>
                   お名前 <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -177,13 +178,14 @@ export default function ContactPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  className="w-full px-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  style={{ background: '#fff', border: '1px solid #e8e6e1', color: '#3d3d3a' }}
                   placeholder="山田 太郎"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: '#3d3d3a' }}>
                   メールアドレス <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -193,13 +195,14 @@ export default function ContactPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                  className="w-full px-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  style={{ background: '#fff', border: '1px solid #e8e6e1', color: '#3d3d3a' }}
                   placeholder="your@email.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="type" className="block text-sm font-medium mb-2" style={{ color: '#3d3d3a' }}>
                   お問い合わせ種別 <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -208,7 +211,8 @@ export default function ContactPage() {
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer"
+                  style={{ background: '#fff', border: '1px solid #e8e6e1', color: '#3d3d3a' }}
                 >
                   <option value="general">一般的なお問い合わせ</option>
                   <option value="business">企業様向けお問い合わせ</option>
@@ -221,7 +225,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="message" className="block text-sm font-medium mb-2" style={{ color: '#3d3d3a' }}>
                   お問い合わせ内容 <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -230,7 +234,8 @@ export default function ContactPage() {
                   rows={6}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl transition-all resize-none focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  style={{ background: '#fff', border: '1px solid #e8e6e1', color: '#3d3d3a' }}
                   placeholder="お問い合わせ内容をご記入ください..."
                 />
               </div>
@@ -243,7 +248,7 @@ export default function ContactPage() {
                 {isSubmitting ? "送信中..." : "送信する"}
               </button>
 
-              <p className="text-xs text-gray-400 text-center">
+              <p className="text-xs text-center" style={{ color: '#8a8880' }}>
                 5営業日以内にご返信いたします。
               </p>
             </form>
