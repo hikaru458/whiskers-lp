@@ -70,3 +70,87 @@ function getTypeLabel(type) {
   };
   return labels[type] || type;
 }
+
+/**
+ * 作品採用時にクリエイターへ自動メール通知
+ * @param {Object} params - 採用情報
+ * @param {string} params.creatorEmail - クリエイターのメールアドレス
+ * @param {string} params.creatorName - クリエイター名
+ * @param {string} params.workTitle - 作品タイトル
+ * @param {string} params.companyName - 企業名
+ * @param {number} params.rewardAmount - 報酬額
+ */
+function notifyCreatorOfAdoption(params) {
+  try {
+    var subject = '【Whiskers】おめでとうございます！あなたの作品が採用されました';
+    var body = params.creatorName + '様\n\n' +
+      'Whiskersをご利用いただき、ありがとうございます。\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n' +
+      '【採用のお知らせ】\n\n' +
+      'あなたの作品「' + params.workTitle + '」が\n' +
+      params.companyName + '様に採用されました！\n\n' +
+      '【報酬】\n' +
+      params.rewardAmount.toLocaleString() + '円（税込）\n\n' +
+      '【次のステップ】\n' +
+      '・報酬のお支払いは、採用確定から5営業日以内に行われます\n' +
+      '・振込手数料はお客様負担となります\n' +
+      '・お支払いに必要な情報は別途ご案内いたします\n' +
+      '━━━━━━━━━━━━━━━━━━━━\n\n' +
+      '今後ともWhiskersをよろしくお願いいたします。\n\n' +
+      '※本メールは送信専用です。ご返信いただいてもお答えできません。\n' +
+      '※お問い合わせはサイトのお問い合わせフォームよりお願いいたします。';
+    
+    GmailApp.sendEmail(params.creatorEmail, subject, body);
+    return { success: true };
+  } catch (err) {
+    console.error('メール送信エラー: ' + err.toString());
+    return { success: false, error: err.toString() };
+  }
+}
+
+/**
+ * 作品採用API（企業側から呼び出し）
+ */
+function doPostAdoption(e) {
+  try {
+    var params = e.parameter;
+    
+    // 必須項目チェック
+    if (!params.creatorEmail || !params.creatorName || !params.workTitle || !params.companyName) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: '必須項目が不足しています。'
+      }));
+    }
+    
+    // 報酬額（デフォルト30,000円）
+    var rewardAmount = parseInt(params.rewardAmount) || 30000;
+    
+    // クリエイターへ通知メール送信
+    var result = notifyCreatorOfAdoption({
+      creatorEmail: params.creatorEmail,
+      creatorName: params.creatorName,
+      workTitle: params.workTitle,
+      companyName: params.companyName,
+      rewardAmount: rewardAmount
+    });
+    
+    if (!result.success) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'メール送信に失敗しました: ' + result.error
+      }));
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: '採用通知メールを送信しました。'
+    }));
+    
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: 'エラー: ' + err.toString()
+    }));
+  }
+}

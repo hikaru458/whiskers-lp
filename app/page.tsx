@@ -209,7 +209,43 @@ export default function Home() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) return (
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      style={{ background: '#0d1220' }}
+    >
+      <div className="text-center">
+        <div
+          className="text-3xl font-bold mb-3"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.5))',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Whiskers
+        </div>
+        <div className="flex gap-1.5 justify-center">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-1.5 h-1.5 rounded-full"
+              style={{
+                background: 'rgba(249,115,22,0.8)',
+                animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
+    </div>
+  );
 
   const SECTIONS = target === "biz" ? BIZ_SECTIONS : CREATOR_SECTIONS;
 
@@ -305,31 +341,129 @@ export default function Home() {
       <section id="how-it-works" className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeInSection>
-            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
               Whiskersの仕組み
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">1</span>
+            <p className="text-white/50 text-center mb-14 text-sm">
+              {target === "biz"
+                ? "3ステップで、納得の作品だけを手に入れる"
+                : "3ステップで、企業案件の報酬を受け取る"}
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {(target === "biz" ? [
+                {
+                  step: "01",
+                  title: "コンテストを開催する",
+                  description: "テーマ・報酬・期間を設定してコンテストを公開。登録クリエイターへ自動通知されます。",
+                  sub: "設定時間：最短30分",
+                },
+                {
+                  step: "02",
+                  title: "作品が集まる",
+                  description: "クリエイターが自由に作品を投稿。フォロワー数不問のため多様なクリエイティブが集まります。",
+                  sub: "投稿数：無制限",
+                },
+                {
+                  step: "03",
+                  title: "気に入った作品だけ採用",
+                  description: "ダッシュボードで作品を比較・選考。採用した作品だけに費用が発生します。",
+                  sub: "不採用なら費用ゼロ",
+                },
+              ] : [
+                {
+                  step: "01",
+                  title: "コンテストに参加する",
+                  description: "興味のあるコンテストを見つけたら、テーマに合わせた作品を制作・投稿します。",
+                  sub: "参加費：無料",
+                },
+                {
+                  step: "02",
+                  title: "作品を投稿する",
+                  description: "1つのコンテストに何本でも投稿可能。フォロワー数・実績は一切関係ありません。",
+                  sub: "投稿数：無制限",
+                },
+                {
+                  step: "03",
+                  title: "採用されたら報酬受取",
+                  description: "企業が作品を採用したら30,000円が確定。採用確定から5営業日以内に振り込まれます。",
+                  sub: "報酬：¥30,000/作品",
+                },
+              ]).map((item, i) => (
+                <div
+                  key={i}
+                  className="relative p-6 rounded-2xl overflow-hidden"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(20px) saturate(150%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                  }}
+                >
+                  {/* 光のライン */}
+                  <div
+                    className="absolute top-0 left-4 right-4 h-[1px]"
+                    style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)' }}
+                  />
+                  {/* ステップ番号 */}
+                  <div className="text-4xl font-bold mb-4" style={{
+                    background: 'linear-gradient(135deg, rgba(249,115,22,0.8), rgba(239,68,68,0.8))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}>
+                    {item.step}
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-2">{item.title}</h3>
+                  <p className="text-sm text-white/60 leading-relaxed mb-4">{item.description}</p>
+                  {/* サブラベル */}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs"
+                    style={{ background: 'rgba(249,115,22,0.15)', color: 'rgba(249,115,22,0.9)', border: '1px solid rgba(249,115,22,0.3)' }}>
+                    {item.sub}
+                  </div>
+                  {/* ステップ間の矢印（最後以外） */}
+                  {i < 2 && (
+                    <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-white/30 text-lg">
+                      →
+                    </div>
+                  )}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">コンテスト開催</h3>
-                <p className="text-sm text-white/70">企業がコンテストを開催し、クリエイターに作品を募集します</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">2</span>
+              ))}
+            </div>
+          </FadeInSection>
+        </div>
+      </section>
+
+      {/* 社会的証明 */}
+      <section className="relative z-10 py-12 px-6">
+        <div className="max-w-4xl mx-auto">
+          <FadeInSection>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { number: "β募集中", label: "サービス開始前の今こそ" },
+                { number: "¥30,000", label: "採用1作品あたりの報酬" },
+                { number: "0円", label: "クリエイター参加費" },
+                { number: "5営業日", label: "採用確定後の振込期限" },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="relative p-5 rounded-2xl text-center overflow-hidden"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(20px) saturate(150%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)',
+                  }}
+                >
+                  <div
+                    className="absolute top-0 left-4 right-4 h-[1px]"
+                    style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)' }}
+                  />
+                  <div className="text-xl md:text-2xl font-bold text-white mb-1">{item.number}</div>
+                  <div className="text-xs text-white/50 leading-relaxed">{item.label}</div>
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">作品投稿</h3>
-                <p className="text-sm text-white/70">クリエイターが作品を投稿。フォロワー数に関係なく実力で評価されます</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">3</span>
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">採用・利用権付与</h3>
-                <p className="text-sm text-white/70">企業が気に入った作品を採用し、利用権が付与されます</p>
-              </div>
+              ))}
             </div>
           </FadeInSection>
         </div>

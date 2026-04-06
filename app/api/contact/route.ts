@@ -24,15 +24,27 @@ export async function POST(request: Request) {
     });
 
     // サーバーサイドからGASを呼び出し（CORSなし）
-    const response = await fetch(`${GAS_WEBAPP_URL}?${params.toString()}`, {
+    const gasUrl = `${GAS_WEBAPP_URL}?${params.toString()}`;
+    console.log("GAS URL:", gasUrl);
+    
+    const response = await fetch(gasUrl, {
       method: "POST",
     });
 
+    const responseText = await response.text();
+    console.log("GAS Response:", response.status, responseText);
+
     if (!response.ok) {
-      throw new Error(`GAS error: ${response.status}`);
+      throw new Error(`GAS error: ${response.status} - ${responseText}`);
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      throw new Error(`Invalid JSON from GAS: ${responseText}`);
+    }
+    
     return NextResponse.json(data);
     
   } catch (error) {

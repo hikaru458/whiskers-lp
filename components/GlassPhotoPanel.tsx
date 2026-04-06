@@ -81,7 +81,7 @@ export default function GlassPhotoPanel({
 
       {/* モバイル版 - iOSフォルダ風 */}
       <div className="md:hidden rounded-[32px] overflow-hidden shadow-2xl" style={{ boxShadow: '0 20px 40px -10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3)' }}>
-        <div className="relative aspect-square overflow-hidden">
+        <div className="relative aspect-[16/9] overflow-hidden">
           <Image
             src={imageSrc}
             alt={title}
@@ -91,31 +91,28 @@ export default function GlassPhotoPanel({
           />
         </div>
         <div
-          className="p-6 relative"
+          className="p-5 relative"
           style={{
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 100%)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 100%)',
             backdropFilter: 'blur(30px) saturate(150%)',
             WebkitBackdropFilter: 'blur(30px) saturate(150%)',
             borderTop: '1px solid rgba(255,255,255,0.25)',
           }}
         >
-          {/* 上部の光のライン - iOS風 */}
-          <div 
+          <div
             className="absolute top-0 left-4 right-4 h-[1px]"
             style={{
               background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)',
             }}
           />
-          <div className="space-y-3">
-            <h3 className="text-xl font-light text-white tracking-wide drop-shadow-md">
-              {title}
-            </h3>
-            <p className="text-sm text-white/80 leading-relaxed">{description}</p>
+          <div className="space-y-2">
+            <h3 className="text-lg font-light text-white tracking-wide drop-shadow-md">{title}</h3>
+            <p className="text-xs text-white/80 leading-relaxed">{description}</p>
             {points.length > 0 && (
-              <ul className="space-y-2 pt-1">
+              <ul className="space-y-1 pt-1">
                 {points.map((point, i) => (
-                  <li key={i} className="flex items-start gap-3 text-xs text-white/70 leading-relaxed">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0" />
+                  <li key={i} className="flex items-start gap-2 text-xs text-white/60 leading-relaxed">
+                    <span className="flex-shrink-0 w-1 h-1 rounded-full bg-white/40 mt-1.5" />
                     {point}
                   </li>
                 ))}
