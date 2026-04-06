@@ -6,8 +6,7 @@ interface PhotoPanelProps {
   imageSrc: string;
   title: string;
   description: string;
-  linkText?: string;
-  linkHref?: string;
+  points?: string[];
   imagePosition?: "left" | "right";
 }
 
@@ -15,8 +14,7 @@ export default function PhotoPanel({
   imageSrc,
   title,
   description,
-  linkText = "→ 詳細",
-  linkHref = "#",
+  points = [],
   imagePosition = "left",
 }: PhotoPanelProps) {
   const isImageLeft = imagePosition === "left";
@@ -56,13 +54,17 @@ export default function PhotoPanel({
           />
           <div className="space-y-4">
             <h2 className="text-3xl font-light text-white tracking-wide drop-shadow-lg">{title}</h2>
-            <p className="text-base text-white/90 leading-relaxed">{description}</p>
-            <a
-              href={linkHref}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm text-white bg-white/20 border border-white/30 hover:border-white/50 hover:bg-white/30 transition-all duration-300 mt-2 shadow-lg backdrop-blur-sm"
-            >
-              {linkText}
-            </a>
+            <p className="text-base text-white/80 leading-relaxed">{description}</p>
+            {points.length > 0 && (
+              <ul className="space-y-2 pt-2">
+                {points.map((point, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-white/70 leading-relaxed">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>
@@ -96,13 +98,17 @@ export default function PhotoPanel({
           />
           <div className="space-y-3">
             <h3 className="text-xl font-light text-white tracking-wide drop-shadow-md">{title}</h3>
-            <p className="text-sm text-white/90 leading-relaxed">{description}</p>
-            <a
-              href={linkHref}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm text-white bg-white/20 border border-white/30 hover:border-white/50 hover:bg-white/30 transition-all duration-300 mt-1 shadow-lg backdrop-blur-sm"
-            >
-              {linkText}
-            </a>
+            <p className="text-sm text-white/80 leading-relaxed">{description}</p>
+            {points.length > 0 && (
+              <ul className="space-y-2 pt-1">
+                {points.map((point, i) => (
+                  <li key={i} className="flex items-start gap-3 text-xs text-white/70 leading-relaxed">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>

@@ -12,62 +12,86 @@ import { useTarget } from "@/lib/TargetContext";
 const BIZ_SECTIONS = [
   {
     image: "/images/image_fx_0.jpg",
-    title: "導入事例",
-    description: "美容・食品・ECなど多業種での採用実績。コンテスト型だからこそ生まれた、想定外のクリエイティブをご紹介します。",
-    linkText: "事例を見る",
-    linkHref: "#business",
+    title: "選考制で、納得の一枚だけに投資する",
+    description: "依頼型と違い、Whiskersは「気に入ったら採用」の完全選考制。何十本投稿があっても、採用しなければ費用はゼロです。",
+    points: [
+      "投稿数は無制限。多様なクリエイティブの中から選べる",
+      "クオリティに納得できなければ採用しなくてOK",
+      "採用した作品だけに費用が発生する成果報酬型",
+    ],
   },
   {
     image: "/images/image_fx_1.jpg",
-    title: "選考制で品質担保",
-    description: "投稿数は無制限。気に入った作品だけを採用するから、予算を無駄にしません。",
-    linkText: "仕組みを見る",
-    linkHref: "#how-it-works",
+    title: "フォロワー数ではなく、作品で選ぶ",
+    description: "インフルエンサーへの高額依頼とは異なります。Whiskersでは実力あるクリエイターが埋もれないよう、フォロワー数を審査基準から完全に排除しています。",
+    points: [
+      "フォロワー数・所属事務所・過去実績は一切不問",
+      "多様な業種・商材に対応できるクリエイターが集まる",
+      "新進気鋭のクリエイターと先行してつながれる",
+    ],
   },
   {
     image: "/images/image_fx_2.jpg",
-    title: "ステマ規制対応",
-    description: "2023年10月施行の景品表示法改正に完全対応。法的リスクを軽減し、安心してUGCを活用できます。",
-    linkText: "詳細を見る",
-    linkHref: "#stema",
+    title: "ステマ規制に、プラットフォームが対応済み",
+    description: "2023年10月施行の景品表示法改正。対応漏れは企業にとってもリスクです。Whiskersでは投稿時にAIが自動チェックし、広告表記の抜けを即座に検知します。",
+    points: [
+      "AIによる広告表記（PR・広告・提供）の自動チェック",
+      "不備があればクリエイターへ即時通知、差し戻し",
+      "企業・クリエイター・プラットフォームの責任範囲を規約で明確化",
+    ],
   },
   {
     image: "/images/juno_0.png",
-    title: "料金プラン",
-    description: "採用した作品だけに課金。月3件〜無制限まで、規模に合わせて選べます。",
-    linkText: "プランを見る",
-    linkHref: "#pricing",
+    title: "使った分だけ払う、シンプルな料金設計",
+    description: "月額プランは3種類。どのプランも投稿数は無制限で、採用した作品の本数に応じた課金です。予算の無駄が起きません。",
+    points: [
+      "ライト ¥150,000/月 ── 月3件まで採用",
+      "スタンダード ¥300,000/月 ── 月10件まで採用",
+      "プロ ¥500,000/月 ── 採用数・投稿数ともに無制限",
+    ],
   },
 ];
 
 const CREATOR_SECTIONS = [
   {
     image: "/images/image_fx_0.jpg",
-    title: "Gallery",
-    description: "クリエイターの作品が集まる場所。あなたの感性に触れる一枚を見つけてください。",
-    linkText: "ギャラリーを見る",
-    linkHref: "#gallery",
+    title: "フォロワー数ゼロでも、採用される",
+    description: "Whiskersはフォロワー数や過去実績を一切見ません。評価されるのは投稿した作品そのもの。はじめての商業案件も、ここから始められます。",
+    points: [
+      "フォロワー数・所属事務所・実績年数は審査に無関係",
+      "作品のクオリティだけで企業が採用を決定",
+      "未経験クリエイターの採用実績あり",
+    ],
   },
   {
     image: "/images/image_fx_1.jpg",
-    title: "実力主義の評価",
-    description: "フォロワー数・過去実績は不問。作品のクオリティだけで採用が決まります。",
-    linkText: "参加の流れ",
-    linkHref: "#how-it-works",
+    title: "採用1本につき、¥30,000を保証",
+    description: "報酬体系は明確です。採用が確定した作品1本につき、一律30,000円（税込）。金額交渉は不要で、採用確定から5営業日以内に振り込まれます。",
+    points: [
+      "採用確定 → 5営業日以内に指定口座へ振込",
+      "1コンテストに何本でも投稿でき、複数採用も可能",
+      "不採用作品の著作権はクリエイターに帰属",
+    ],
   },
   {
     image: "/images/image_fx_2.jpg",
-    title: "採用で¥30,000",
-    description: "採用1作品につき30,000円を保証。採用確定から5営業日以内に振り込まれます。",
-    linkText: "報酬の詳細",
-    linkHref: "#reward",
+    title: "企業採用が、ポートフォリオになる",
+    description: "Whiskersで採用された実績は、あなたの商業制作キャリアの第一歩です。採用履歴はプロフィールに蓄積され、次の案件獲得につながります。",
+    points: [
+      "採用実績がプロフィールに自動で積み上がる",
+      "採用企業名・ジャンルが実績として記録される",
+      "フリーランス・副業としての収入源にもなる",
+    ],
   },
   {
     image: "/images/juno_0.png",
-    title: "ポートフォリオ構築",
-    description: "企業からの採用実績が積み上がる。未経験からのキャリアスタートをサポートします。",
-    linkText: "無料で登録する",
-    linkHref: "#register",
+    title: "コンテストは、今すぐ無料で参加できる",
+    description: "登録費・参加費は一切かかりません。気になるコンテストを見つけたら、すぐに作品を投稿できます。締め切りまでの期間を使って、納得のいく一本を仕上げてください。",
+    points: [
+      "登録・参加・投稿はすべて無料",
+      "1つのコンテストに複数作品を投稿可能",
+      "写真・動画・イラストなど形式はコンテストごとに指定",
+    ],
   },
 ];
 
@@ -303,8 +327,7 @@ export default function Home() {
                     title={section.title}
                     description={section.description}
                     imagePosition={isReversed ? "right" : "left"}
-                    linkText={section.linkText}
-                    linkHref={section.linkHref}
+                    points={section.points}
                   />
                 </FadeInSection>
               </div>
@@ -332,8 +355,7 @@ export default function Home() {
                     title={section.title}
                     description={section.description}
                     imagePosition={isReversed ? "right" : "left"}
-                    linkText={section.linkText}
-                    linkHref={section.linkHref}
+                    points={section.points}
                   />
                 </FadeInSection>
               </div>
